@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   confirmFormSchema,
   type ConfirmFormValues,
@@ -17,6 +17,8 @@ type Props = {
   time: string;
 };
 
+type SavedCustomer = { name: string; email: string; phone: string; countryCode: string };
+
 const COUNTRY_CODES = [
   { code: "+961", label: "LB +961" },
   { code: "+966", label: "SA +966" },
@@ -25,29 +27,55 @@ const COUNTRY_CODES = [
   { code: "+965", label: "KW +965" },
   { code: "+973", label: "BH +973" },
   { code: "+968", label: "OM +968" },
-  { code: "+20", label: "EG +20" },
-  { code: "+33", label: "FR +33" },
-  { code: "+44", label: "GB +44" },
-  { code: "+1", label: "US +1" },
+  { code: "+20",  label: "EG +20"  },
+  { code: "+33",  label: "FR +33"  },
+  { code: "+44",  label: "GB +44"  },
+  { code: "+1",   label: "US +1"   },
 ];
+
+function loadSaved(): SavedCustomer | null {
+  try {
+    const raw = localStorage.getItem("yz_customer");
+    return raw ? (JSON.parse(raw) as SavedCustomer) : null;
+  } catch { return null; }
+}
+
+function saveSaved(data: SavedCustomer) {
+  try { localStorage.setItem("yz_customer", JSON.stringify(data)); } catch { /* ignore */ }
+}
 
 export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
   const router = useRouter();
   const [countryCode, setCountryCode] = useState("+961");
   const [serverError, setServerError] = useState<string | null>(null);
+  const [savedCustomer, setSavedCustomer] = useState<SavedCustomer | null>(null);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ConfirmFormValues>({
     resolver: zodResolver(confirmFormSchema),
   });
 
+  // Pre-fill from localStorage on mount
+  useEffect(() => {
+    const saved = loadSaved();
+    if (saved) {
+      setSavedCustomer(saved);
+      setValue("customer_name", saved.name);
+      setValue("customer_email", saved.email);
+      setValue("customer_phone", saved.phone);
+      setCountryCode(saved.countryCode || "+961");
+    }
+  }, [setValue]);
+
   async function onSubmit(values: ConfirmFormValues) {
     setServerError(null);
     try {
       const rawPhone = `${countryCode}${values.customer_phone.replace(/^0+/, "")}`;
+
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,16 +96,20 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
 
       if (!res.ok) {
         if (json.error === "slot_taken") {
-          setServerError(
-            "That time has just been taken. Please go back and choose another slot.",
-          );
+          setServerError("That time has just been taken. Please go back and choose another slot.");
         } else {
-          setServerError(
-            json.error ?? "Something went wrong. Please try again.",
-          );
+          setServerError(json.error ?? "Something went wrong. Please try again.");
         }
         return;
       }
+
+      // Save customer details for future visits
+      saveSaved({
+        name: values.customer_name,
+        email: values.customer_email || "",
+        phone: values.customer_phone,
+        countryCode,
+      });
 
       router.push(`/booking/${json.reference_code}`);
     } catch {
@@ -94,6 +126,26 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-lg" noValidate>
+      {/* Returning customer banner */}
+      {savedCustomer && (
+        <div className="flex items-center justify-between border border-border bg-card px-md py-sm">
+          <p className={labelBase}>Welcome back, {savedCustomer.name.split(" ")[0]}</p>
+          <button
+            type="button"
+            onClick={() => {
+              localStorage.removeItem("yz_customer");
+              setSavedCustomer(null);
+              setValue("customer_name", "");
+              setValue("customer_email", "");
+              setValue("customer_phone", "");
+            }}
+            className={`${labelBase} transition-opacity hover:opacity-70`}
+          >
+            Not you?
+          </button>
+        </div>
+      )}
+
       {/* Name */}
       <div className="grid gap-xs">
         <label className={labelBase}>Full name</label>
@@ -118,7 +170,7 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
             className="shrink-0 border-b border-input bg-transparent py-sm font-mono text-[length:var(--body-sm-size)] text-fg focus:border-fg focus:outline-none"
           >
             {COUNTRY_CODES.map((c) => (
-              <option key={c.code} value={c.code} style={{ background: "var(--canvas)" }}>
+              <option key={c.code} value={c.code}>
                 {c.label}
               </option>
             ))}
@@ -126,8 +178,8 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
           <input
             {...register("customer_phone")}
             type="tel"
-            className={`${inputBase} flex-1`}
-            placeholder="70 000 000"
+            className={inputBase}
+            placeholder="76 123 456"
             autoComplete="tel-national"
           />
         </div>
@@ -136,14 +188,17 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
         )}
       </div>
 
-      {/* Email (optional) */}
+      {/* Email */}
       <div className="grid gap-xs">
-        <label className={labelBase}>Email address (optional)</label>
+        <label className={labelBase}>
+          Email address
+          <span className="ml-xs text-muted-fg">(to receive confirmation + view booking history)</span>
+        </label>
         <input
           {...register("customer_email")}
           type="email"
           className={inputBase}
-          placeholder="For confirmation details"
+          placeholder="your@email.com"
           autoComplete="email"
         />
         {errors.customer_email && (
@@ -151,45 +206,32 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
         )}
       </div>
 
-      {/* Notes (optional) */}
+      {/* Notes */}
       <div className="grid gap-xs">
-        <label className={labelBase}>Notes (optional)</label>
+        <label className={labelBase}>Notes <span className="text-muted-fg">(optional)</span></label>
         <textarea
           {...register("notes")}
           className={`${inputBase} resize-none`}
-          rows={3}
-          placeholder="Anything the stylist should know beforehand"
+          rows={2}
+          placeholder="Any preferences or details for the stylist"
         />
-        {errors.notes && (
-          <p className={errorBase}>{errors.notes.message}</p>
-        )}
+        {errors.notes && <p className={errorBase}>{errors.notes.message}</p>}
       </div>
 
       {serverError && (
-        <div className="border border-warning bg-card px-md py-sm">
-          <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-warning">
-            {serverError}
-          </p>
-        </div>
+        <p className="border border-warning bg-card px-md py-sm font-mono text-[10px] uppercase tracking-widest text-warning">
+          {serverError}
+        </p>
       )}
 
-      <div className="flex flex-wrap items-center gap-md pt-xs">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex h-11 items-center justify-center border border-accent px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-accent transition-opacity disabled:opacity-50 hover:opacity-80"
-          style={{ borderRadius: "var(--radius-pill)" }}
-        >
-          {isSubmitting ? "Placing reservation…" : "Confirm reservation"}
-        </button>
-        <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
-          No payment required now
-        </p>
-      </div>
-
-      <p className="text-[length:var(--body-sm-size)] leading-relaxed text-muted-fg">
-        By confirming, you agree that a cancellation with less than four hours notice may be noted on your booking record.
-      </p>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="inline-flex h-12 items-center justify-center border border-accent px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-accent transition-opacity disabled:opacity-50 hover:opacity-70"
+        style={{ borderRadius: "var(--radius-pill)" }}
+      >
+        {isSubmitting ? "Confirming…" : "Confirm reservation"}
+      </button>
     </form>
   );
 }

@@ -147,54 +147,75 @@ export default async function AdminTodayPage() {
           </p>
         </div>
       ) : (
-        <div className="grid gap-0">
-          {/* Table header */}
-          <div className="grid gap-md border-b border-border pb-xs"
-            style={{ gridTemplateColumns: "4rem 1fr 1fr 1fr 6rem 5rem" }}>
-            {["Time", "Client", "Service", "Stylist", "Salon", "Status"].map(h => (
-              <p key={h} className={labelBase}>{h}</p>
+        <>
+          {/* Desktop table — hidden on mobile */}
+          <div className="hidden md:block">
+            <div className="grid gap-md border-b border-border pb-xs"
+              style={{ gridTemplateColumns: "4rem 1fr 1fr 1fr 6rem 5rem" }}>
+              {["Time", "Client", "Service", "Stylist", "Salon", "Status"].map(h => (
+                <p key={h} className={labelBase}>{h}</p>
+              ))}
+            </div>
+            {bookings.map((b, i) => (
+              <Link
+                key={b.id}
+                href={`/booking/${b.reference_code}`}
+                target="_blank"
+                className={`grid gap-md py-md transition-opacity hover:opacity-70 ${
+                  i < bookings.length - 1 ? "border-b border-border" : ""
+                }`}
+                style={{ gridTemplateColumns: "4rem 1fr 1fr 1fr 6rem 5rem" }}
+              >
+                <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg">
+                  {safeFormatTime(b.starts_at)}
+                </p>
+                <div className="min-w-0">
+                  <p className="truncate text-fg" style={{ fontSize: "var(--body-sm-size)" }}>{b.customer_name}</p>
+                  <p className="truncate text-muted-fg" style={{ fontSize: "var(--caption-size)" }}>{b.customer_phone}</p>
+                </div>
+                <p className="truncate text-body" style={{ fontSize: "var(--body-sm-size)" }}>{b.service_name}</p>
+                <p className="truncate text-body" style={{ fontSize: "var(--body-sm-size)" }}>{b.staff_name}</p>
+                <p className="truncate text-muted-fg" style={{ fontSize: "var(--body-sm-size)" }}>{b.location_name}</p>
+                <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]"
+                  style={{ color: STATUS_COLOR[b.status] ?? "var(--fg)" }}>
+                  {b.status}
+                </p>
+              </Link>
             ))}
           </div>
 
-          {bookings.map((b, i) => (
-            <Link
-              key={b.id}
-              href={`/booking/${b.reference_code}`}
-              target="_blank"
-              className={`grid gap-md py-md transition-opacity hover:opacity-70 ${
-                i < bookings.length - 1 ? "border-b border-border" : ""
-              }`}
-              style={{ gridTemplateColumns: "4rem 1fr 1fr 1fr 6rem 5rem" }}
-            >
-              <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg">
-                {safeFormatTime(b.starts_at)}
-              </p>
-              <div className="min-w-0">
-                <p className="truncate text-fg" style={{ fontSize: "var(--body-sm-size)" }}>
-                  {b.customer_name}
-                </p>
-                <p className="truncate text-muted-fg" style={{ fontSize: "var(--caption-size)" }}>
-                  {b.customer_phone}
-                </p>
-              </div>
-              <p className="truncate text-body" style={{ fontSize: "var(--body-sm-size)" }}>
-                {b.service_name}
-              </p>
-              <p className="truncate text-body" style={{ fontSize: "var(--body-sm-size)" }}>
-                {b.staff_name}
-              </p>
-              <p className="truncate text-muted-fg" style={{ fontSize: "var(--body-sm-size)" }}>
-                {b.location_name}
-              </p>
-              <p
-                className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]"
-                style={{ color: STATUS_COLOR[b.status] ?? "var(--fg)" }}
+          {/* Mobile cards */}
+          <div className="grid gap-xs md:hidden">
+            {bookings.map((b) => (
+              <Link
+                key={b.id}
+                href={`/booking/${b.reference_code}`}
+                target="_blank"
+                className="border border-border bg-card p-md grid gap-xs transition-opacity hover:opacity-70"
               >
-                {b.status}
-              </p>
-            </Link>
-          ))}
-        </div>
+                {/* Row 1: time + status */}
+                <div className="flex items-center justify-between">
+                  <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg">
+                    {safeFormatTime(b.starts_at)}
+                  </p>
+                  <span className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]"
+                    style={{ color: STATUS_COLOR[b.status] ?? "var(--fg)" }}>
+                    {b.status}
+                  </span>
+                </div>
+                {/* Row 2: client */}
+                <div>
+                  <p className="text-fg" style={{ fontSize: "var(--body-sm-size)" }}>{b.customer_name}</p>
+                  <p className="text-muted-fg" style={{ fontSize: "var(--caption-size)" }}>{b.customer_phone}</p>
+                </div>
+                {/* Row 3: service · stylist · salon */}
+                <p className="text-muted-fg" style={{ fontSize: "var(--caption-size)" }}>
+                  {b.service_name} · {b.staff_name} · {b.location_name}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

@@ -118,20 +118,12 @@ export default async function AdminBookingsPage() {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* Desktop table */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full border-collapse" style={{ minWidth: "56rem" }}>
           <thead>
             <tr className="border-b border-border">
-              {[
-                "Ref",
-                "Date & time",
-                "Client",
-                "Service",
-                "Stylist",
-                "Salon",
-                "Value",
-                "Status",
-              ].map((h) => (
+              {["Ref", "Date & time", "Client", "Service", "Stylist", "Salon", "Value", "Status"].map((h) => (
                 <th key={h} className="pb-xs pr-lg text-left">
                   <span className={labelBase}>{h}</span>
                 </th>
@@ -140,49 +132,30 @@ export default async function AdminBookingsPage() {
           </thead>
           <tbody>
             {bookings.map((b, i) => (
-              <tr
-                key={b.id}
-                className={i < bookings.length - 1 ? "border-b border-border" : ""}
-              >
+              <tr key={b.id} className={i < bookings.length - 1 ? "border-b border-border" : ""}>
                 <td className="py-sm pr-lg">
-                  <Link
-                    href={`/booking/${b.reference_code}`}
-                    target="_blank"
-                    className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-accent hover:opacity-70"
-                  >
+                  <Link href={`/booking/${b.reference_code}`} target="_blank"
+                    className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-accent hover:opacity-70">
                     {b.reference_code}
                   </Link>
                 </td>
                 <td className="py-sm pr-lg">
-                  <p
-                    className="whitespace-nowrap text-fg"
-                    style={{ fontSize: "var(--body-sm-size)" }}
-                  >
+                  <p className="whitespace-nowrap text-fg" style={{ fontSize: "var(--body-sm-size)" }}>
                     {safeFormatDt(b.starts_at)}
                   </p>
                 </td>
                 <td className="py-sm pr-lg">
-                  <p className="text-fg" style={{ fontSize: "var(--body-sm-size)" }}>
-                    {b.customer_name}
-                  </p>
-                  <p className="text-muted-fg" style={{ fontSize: "var(--caption-size)" }}>
-                    {b.customer_phone}
-                  </p>
+                  <p className="text-fg" style={{ fontSize: "var(--body-sm-size)" }}>{b.customer_name}</p>
+                  <p className="text-muted-fg" style={{ fontSize: "var(--caption-size)" }}>{b.customer_phone}</p>
                 </td>
                 <td className="py-sm pr-lg">
-                  <p className="text-body" style={{ fontSize: "var(--body-sm-size)" }}>
-                    {b.service_name}
-                  </p>
+                  <p className="text-body" style={{ fontSize: "var(--body-sm-size)" }}>{b.service_name}</p>
                 </td>
                 <td className="py-sm pr-lg">
-                  <p className="text-body" style={{ fontSize: "var(--body-sm-size)" }}>
-                    {b.staff_name}
-                  </p>
+                  <p className="text-body" style={{ fontSize: "var(--body-sm-size)" }}>{b.staff_name}</p>
                 </td>
                 <td className="py-sm pr-lg">
-                  <p className="text-muted-fg" style={{ fontSize: "var(--body-sm-size)" }}>
-                    {b.location_name}
-                  </p>
+                  <p className="text-muted-fg" style={{ fontSize: "var(--body-sm-size)" }}>{b.location_name}</p>
                 </td>
                 <td className="py-sm pr-lg">
                   <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg">
@@ -190,10 +163,8 @@ export default async function AdminBookingsPage() {
                   </p>
                 </td>
                 <td className="py-sm">
-                  <span
-                    className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]"
-                    style={{ color: STATUS_COLOR[b.status] ?? "var(--fg)" }}
-                  >
+                  <span className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]"
+                    style={{ color: STATUS_COLOR[b.status] ?? "var(--fg)" }}>
                     {b.status.replace("_", " ")}
                   </span>
                 </td>
@@ -201,6 +172,38 @@ export default async function AdminBookingsPage() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="grid gap-xs md:hidden">
+        {bookings.map((b) => (
+          <Link key={b.id} href={`/booking/${b.reference_code}`} target="_blank"
+            className="border border-border bg-card p-md grid gap-xs transition-opacity hover:opacity-70">
+            {/* Ref + status */}
+            <div className="flex items-center justify-between">
+              <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-accent">
+                {b.reference_code}
+              </p>
+              <span className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]"
+                style={{ color: STATUS_COLOR[b.status] ?? "var(--fg)" }}>
+                {b.status.replace("_", " ")}
+              </span>
+            </div>
+            {/* Date */}
+            <p className="text-fg" style={{ fontSize: "var(--body-sm-size)" }}>
+              {safeFormatDt(b.starts_at)}
+            </p>
+            {/* Client */}
+            <div>
+              <p className="text-fg" style={{ fontSize: "var(--body-sm-size)" }}>{b.customer_name}</p>
+              <p className="text-muted-fg" style={{ fontSize: "var(--caption-size)" }}>{b.customer_phone}</p>
+            </div>
+            {/* Service · Stylist · Salon · Price */}
+            <p className="text-muted-fg" style={{ fontSize: "var(--caption-size)" }}>
+              {b.service_name} · {b.staff_name} · {b.location_name} · {formatPrice(b.service_price_cents)}
+            </p>
+          </Link>
+        ))}
       </div>
     </div>
   );

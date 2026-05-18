@@ -477,6 +477,12 @@ export default function BookingReferencePage() {
               </a>
 
               <Link
+                href="/my-bookings"
+                className="flex h-11 items-center justify-center border border-border bg-card px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:border-fg"
+              >
+                View booking history
+              </Link>
+              <Link
                 href="/book"
                 className="flex h-11 items-center justify-center border border-border bg-card px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:border-fg"
               >

@@ -163,27 +163,38 @@ export default async function PublicHomePage() {
         style={{ backdropFilter: "blur(8px)" }}
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-md sm:px-xl">
+          {/* Left: brand short name → full name on desktop */}
           <a
             href="#top"
-            className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg"
+            className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg shrink-0"
           >
-            {clientConfig.brand.shortName}
+            <span className="sm:hidden">{clientConfig.brand.shortName}</span>
+            <span className="hidden sm:inline">{clientConfig.brand.name}</span>
           </a>
 
-          <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
+          {/* Center wordmark — desktop only */}
+          <p className="hidden lg:block font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
             {clientConfig.brand.name}
           </p>
 
-          <div className="flex items-center gap-md">
+          {/* Right: actions */}
+          <div className="flex items-center gap-sm sm:gap-md shrink-0">
+            <Link
+              href="/my-bookings"
+              className="hidden sm:inline font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
+            >
+              My bookings
+            </Link>
             <Link
               href="/admin"
-              className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
+              className="hidden lg:inline font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
             >
               Admin
             </Link>
             <Link
               href="/book"
-              className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg"
+              className="inline-flex h-9 items-center justify-center border border-fg px-4 sm:px-6 font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70"
+              style={{ borderRadius: "var(--radius-pill)" }}
             >
               Reserve
             </Link>
