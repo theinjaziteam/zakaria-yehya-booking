@@ -5,6 +5,7 @@ import { DatePicker } from "@/components/booking/date-picker";
 import { TimePicker } from "@/components/booking/time-picker";
 import { ConfirmForm } from "@/components/booking/confirm-form";
 import { clientConfig } from "@/config/client";
+import { eachDayOfInterval, parseISO, getDay, format } from "date-fns";
 import { todayDate, windowEndDate, formatDisplayDate, formatTime } from "@/lib/utils/time";
 import type { AvailableDay, Slot } from "@/lib/booking/slots";
 
@@ -518,9 +519,63 @@ async function DateStep({
   const from = todayDate();
   const to = windowEndDate();
 
-  // null = show all Mon–Sat in the booking window as selectable.
-  // Real slot-level availability is enforced at the time step via get_available_slots.
-  const availableDays: AvailableDay[] | null = null;
+  let availableDays: AvailableDay[] | null = null;
+
+  const supabase = await getSupabase();
+  if (supabase) {
+    try {
+      const client = await supabase;
+
+      if (staff !== "any") {
+        const { data } = await client.rpc("get_available_days", {
+          p_staff_id: staff,
+          p_service_id: svc,
+          p_location_id: loc,
+          p_from: from,
+          p_to: to,
+        });
+        if (data) {
+          availableDays = (data as Array<{ day: string; has_availability: boolean }>).map(
+            (r) => ({ date: r.day, available: r.has_availability }),
+          );
+        }
+      } else {
+        const { data: atLoc } = await client
+          .from("staff_locations")
+          .select("staff_id")
+          .eq("location_id", loc);
+        const { data: forSvc } = await client
+          .from("staff_services")
+          .select("staff_id")
+          .eq("service_id", svc);
+
+        const atLocIds = (atLoc ?? []).map((r: { staff_id: string }) => r.staff_id);
+        const forSvcIds = (forSvc ?? []).map((r: { staff_id: string }) => r.staff_id);
+        const eligible = atLocIds.filter((id) => forSvcIds.includes(id));
+
+        if (eligible.length > 0) {
+          const { data: wh } = await client
+            .from("working_hours")
+            .select("day_of_week")
+            .eq("location_id", loc)
+            .in("staff_id", eligible);
+
+          const workingDows = new Set(
+            (wh ?? []).map((r: { day_of_week: number }) => r.day_of_week),
+          );
+          const days = eachDayOfInterval({ start: parseISO(from), end: parseISO(to) });
+          availableDays = days.map((day) => ({
+            date: format(day, "yyyy-MM-dd"),
+            available: workingDows.has(getDay(day)),
+          }));
+        } else {
+          availableDays = [];
+        }
+      }
+    } catch {
+      /* fall through – null keeps all days selectable */
+    }
+  }
 
   return (
     <div>
