@@ -6,19 +6,11 @@ export async function GET(req: NextRequest) {
   if (!email || !email.includes("@")) {
     return NextResponse.json({ error: "Valid email required" }, { status: 400 });
   }
-
   try {
     const supabase = await createServerSupabaseClient();
-    const { data, error } = await supabase.rpc("get_bookings_by_email", {
-      p_email: email.toLowerCase(),
-    });
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    const rows = Array.isArray(data) ? data : [];
-    return NextResponse.json(rows);
+    const { data, error } = await supabase.rpc("get_bookings_by_email", { p_email: email.toLowerCase() });
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(Array.isArray(data) ? data : []);
   } catch {
     return NextResponse.json({ error: "Failed to fetch bookings" }, { status: 500 });
   }
