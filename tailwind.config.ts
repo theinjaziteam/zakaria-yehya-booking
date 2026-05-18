@@ -1,0 +1,72 @@
+import type { Config } from "tailwindcss";
+
+export default {
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./config/**/*.{ts,tsx}",
+    "./lib/**/*.{ts,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        bg: "var(--bg)",
+        fg: "var(--fg)",
+        card: "var(--card)",
+        "card-fg": "var(--card-fg)",
+        popover: "var(--popover)",
+        "popover-fg": "var(--popover-fg)",
+        primary: "var(--primary)",
+        "primary-fg": "var(--primary-fg)",
+        secondary: "var(--secondary)",
+        "secondary-fg": "var(--secondary-fg)",
+        muted: "var(--muted-surface)",
+        "muted-fg": "var(--muted-fg)",
+        accent: "var(--accent)",
+        "accent-fg": "var(--accent-fg)",
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        canvas: "var(--canvas)",
+        body: "var(--body)",
+        "body-strong": "var(--body-strong)",
+        hairline: "var(--hairline)",
+        warning: "var(--warning)",
+        success: "var(--success)",
+        link: "var(--link)",
+      },
+      fontFamily: {
+        display: ["var(--font-display)"],
+        body: ["var(--font-body)"],
+        mono: ["var(--font-mono)"],
+        sans: ["var(--font-body)"],
+        serif: ["var(--font-body)"],
+      },
+      borderRadius: {
+        none: "var(--radius-none)",
+        pill: "var(--radius-pill)",
+        full: "var(--radius-full)",
+      },
+      spacing: {
+        xxs: "var(--space-xxs)",
+        xs: "var(--space-xs)",
+        sm: "var(--space-sm)",
+        md: "var(--space-md)",
+        lg: "var(--space-lg)",
+        xl: "var(--space-xl)",
+        xxl: "var(--space-xxl)",
+        section: "var(--space-section)",
+      },
+      boxShadow: {
+        none: "var(--shadow-none)",
+      },
+      letterSpacing: {
+        display: "var(--display-md-tracking)",
+        wordmark: "var(--wordmark-tracking)",
+        caption: "var(--caption-tracking)",
+        button: "var(--button-tracking)",
+        nav: "var(--nav-tracking)",
+      },
+    },
+  },
+} satisfies Config;
