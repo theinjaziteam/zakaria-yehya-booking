@@ -207,16 +207,17 @@ export default async function PublicHomePage() {
           </p>
 
           {/* Right: actions */}
-          <div className="flex items-center gap-xs sm:gap-md shrink-0">
+          <div className="flex items-center gap-xs sm:gap-sm shrink-0">
             <Link
               href="/my-bookings"
-              className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
+              className="inline-flex h-9 items-center justify-center border border-fg px-4 sm:px-5 font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-colors hover:bg-fg hover:text-canvas"
+              style={{ borderRadius: "var(--radius-pill)" }}
             >
               My bookings
             </Link>
             <Link
               href="/book"
-              className="inline-flex h-9 items-center justify-center border border-fg px-4 sm:px-6 font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70"
+              className="inline-flex h-9 items-center justify-center border border-fg bg-fg px-4 sm:px-5 font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-canvas transition-opacity hover:opacity-80"
               style={{ borderRadius: "var(--radius-pill)" }}
             >
               Reserve
