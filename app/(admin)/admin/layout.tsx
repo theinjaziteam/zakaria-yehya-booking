@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { clientConfig } from "@/config/client";
 
 const NAV = [
@@ -15,6 +15,12 @@ export default function AdminLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleSignOut() {
+    await fetch("/api/admin/auth", { method: "DELETE" });
+    router.replace("/admin/login");
+  }
 
   return (
     <div className="min-h-screen bg-bg text-body">
@@ -51,6 +57,14 @@ export default function AdminLayout({
               );
             })}
           </div>
+
+          {/* Sign out */}
+          <button
+            onClick={handleSignOut}
+            className="shrink-0 font-mono text-xs uppercase tracking-widest text-muted-fg transition-opacity hover:opacity-70"
+          >
+            Sign out
+          </button>
         </div>
       </nav>
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">{children}</div>
