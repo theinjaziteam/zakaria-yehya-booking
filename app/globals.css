@@ -38,10 +38,14 @@
 html {
   background: var(--bg);
   color: var(--fg);
+  overflow-x: hidden; /* prevent horizontal scroll on any page */
 }
 
 body {
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
   background: var(--bg);
   color: var(--body);
   font-family: var(--font-body), serif;

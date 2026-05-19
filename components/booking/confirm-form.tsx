@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { confirmFormSchema, type ConfirmFormValues } from "@/lib/booking/validation";
 import { useAuth } from "@/components/auth-provider";
 import type { Product } from "@/components/products-section";
+import { loadPendingProducts, clearPendingProducts } from "@/components/products-section";
 
 type Props = {
   loc: string;
@@ -76,6 +77,18 @@ export function ConfirmForm({ loc, svc, staff, date, time, products }: Props) {
       setCountryCode(saved.countryCode || "+961");
       if (!sessionEmail) setValue("customer_email", saved.email);
     }
+    // Pre-select any products tapped on the landing page
+    const pending = loadPendingProducts();
+    if (pending.length > 0 && products.length > 0) {
+      const initial: Record<string, number> = {};
+      for (const p of pending) {
+        if (products.find((pr) => pr.id === p.product_id)) {
+          initial[p.product_id] = p.quantity;
+        }
+      }
+      if (Object.keys(initial).length > 0) setAddOns(initial);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionEmail, setValue]);
 
   function setAddonQty(productId: string, qty: number) {
@@ -155,6 +168,7 @@ export function ConfirmForm({ loc, svc, staff, date, time, products }: Props) {
       }
 
       saveSaved({ name: values.customer_name, email: values.customer_email, phone: values.customer_phone, countryCode });
+      clearPendingProducts();
       router.push(`/booking/${json.reference_code}`);
     } catch {
       setServerError("A network error occurred. Please try again.");
