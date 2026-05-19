@@ -218,17 +218,17 @@ export default async function PublicHomePage() {
           }}
         />
 
-        {/* Content */}
-        <div className="absolute inset-0 flex flex-col justify-end px-md pb-[5vh] sm:px-xl">
+        {/* Content — always white text, lives over a dark photo overlay */}
+        <div className="absolute inset-0 flex flex-col justify-end px-md pb-[5vh] sm:px-xl" style={{ color: "#F9F6F1" }}>
           <div className="mx-auto w-full max-w-7xl">
             <p
-              className="mb-5 font-mono uppercase text-fg"
+              className="mb-5 font-mono uppercase"
               style={{ fontSize: "0.8125rem", letterSpacing: "0.18em", opacity: 0.72 }}
             >
               {clientConfig.copy.hero.eyebrow}
             </p>
             <h1
-              className="mb-7 font-display uppercase text-fg"
+              className="mb-7 font-display uppercase"
               style={{
                 fontSize: "clamp(2.5rem, 7.5vw, 6rem)",
                 lineHeight: 0.95,
@@ -244,7 +244,7 @@ export default async function PublicHomePage() {
                 fontSize: "clamp(1rem, 1.6vw, 1.125rem)",
                 lineHeight: 1.78,
                 maxWidth: "46ch",
-                color: "var(--body-strong)",
+                color: "rgba(249,246,241,0.85)",
               }}
             >
               {clientConfig.copy.hero.body}
@@ -255,8 +255,8 @@ export default async function PublicHomePage() {
                 className="inline-flex h-14 items-center justify-center px-10 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
                 style={{
                   borderRadius: "var(--radius-pill)",
-                  background: "var(--ink)",
-                  color: "var(--canvas)",
+                  background: "#F9F6F1",
+                  color: "#1C1714",
                   fontSize: "1rem",
                   letterSpacing: "0.15em",
                   fontWeight: 600,
@@ -267,7 +267,7 @@ export default async function PublicHomePage() {
               <a
                 href="#services"
                 className="font-mono uppercase transition-opacity hover:opacity-100"
-                style={{ fontSize: "0.8125rem", letterSpacing: "0.14em", color: "var(--body-strong)", opacity: 0.8 }}
+                style={{ fontSize: "0.8125rem", letterSpacing: "0.14em", color: "rgba(249,246,241,0.7)" }}
               >
                 View services ↓
               </a>
@@ -280,7 +280,7 @@ export default async function PublicHomePage() {
           href="https://www.instagram.com/yehiaandzakaria/"
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute right-md top-6 font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-fg transition-opacity hover:opacity-70 sm:right-xl"
+          className="absolute right-md top-6 font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-white transition-opacity hover:opacity-70 sm:right-xl"
         >
           {clientConfig.contact.instagram}
         </a>
@@ -394,12 +394,13 @@ export default async function PublicHomePage() {
         <div className="absolute inset-0 flex items-center px-md sm:px-xl">
           <div className="mx-auto w-full max-w-7xl">
             <p
-              className="font-display uppercase text-fg"
+              className="font-display uppercase"
               style={{
                 fontSize: "clamp(1.5rem, 4.5vw, 3rem)",
                 lineHeight: 1.08,
                 letterSpacing: "0.05em",
                 maxWidth: "20ch",
+                color: "#F9F6F1",
               }}
             >
               "Hair considered in daylight, in evening rooms, and under the flash of a camera."

@@ -1,21 +1,21 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
   /* color */
-  --canvas: #000000;
-  --surface-soft: #0d0d0d;
-  --surface-card: #141414;
-  --surface-elevated: #1f1f1f;
-  --hairline: #262626;
-  --hairline-strong: #3a3a3a;
-  --ink: #ffffff;
-  --body: #d8d8d8;
-  --body-strong: #eeeeee;
-  --muted: #acacac;
-  --muted-soft: #666666;
-  --link: #c3d9f3;
-  --warning: #d4a017;
-  --success: #5fa657;
+  --canvas: #F9F6F1;
+  --surface-soft: #F2EDE6;
+  --surface-card: #FFFFFF;
+  --surface-elevated: #FDF9F5;
+  --hairline: #E5DDD4;
+  --hairline-strong: #D4C9BC;
+  --ink: #1C1714;
+  --body: #3D3530;
+  --body-strong: #1C1714;
+  --muted: #7A6E65;
+  --muted-soft: #A89E95;
+  --link: #865F10;
+  --warning: #C4871F;
+  --success: #3E6E34;
 
   /* semantic app tokens */
   --bg: var(--canvas);
@@ -35,7 +35,7 @@
   --destructive: var(--warning);
   --destructive-fg: var(--ink);
   --border: var(--hairline);
-  --input: var(--hairline-strong);
+  --input: var(--muted);
   --ring: var(--link);
 
   /* typography families */
