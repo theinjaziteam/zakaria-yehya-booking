@@ -784,9 +784,12 @@ export default async function PublicHomePage() {
                 >
                   {clientConfig.contact.email}
                 </a>
-                <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg">
+                <a
+                  href="tel:011780710"
+                  className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70"
+                >
                   {clientConfig.contact.supportPhone}
-                </p>
+                </a>
                 <a
                   href="https://www.instagram.com/yehiaandzakaria/"
                   target="_blank"

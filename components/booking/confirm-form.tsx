@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   confirmFormSchema,
   type ConfirmFormValues,
@@ -49,6 +49,7 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
   const [countryCode, setCountryCode] = useState("+961");
   const [serverError, setServerError] = useState<string | null>(null);
   const [savedCustomer, setSavedCustomer] = useState<SavedCustomer | null>(null);
+  const submittingRef = useRef(false);
 
   const {
     register,
@@ -72,6 +73,8 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
   }, [setValue]);
 
   async function onSubmit(values: ConfirmFormValues) {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setServerError(null);
     try {
       const rawPhone = `${countryCode}${values.customer_phone.replace(/^0+/, "")}`;
@@ -114,6 +117,7 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
       router.push(`/booking/${json.reference_code}`);
     } catch {
       setServerError("A network error occurred. Please try again.");
+      submittingRef.current = false;
     }
   }
 

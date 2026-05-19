@@ -99,8 +99,8 @@ function googleCalLink(b: BookingView) {
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmt(b.starts_at)}/${fmt(b.ends_at)}&details=${details}&location=${loc}`;
 }
 
-function whatsappLink(phone: string, message: string) {
-  return `https://wa.me/${phone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
+function whatsappLink(message: string) {
+  return `https://wa.me/?text=${encodeURIComponent(message)}`;
 }
 
 // ── Cancel dialog ─────────────────────────────
@@ -276,7 +276,7 @@ export default function BookingReferencePage() {
   }
 
   const tz = booking.location_timezone;
-  const whatsappMsg = `My reservation at ${clientConfig.brand.name} — ${booking.location_name}, ${formatDisplayDatetime(booking.starts_at, tz)}. Ref: ${booking.reference_code}.`;
+  const whatsappMsg = `✂️ Reservation confirmed — ${clientConfig.brand.name}\n\nRef: ${booking.reference_code}\nDate: ${formatDisplayDatetime(booking.starts_at, tz)}\nSalon: ${booking.location_name}\nService: ${booking.service_name}\nStylist: ${booking.staff_name}\nTotal: ${formatPrice(booking.service_price_cents)}\n\n${booking.location_address}`;
 
   const detailRows = [
     { label: "Salon", value: booking.location_name },
@@ -291,13 +291,13 @@ export default function BookingReferencePage() {
       value: [
         booking.service_name,
         formatDur(booking.service_duration_min),
-        booking.service_price_cents > 0
-          ? formatPrice(booking.service_price_cents)
-          : null,
       ]
         .filter(Boolean)
         .join(" · "),
     },
+    ...(booking.service_price_cents > 0
+      ? [{ label: "Total", value: formatPrice(booking.service_price_cents) }]
+      : []),
     { label: "Client", value: booking.customer_name },
     {
       label: "Phone",
@@ -468,7 +468,7 @@ export default function BookingReferencePage() {
               </a>
 
               <a
-                href={whatsappLink(booking.customer_phone, whatsappMsg)}
+                href={whatsappLink(whatsappMsg)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-11 items-center justify-center border border-border bg-card px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:border-fg"
@@ -512,7 +512,7 @@ export default function BookingReferencePage() {
         <footer className="mt-xl border-t border-border">
           <div className="mx-auto flex max-w-5xl items-center justify-between px-md py-md sm:px-xl">
             <p className={labelBase}>
-              {clientConfig.brand.name} · Est. 1998
+              {clientConfig.brand.name} · Est. 1998 · <a href="tel:011780710" className="hover:opacity-70">01 780 710</a>
             </p>
             <Link
               href="/"
