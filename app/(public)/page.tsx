@@ -2,6 +2,7 @@ import Link from "next/link";
 import { clientConfig } from "@/config/client";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { ProductsSection, type Product } from "@/components/products-section";
+import { CelebGrid } from "@/components/celeb-grid";
 
 type LandingLocation = {
   id: string;
@@ -225,7 +226,11 @@ export default async function PublicHomePage() {
       </nav>
 
       {/* ── HERO — full-bleed photo band ────────────────────────────── */}
-      <section className="relative h-[65vh] min-h-[480px] overflow-hidden">
+      {/* min-h ensures content never gets clipped on short/small screens */}
+      <section
+        className="relative overflow-hidden"
+        style={{ minHeight: "min(100dvh, 900px)", height: "clamp(580px, 70vh, 900px)" }}
+      >
         <img
           src={HERO_IMAGE}
           alt="Salon interior — styling in progress"
@@ -237,50 +242,54 @@ export default async function PublicHomePage() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.85) 100%)",
+              "linear-gradient(to bottom, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.50) 50%, rgba(0,0,0,0.88) 100%)",
           }}
         />
 
         {/* Content — always white text, lives over a dark photo overlay */}
-        <div className="absolute inset-0 flex flex-col justify-end px-md pb-[5vh] sm:px-xl" style={{ color: "#F9F6F1" }}>
+        <div
+          className="absolute inset-0 flex flex-col justify-end px-md sm:px-xl"
+          style={{ color: "#F9F6F1", paddingBottom: "clamp(2rem, 6vh, 5rem)" }}
+        >
           <div className="mx-auto w-full max-w-7xl">
             <p
-              className="mb-5 font-mono uppercase"
-              style={{ fontSize: "0.8125rem", letterSpacing: "0.18em", opacity: 0.72 }}
+              className="mb-4 font-mono uppercase"
+              style={{ fontSize: "0.75rem", letterSpacing: "0.18em", opacity: 0.72 }}
             >
               {clientConfig.copy.hero.eyebrow}
             </p>
             <h1
-              className="mb-7 font-display uppercase"
+              className="mb-5 font-display uppercase"
               style={{
-                fontSize: "clamp(2.5rem, 7.5vw, 6rem)",
-                lineHeight: 0.95,
+                fontSize: "clamp(2rem, 6vw, 6rem)",
+                lineHeight: 1.0,
                 letterSpacing: "0.03em",
                 maxWidth: "14ch",
               }}
             >
               {clientConfig.copy.hero.title}
             </h1>
+            {/* Body text hidden on very small phones to prevent overflow */}
             <p
-              className="mb-9"
+              className="mb-7 hidden sm:block"
               style={{
-                fontSize: "clamp(1rem, 1.6vw, 1.125rem)",
-                lineHeight: 1.78,
-                maxWidth: "46ch",
+                fontSize: "clamp(0.9375rem, 1.4vw, 1.125rem)",
+                lineHeight: 1.75,
+                maxWidth: "44ch",
                 color: "rgba(249,246,241,0.85)",
               }}
             >
               {clientConfig.copy.hero.body}
             </p>
-            <div className="flex flex-wrap items-center gap-md">
+            <div className="flex flex-wrap items-center gap-sm sm:gap-md">
               <Link
                 href="/book"
-                className="inline-flex h-14 items-center justify-center px-10 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
+                className="inline-flex h-12 sm:h-14 items-center justify-center px-7 sm:px-10 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
                 style={{
                   borderRadius: "var(--radius-pill)",
                   background: "#F9F6F1",
                   color: "#1C1714",
-                  fontSize: "1rem",
+                  fontSize: "0.875rem",
                   letterSpacing: "0.15em",
                   fontWeight: 600,
                 }}
@@ -289,7 +298,7 @@ export default async function PublicHomePage() {
               </Link>
               <a
                 href="#services"
-                className="font-mono uppercase transition-opacity hover:opacity-100"
+                className="hidden sm:inline font-mono uppercase transition-opacity hover:opacity-100"
                 style={{ fontSize: "0.8125rem", letterSpacing: "0.14em", color: "rgba(249,246,241,0.7)" }}
               >
                 View services ↓
@@ -298,12 +307,12 @@ export default async function PublicHomePage() {
           </div>
         </div>
 
-        {/* Corner caption */}
+        {/* Corner caption — hidden on mobile to avoid crowding */}
         <a
           href="https://www.instagram.com/yehiaandzakaria/"
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute right-md top-6 font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-white transition-opacity hover:opacity-70 sm:right-xl"
+          className="absolute right-md top-6 hidden sm:block font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-white transition-opacity hover:opacity-70 sm:right-xl"
         >
           {clientConfig.contact.instagram}
         </a>
@@ -453,58 +462,8 @@ export default async function PublicHomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-xs sm:gap-md lg:grid-cols-4">
-            {[
-              {
-                name: "Elissa",
-                title: "Lebanese Pop Icon",
-                img: "https://yehiaandzakaria.wordpress.com/wp-content/uploads/2012/05/yehia-and-zakaria-with-elissa.jpg",
-              },
-              {
-                name: "Najwa Karam",
-                title: "Queen of Arabic Music",
-                img: "https://yehiaandzakaria.wordpress.com/wp-content/uploads/2011/07/260569_164428703623300_153413258058178_375154_4661680_n.jpg",
-              },
-              {
-                name: "Yara",
-                title: "Lebanese Singer & Artist",
-                img: "https://yehiaandzakaria.wordpress.com/wp-content/uploads/2011/06/247594_159194700813367_153413258058178_347761_8365526_n.jpg",
-              },
-              {
-                name: "Youssra",
-                title: "Icon of Arab Cinema",
-                img: "https://yehiaandzakaria.wordpress.com/wp-content/uploads/2011/07/259840_165043886895115_153413258058178_378663_3592992_n.jpg",
-              },
-            ].map((celeb) => (
-              <div key={celeb.name} className="grid gap-sm">
-                <div
-                  className="overflow-hidden border border-border"
-                  style={{ aspectRatio: "3/4" }}
-                >
-                  <img
-                    src={celeb.img}
-                    alt={celeb.name}
-                    className="h-full w-full object-cover object-top grayscale transition-all duration-700 hover:grayscale-0"
-                    loading="lazy"
-                  />
-                </div>
-                <div>
-                  <p
-                    className="font-display uppercase text-fg"
-                    style={{ fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)" }}
-                  >
-                    {celeb.name}
-                  </p>
-                  <p
-                    className="font-mono uppercase text-muted-fg"
-                    style={{ fontSize: "var(--caption-size)", letterSpacing: "var(--caption-tracking)" }}
-                  >
-                    {celeb.title}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* CelebGrid is a client component — handles click-to-reveal on touch */}
+          <CelebGrid />
         </div>
       </section>
 
