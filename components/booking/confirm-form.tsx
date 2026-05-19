@@ -44,33 +44,13 @@ function saveSaved(data: SavedCustomer) {
   try { localStorage.setItem("yz_customer", JSON.stringify(data)); } catch { /* ignore */ }
 }
 
-async function tryAuth(email: string, password: string): Promise<void> {
-  try {
-    const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
-    const supabase = createBrowserSupabaseClient();
-
-    // Try sign-in first; if user doesn't exist, sign up
-    const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
-    if (signInErr) {
-      await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: {} },
-      });
-      // If email confirmation is on in Supabase dashboard, the session won't be
-      // returned yet — but we still proceed with the booking regardless.
-    }
-  } catch {
-    // Supabase not configured — skip auth, booking proceeds without an account
-  }
-}
-
 export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
   const router = useRouter();
   const [countryCode, setCountryCode] = useState("+961");
   const [serverError, setServerError] = useState<string | null>(null);
   const [savedCustomer, setSavedCustomer] = useState<SavedCustomer | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null); // active Supabase session email
   const submittingRef = useRef(false);
 
   const {
@@ -82,16 +62,49 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
     resolver: zodResolver(confirmFormSchema),
   });
 
+  // On mount: check for active session first, then fall back to localStorage
   useEffect(() => {
-    const saved = loadSaved();
-    if (saved) {
-      setSavedCustomer(saved);
-      setValue("customer_name", saved.name);
-      setValue("customer_email", saved.email);
-      setValue("customer_phone", saved.phone);
-      setCountryCode(saved.countryCode || "+961");
+    async function init() {
+      // 1. Try to restore active Supabase session
+      try {
+        const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
+        const supabase = createBrowserSupabaseClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user?.email) {
+          setSessionEmail(session.user.email);
+          setValue("customer_email", session.user.email);
+          // customer_password not needed — skip validation for this field
+        }
+      } catch {
+        // Supabase not configured — fall through to localStorage
+      }
+
+      // 2. Pre-fill name/phone from localStorage regardless of auth state
+      const saved = loadSaved();
+      if (saved) {
+        setSavedCustomer(saved);
+        setValue("customer_name", saved.name);
+        setValue("customer_phone", saved.phone);
+        setCountryCode(saved.countryCode || "+961");
+        // Only use saved email if not already set from session
+        if (!sessionEmail) {
+          setValue("customer_email", saved.email);
+        }
+      }
     }
+    init();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setValue]);
+
+  async function handleSignOut() {
+    try {
+      const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
+      const supabase = createBrowserSupabaseClient();
+      await supabase.auth.signOut();
+    } catch { /* ignore */ }
+    setSessionEmail(null);
+    setValue("customer_email", savedCustomer?.email ?? "");
+  }
 
   async function onSubmit(values: ConfirmFormValues) {
     if (submittingRef.current) return;
@@ -99,8 +112,23 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
     setServerError(null);
 
     try {
-      // Create or sign in to account
-      await tryAuth(values.customer_email, values.customer_password);
+      // Auth: only needed for new/guest users — skip if already signed in
+      if (!sessionEmail) {
+        const password = values.customer_password ?? "";
+        if (password.length >= 6) {
+          try {
+            const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
+            const supabase = createBrowserSupabaseClient();
+            const { error: signInErr } = await supabase.auth.signInWithPassword({
+              email: values.customer_email,
+              password,
+            });
+            if (signInErr) {
+              await supabase.auth.signUp({ email: values.customer_email, password });
+            }
+          } catch { /* Supabase not configured — proceed anyway */ }
+        }
+      }
 
       const rawPhone = `${countryCode}${values.customer_phone.replace(/^0+/, "")}`;
 
@@ -155,75 +183,97 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-lg" noValidate>
-      {/* Returning customer banner */}
-      {savedCustomer && (
+
+      {/* ── Already signed in ─────────────────────────────────────── */}
+      {sessionEmail ? (
         <div className="flex items-center justify-between border border-border bg-card px-md py-sm">
-          <p className={labelBase}>Welcome back, {savedCustomer.name.split(" ")[0]}</p>
+          <div>
+            <p className={labelBase}>Signed in</p>
+            <p className="mt-xxs text-fg" style={{ fontSize: "var(--body-sm-size)" }}>
+              {sessionEmail}
+            </p>
+          </div>
           <button
             type="button"
-            onClick={() => {
-              localStorage.removeItem("yz_customer");
-              setSavedCustomer(null);
-              setValue("customer_name", "");
-              setValue("customer_email", "");
-              setValue("customer_phone", "");
-            }}
+            onClick={handleSignOut}
             className={`${labelBase} transition-opacity hover:opacity-70`}
           >
             Not you?
           </button>
         </div>
+      ) : (
+        /* ── New / guest user — show account section ──────────────── */
+        <>
+          {/* Welcome back from localStorage */}
+          {savedCustomer && (
+            <div className="flex items-center justify-between border border-border bg-card px-md py-sm">
+              <p className={labelBase}>Welcome back, {savedCustomer.name.split(" ")[0]}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.removeItem("yz_customer");
+                  setSavedCustomer(null);
+                  setValue("customer_name", "");
+                  setValue("customer_email", "");
+                  setValue("customer_phone", "");
+                }}
+                className={`${labelBase} transition-opacity hover:opacity-70`}
+              >
+                Not you?
+              </button>
+            </div>
+          )}
+
+          <div className="grid gap-xs border-b border-border pb-lg">
+            <p className={`${labelBase} mb-xs`}>Your account</p>
+
+            {/* Email */}
+            <div className="grid gap-xs">
+              <label className={labelBase}>Email address</label>
+              <input
+                {...register("customer_email")}
+                type="email"
+                className={inputBase}
+                placeholder="your@email.com"
+                autoComplete="email"
+              />
+              {errors.customer_email && (
+                <p className={errorBase}>{errors.customer_email.message}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="grid gap-xs">
+              <label className={labelBase}>Password</label>
+              <div className="relative">
+                <input
+                  {...register("customer_password")}
+                  type={showPassword ? "text" : "password"}
+                  className={`${inputBase} pr-16`}
+                  placeholder="New or existing password"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => setShowPassword((v) => !v)}
+                  className={`absolute right-0 bottom-sm ${labelBase} transition-opacity hover:opacity-70`}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+              {errors.customer_password && (
+                <p className={errorBase}>{errors.customer_password.message}</p>
+              )}
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-fg">
+                New here? This creates your account. Already have one? We sign you in.
+              </p>
+            </div>
+          </div>
+        </>
       )}
 
-      {/* Account section */}
-      <div className="grid gap-xs border-b border-border pb-lg">
-        <p className={`${labelBase} mb-xs`}>Your account</p>
-
-        {/* Email */}
-        <div className="grid gap-xs">
-          <label className={labelBase}>Email address</label>
-          <input
-            {...register("customer_email")}
-            type="email"
-            className={inputBase}
-            placeholder="your@email.com"
-            autoComplete="email"
-          />
-          {errors.customer_email && (
-            <p className={errorBase}>{errors.customer_email.message}</p>
-          )}
-        </div>
-
-        {/* Password */}
-        <div className="grid gap-xs">
-          <label className={labelBase}>Password</label>
-          <div className="relative">
-            <input
-              {...register("customer_password")}
-              type={showPassword ? "text" : "password"}
-              className={`${inputBase} pr-16`}
-              placeholder="New or existing password"
-              autoComplete="current-password"
-            />
-            <button
-              type="button"
-              tabIndex={-1}
-              onClick={() => setShowPassword((v) => !v)}
-              className={`absolute right-0 bottom-sm ${labelBase} transition-opacity hover:opacity-70`}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
-          {errors.customer_password && (
-            <p className={errorBase}>{errors.customer_password.message}</p>
-          )}
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-fg">
-            New customer? This creates your account. Returning? Sign you back in.
-          </p>
-        </div>
-      </div>
-
-      {/* Name */}
+      {/* ── Name ──────────────────────────────────────────────────── */}
       <div className="grid gap-xs">
         <label className={labelBase}>Full name</label>
         <input
@@ -237,7 +287,7 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
         )}
       </div>
 
-      {/* Phone */}
+      {/* ── Phone ─────────────────────────────────────────────────── */}
       <div className="grid gap-xs">
         <label className={labelBase}>Phone number</label>
         <div className="flex items-end gap-sm">
@@ -265,7 +315,7 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
         )}
       </div>
 
-      {/* Notes */}
+      {/* ── Notes ─────────────────────────────────────────────────── */}
       <div className="grid gap-xs">
         <label className={labelBase}>Notes <span className="text-muted-fg">(optional)</span></label>
         <textarea

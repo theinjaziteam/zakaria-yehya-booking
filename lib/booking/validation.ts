@@ -4,7 +4,8 @@ export const confirmFormSchema = z.object({
   customer_name: z.string().min(2, "Please enter your full name"),
   customer_phone: z.string().min(6, "Please enter a valid phone number"),
   customer_email: z.string().email("Please enter a valid email address"),
-  customer_password: z.string().min(6, "Password must be at least 6 characters"),
+  // Optional when user is already signed in — form sets a bypass value in that case
+  customer_password: z.string().optional(),
   notes: z.string().max(400, "Notes may not exceed 400 characters").optional(),
 });
 
