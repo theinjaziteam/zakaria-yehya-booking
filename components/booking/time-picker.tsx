@@ -22,10 +22,10 @@ export function TimePicker({ slots, loc, svc, staff, date }: Props) {
     return (
       <div className="border border-border bg-card p-md">
         <p className="font-display text-[length:var(--title-md-size)] uppercase tracking-[var(--title-md-tracking)] text-fg">
-          Connect Supabase to view available times.
+          No times available on this date.
         </p>
         <p className="mt-xs text-[length:var(--body-sm-size)] leading-relaxed text-muted-fg">
-          Once the database is connected, available slots will appear here.
+          Please go back and choose another date, or contact us directly.
         </p>
       </div>
     );
