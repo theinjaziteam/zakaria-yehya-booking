@@ -408,6 +408,82 @@ export default async function PublicHomePage() {
         </div>
       </section>
 
+      {/* ── AS SEEN AT ──────────────────────────────────────────────── */}
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
+          <div className="mb-xl grid gap-sm">
+            <p
+              className="font-mono uppercase text-muted-fg"
+              style={{ fontSize: "var(--caption-size)", letterSpacing: "var(--caption-tracking)" }}
+            >
+              As seen at Yehïa & Zakarïa
+            </p>
+            <h2
+              className="font-display uppercase text-fg"
+              style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)", letterSpacing: "0.05em" }}
+            >
+              Where icons come to be seen.
+            </h2>
+            <p style={{ fontSize: "var(--body-sm-size)", color: "var(--body)", maxWidth: "52ch", lineHeight: 1.7 }}>
+              For over two decades, the Arab world's most celebrated names have trusted Yehïa & Zakarïa with their signature look — from album covers to red carpet appearances.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-xs sm:gap-md lg:grid-cols-4">
+            {[
+              {
+                name: "Elissa",
+                title: "Lebanese Pop Icon",
+                img: "https://yehiaandzakaria.wordpress.com/wp-content/uploads/2012/05/yehia-and-zakaria-with-elissa.jpg",
+              },
+              {
+                name: "Najwa Karam",
+                title: "Queen of Arabic Music",
+                img: "https://yehiaandzakaria.wordpress.com/wp-content/uploads/2011/07/260569_164428703623300_153413258058178_375154_4661680_n.jpg",
+              },
+              {
+                name: "Yara",
+                title: "Lebanese Singer & Artist",
+                img: "https://yehiaandzakaria.wordpress.com/wp-content/uploads/2011/06/247594_159194700813367_153413258058178_347761_8365526_n.jpg",
+              },
+              {
+                name: "Youssra",
+                title: "Icon of Arab Cinema",
+                img: "https://yehiaandzakaria.wordpress.com/wp-content/uploads/2011/07/259840_165043886895115_153413258058178_378663_3592992_n.jpg",
+              },
+            ].map((celeb) => (
+              <div key={celeb.name} className="grid gap-sm">
+                <div
+                  className="overflow-hidden border border-border"
+                  style={{ aspectRatio: "3/4" }}
+                >
+                  <img
+                    src={celeb.img}
+                    alt={celeb.name}
+                    className="h-full w-full object-cover object-top grayscale transition-all duration-700 hover:grayscale-0"
+                    loading="lazy"
+                  />
+                </div>
+                <div>
+                  <p
+                    className="font-display uppercase text-fg"
+                    style={{ fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)" }}
+                  >
+                    {celeb.name}
+                  </p>
+                  <p
+                    className="font-mono uppercase text-muted-fg"
+                    style={{ fontSize: "var(--caption-size)", letterSpacing: "var(--caption-tracking)" }}
+                  >
+                    {celeb.title}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── SERVICES ────────────────────────────────────────────────── */}
       <section id="services" className="border-b border-border">
         <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
