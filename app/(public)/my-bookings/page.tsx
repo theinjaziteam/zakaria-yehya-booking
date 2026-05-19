@@ -118,11 +118,9 @@ export default function MyBookingsPage() {
           >
             {clientConfig.brand.shortName}
           </Link>
-          <img
-            src={clientConfig.brand.logoUrl}
-            alt={clientConfig.brand.name}
-            className="hidden sm:block h-6 w-auto"
-          />
+          <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
+            {clientConfig.brand.name}
+          </p>
           <Link
             href="/book"
             className="inline-flex h-9 items-center justify-center border border-fg px-4 sm:px-6 font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg hover:opacity-70 shrink-0"

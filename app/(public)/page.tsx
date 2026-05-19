@@ -163,22 +163,18 @@ export default async function PublicHomePage() {
         style={{ backdropFilter: "blur(8px)" }}
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-md sm:px-xl">
-          {/* Left: brand short name → full name on desktop */}
+          {/* Left: short name */}
           <a
             href="#top"
             className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg shrink-0"
           >
-            <span className="sm:hidden">{clientConfig.brand.shortName}</span>
-            <span className="hidden sm:inline">{clientConfig.brand.name}</span>
+            {clientConfig.brand.shortName}
           </a>
 
-          {/* Center wordmark — desktop only */}
-          <img
-            src={clientConfig.brand.logoUrl}
-            alt={clientConfig.brand.name}
-            className="hidden lg:block h-6 w-auto"
-            style={{ filter: "invert(0)" }}
-          />
+          {/* Center wordmark */}
+          <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
+            {clientConfig.brand.name}
+          </p>
 
           {/* Right: actions */}
           <div className="flex items-center gap-sm sm:gap-md shrink-0">
@@ -764,11 +760,15 @@ export default async function PublicHomePage() {
         <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl">
           <div className="grid gap-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-xxl">
             <div className="grid gap-sm">
-              <img
-                src={clientConfig.brand.logoUrl}
-                alt={clientConfig.brand.name}
-                className="h-10 w-auto"
-              />
+              <p
+                className="font-display uppercase text-fg"
+                style={{
+                  fontSize: "var(--wordmark-size)",
+                  letterSpacing: "var(--wordmark-tracking)",
+                }}
+              >
+                {clientConfig.brand.name}
+              </p>
               <p
                 className="text-muted-fg"
                 style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7, maxWidth: "44ch" }}

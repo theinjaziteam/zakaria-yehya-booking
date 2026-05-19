@@ -336,7 +336,9 @@ export default function BookingReferencePage() {
             >
               {clientConfig.brand.shortName}
             </Link>
-            <img src={clientConfig.brand.logoUrl} alt={clientConfig.brand.name} className="h-6 w-auto" />
+            <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
+              {clientConfig.brand.name}
+            </p>
             <Link
               href="/"
               className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg hover:opacity-70"
