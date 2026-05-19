@@ -72,3 +72,77 @@ textarea,
 select {
   font: inherit;
 }
+
+/* ── Scroll reveal ───────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero entrance — runs immediately on page load */
+@keyframes heroFade {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-eyebrow { animation: heroFade 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
+.hero-h1      { animation: heroFade 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both; }
+.hero-body    { animation: heroFade 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.42s both; }
+.hero-cta     { animation: heroFade 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.58s both; }
+
+/* Marquee — always running */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .hero-eyebrow, .hero-h1, .hero-body, .hero-cta {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}

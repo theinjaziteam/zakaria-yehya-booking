@@ -4,6 +4,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { ProductsSection, type Product } from "@/components/products-section";
 import { CelebGrid } from "@/components/celeb-grid";
 import { NavActions } from "@/components/nav-actions";
+import { ScrollReveal } from "@/components/scroll-reveal";
 
 type LandingLocation = {
   id: string;
@@ -240,13 +241,13 @@ export default async function PublicHomePage() {
         >
           <div className="mx-auto w-full max-w-7xl">
             <p
-              className="mb-4 font-mono uppercase"
+              className="hero-eyebrow mb-4 font-mono uppercase"
               style={{ fontSize: "0.8125rem", letterSpacing: "0.18em", opacity: 0.65 }}
             >
               {clientConfig.copy.hero.eyebrow}
             </p>
             <h1
-              className="mb-6 font-display uppercase"
+              className="hero-h1 mb-6 font-display uppercase"
               style={{
                 fontSize: "clamp(2.5rem, 7.5vw, 6.5rem)",
                 lineHeight: 0.95,
@@ -257,7 +258,7 @@ export default async function PublicHomePage() {
               {clientConfig.copy.hero.title}
             </h1>
             <p
-              className="mb-8"
+              className="hero-body mb-8"
               style={{
                 fontSize: "clamp(0.9375rem, 1.5vw, 1.125rem)",
                 lineHeight: 1.78,
@@ -267,7 +268,7 @@ export default async function PublicHomePage() {
             >
               {clientConfig.copy.hero.body}
             </p>
-            <div className="flex flex-wrap items-center gap-md">
+            <div className="hero-cta flex flex-wrap items-center gap-md">
               <Link
                 href="/book"
                 className="inline-flex h-14 items-center justify-center px-10 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
@@ -332,7 +333,7 @@ export default async function PublicHomePage() {
 
       {/* ── PHILOSOPHY ──────────────────────────────────────────────── */}
       <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
+        <ScrollReveal className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="grid gap-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-xxl lg:items-center">
             {/* Photo */}
             <div className="relative overflow-hidden" style={{ aspectRatio: "4/5" }}>
@@ -400,7 +401,7 @@ export default async function PublicHomePage() {
               </div>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* ── FULL-BLEED CRAFT BAND ───────────────────────────────────── */}
@@ -434,7 +435,7 @@ export default async function PublicHomePage() {
 
       {/* ── AS SEEN AT ──────────────────────────────────────────────── */}
       <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
+        <ScrollReveal className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="mb-xl grid gap-sm">
             <p
               className="font-mono uppercase text-muted-fg"
@@ -455,7 +456,7 @@ export default async function PublicHomePage() {
 
           {/* CelebGrid is a client component — handles click-to-reveal on touch */}
           <CelebGrid />
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* ── SERVICES ────────────────────────────────────────────────── */}
@@ -894,13 +895,6 @@ export default async function PublicHomePage() {
         </div>
       </footer>
 
-      {/* Marquee animation */}
-      <style>{`
-        @keyframes marquee {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
-        }
-      `}</style>
     </main>
   );
 }
