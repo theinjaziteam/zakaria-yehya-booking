@@ -859,6 +859,17 @@ export default async function BookingStepPage({
   const date = str(sp, "date");
   const time = str(sp, "time");
 
+  // Back href — carries accumulated params to previous step
+  const backParams = new URLSearchParams();
+  if (loc) backParams.set("loc", loc);
+  if (svc) backParams.set("svc", svc);
+  if (staff) backParams.set("staff", staff);
+  if (date) backParams.set("date", date);
+  const prevStep = stepIndex > 0 ? STEPS[stepIndex - 1] : null;
+  const backHref = prevStep
+    ? `/book/${prevStep}${backParams.size ? "?" + backParams.toString() : ""}`
+    : "/";
+
   // Guard: redirect back if required params are missing
   if (currentStep === "service" && !loc) redirect("/book/location");
   if (currentStep === "stylist" && (!loc || !svc)) redirect("/book/location");
@@ -900,17 +911,18 @@ export default async function BookingStepPage({
       <nav className="sticky top-0 z-50 border-b border-border bg-bg/95" style={{ backdropFilter: "blur(8px)" }}>
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-md sm:px-xl">
           <Link
-            href="/"
-            className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
+            href={backHref}
+            className="inline-flex items-center gap-xs font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70 shrink-0"
           >
-            {clientConfig.brand.shortName}
+            <span aria-hidden>←</span>
+            <span>Back</span>
           </Link>
           <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
             {clientConfig.brand.name}
           </p>
           <Link
             href="/"
-            className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
+            className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70 shrink-0"
           >
             Home
           </Link>
