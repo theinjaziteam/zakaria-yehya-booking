@@ -74,9 +74,12 @@ export default function MyBookingsPage() {
         setCustomer(saved);
         if (saved.email?.includes("@")) {
           fetchBookings(saved.email);
+        } else {
+          // No valid email — skip fetch but mark as done so the UI renders
+          setFetched(true);
         }
       } catch {
-        /* ignore */
+        setFetched(true);
       }
     }
   }, []);
@@ -114,9 +117,10 @@ export default function MyBookingsPage() {
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-md sm:px-xl">
           <Link
             href="/"
-            className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg hover:opacity-70 shrink-0"
+            className="inline-flex items-center gap-xs font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70 shrink-0"
           >
-            {clientConfig.brand.shortName}
+            <span aria-hidden>←</span>
+            <span>Home</span>
           </Link>
           <p className="hidden sm:block font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
             {clientConfig.brand.name}
@@ -153,7 +157,7 @@ export default function MyBookingsPage() {
 
         {/* Ref code lookup — always visible */}
         <div className="mb-xl max-w-sm">
-          <p className={`${labelBase} mb-sm`}>Reservation reference</p>
+          <p className={`${labelBase} mb-sm whitespace-nowrap`}>Reservation reference</p>
           <div className="flex gap-sm">
             <input
               type="text"
