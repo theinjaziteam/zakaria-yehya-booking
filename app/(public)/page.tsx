@@ -241,20 +241,20 @@ export default async function PublicHomePage() {
         {/* Content */}
         <div
           className="absolute inset-0 flex flex-col justify-end px-md sm:px-xl"
-          style={{ color: "#F9F6F1", paddingBottom: "clamp(1.5rem, 5vh, 4rem)" }}
+          style={{ color: "#F9F6F1", paddingBottom: "clamp(1.75rem, 6vh, 4.5rem)" }}
         >
           <div className="mx-auto w-full max-w-7xl">
             <p
-              className="mb-3 font-mono uppercase"
-              style={{ fontSize: "0.75rem", letterSpacing: "0.18em", opacity: 0.72 }}
+              className="mb-4 font-mono uppercase"
+              style={{ fontSize: "0.8125rem", letterSpacing: "0.18em", opacity: 0.65 }}
             >
               {clientConfig.copy.hero.eyebrow}
             </p>
             <h1
-              className="mb-4 font-display uppercase"
+              className="mb-6 font-display uppercase"
               style={{
-                fontSize: "clamp(2rem, 6.5vw, 6rem)",
-                lineHeight: 1.0,
+                fontSize: "clamp(2.5rem, 7.5vw, 6.5rem)",
+                lineHeight: 0.95,
                 letterSpacing: "0.03em",
                 maxWidth: "14ch",
               }}
@@ -262,25 +262,25 @@ export default async function PublicHomePage() {
               {clientConfig.copy.hero.title}
             </h1>
             <p
-              className="mb-6"
+              className="mb-8"
               style={{
-                fontSize: "clamp(0.875rem, 1.5vw, 1.0625rem)",
-                lineHeight: 1.72,
-                maxWidth: "42ch",
-                color: "rgba(249,246,241,0.82)",
+                fontSize: "clamp(0.9375rem, 1.5vw, 1.125rem)",
+                lineHeight: 1.78,
+                maxWidth: "44ch",
+                color: "rgba(249,246,241,0.80)",
               }}
             >
               {clientConfig.copy.hero.body}
             </p>
-            <div className="flex flex-wrap items-center gap-sm">
+            <div className="flex flex-wrap items-center gap-md">
               <Link
                 href="/book"
-                className="inline-flex h-11 sm:h-13 items-center justify-center px-6 sm:px-9 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
+                className="inline-flex h-14 items-center justify-center px-10 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
                 style={{
                   borderRadius: "var(--radius-pill)",
                   background: "#F9F6F1",
                   color: "#1C1714",
-                  fontSize: "clamp(0.75rem, 1.2vw, 0.9375rem)",
+                  fontSize: "1rem",
                   letterSpacing: "0.15em",
                   fontWeight: 600,
                 }}
@@ -290,7 +290,7 @@ export default async function PublicHomePage() {
               <a
                 href="#services"
                 className="font-mono uppercase transition-opacity hover:opacity-100"
-                style={{ fontSize: "0.75rem", letterSpacing: "0.14em", color: "rgba(249,246,241,0.65)" }}
+                style={{ fontSize: "0.8125rem", letterSpacing: "0.14em", color: "rgba(249,246,241,0.65)" }}
               >
                 View services ↓
               </a>
@@ -298,14 +298,19 @@ export default async function PublicHomePage() {
           </div>
         </div>
 
-        {/* Instagram corner caption */}
+        {/* Instagram icon — top-right corner */}
         <a
           href="https://www.instagram.com/yehiaandzakaria/"
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute right-md top-5 sm:right-xl sm:top-6 font-mono text-[0.625rem] sm:text-[length:var(--caption-size)] uppercase tracking-widest text-white transition-opacity hover:opacity-70"
+          aria-label="Instagram"
+          className="absolute right-md top-5 sm:right-xl sm:top-6 text-white transition-opacity hover:opacity-70"
         >
-          {clientConfig.contact.instagram}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4.5"/>
+            <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+          </svg>
         </a>
       </section>
 
@@ -851,9 +856,16 @@ export default async function PublicHomePage() {
                   href="https://www.instagram.com/yehiaandzakaria/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70"
+                  className="inline-flex items-center gap-xs text-fg transition-opacity hover:opacity-70"
                 >
-                  {clientConfig.contact.instagram}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <circle cx="12" cy="12" r="4.5"/>
+                    <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+                  </svg>
+                  <span className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)]">
+                    {clientConfig.contact.instagram}
+                  </span>
                 </a>
               </div>
 
