@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import Link from "next/link";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";

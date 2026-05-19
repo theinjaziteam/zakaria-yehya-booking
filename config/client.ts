@@ -127,7 +127,7 @@ export const clientConfig = {
     whatsapp: "96170000000",
     instagram: "@yehiaandzakaria",
     email: "concierge@yehiazakaria.com",
-    supportPhone: "+961 1 XXX XXX",
+    supportPhone: "01 780 710",
   },
   business: {
     defaultTimezone: "Asia/Beirut",
