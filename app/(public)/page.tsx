@@ -318,7 +318,7 @@ export default async function PublicHomePage() {
       <div className="overflow-hidden border-y border-border bg-card py-3">
         <div
           className="flex gap-xl whitespace-nowrap font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg"
-          style={{ animation: "marquee 28s linear infinite" }}
+          style={{ animation: "marquee 14s linear infinite" }}
         >
           {[...Array(4)].map((_, i) => (
             <span key={i} className="flex shrink-0 gap-xl">
