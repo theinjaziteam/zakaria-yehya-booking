@@ -222,26 +222,30 @@ export default async function PublicHomePage() {
         {/* Content */}
         <div className="absolute inset-0 flex flex-col justify-end px-md pb-[5vh] sm:px-xl">
           <div className="mx-auto w-full max-w-7xl">
-            <p className="mb-4 font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
+            <p
+              className="mb-5 font-mono uppercase text-fg"
+              style={{ fontSize: "0.8125rem", letterSpacing: "0.18em", opacity: 0.72 }}
+            >
               {clientConfig.copy.hero.eyebrow}
             </p>
             <h1
-              className="mb-6 font-display uppercase text-fg"
+              className="mb-7 font-display uppercase text-fg"
               style={{
-                fontSize: "clamp(2.25rem, 7vw, 5.5rem)",
-                lineHeight: 0.96,
-                letterSpacing: "0.04em",
+                fontSize: "clamp(2.5rem, 7.5vw, 6rem)",
+                lineHeight: 0.95,
+                letterSpacing: "0.03em",
                 maxWidth: "14ch",
               }}
             >
               {clientConfig.copy.hero.title}
             </h1>
             <p
-              className="mb-8 text-body-strong"
+              className="mb-9"
               style={{
-                fontSize: "clamp(0.9375rem, 1.4vw, 1.0625rem)",
-                lineHeight: 1.72,
-                maxWidth: "44ch",
+                fontSize: "clamp(1rem, 1.6vw, 1.125rem)",
+                lineHeight: 1.78,
+                maxWidth: "46ch",
+                color: "var(--body-strong)",
               }}
             >
               {clientConfig.copy.hero.body}
@@ -254,16 +258,17 @@ export default async function PublicHomePage() {
                   borderRadius: "var(--radius-pill)",
                   background: "var(--ink)",
                   color: "var(--canvas)",
-                  fontSize: "0.9375rem",
+                  fontSize: "1rem",
                   letterSpacing: "0.15em",
-                  fontWeight: 500,
+                  fontWeight: 600,
                 }}
               >
                 {clientConfig.copy.hero.primaryCtaLabel}
               </Link>
               <a
                 href="#services"
-                className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
+                className="font-mono uppercase transition-opacity hover:opacity-100"
+                style={{ fontSize: "0.8125rem", letterSpacing: "0.14em", color: "var(--body-strong)", opacity: 0.8 }}
               >
                 View services ↓
               </a>
