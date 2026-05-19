@@ -163,7 +163,7 @@ export default async function AdminBookingsPage({
   searchParams: Promise<Record<string, string>>;
 }) {
   const sp = await searchParams;
-  const view = sp.view === "all" ? "all" : "today";
+  const view = sp.view === "today" ? "today" : "all";
   const locSlug = sp.loc ?? "all";
   const q = (sp.q ?? "").trim();
 
