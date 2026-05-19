@@ -91,11 +91,11 @@ export default function MyBookingsPage() {
         const data = (await res.json()) as Booking[];
         setBookings(data);
       }
-      setFetched(true);
     } catch {
       /* ignore */
     } finally {
       setLoading(false);
+      setFetched(true);
     }
   }
 
@@ -118,7 +118,7 @@ export default function MyBookingsPage() {
           >
             {clientConfig.brand.shortName}
           </Link>
-          <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
+          <p className="hidden sm:block font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
             {clientConfig.brand.name}
           </p>
           <Link
@@ -153,7 +153,7 @@ export default function MyBookingsPage() {
 
         {/* Ref code lookup — always visible */}
         <div className="mb-xl max-w-sm">
-          <p className={`${labelBase} mb-sm`}>Find by reservation reference</p>
+          <p className={`${labelBase} mb-sm`}>Reservation reference</p>
           <div className="flex gap-sm">
             <input
               type="text"
