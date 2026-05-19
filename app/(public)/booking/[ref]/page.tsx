@@ -458,11 +458,13 @@ export default function BookingReferencePage() {
             <div className="grid gap-sm content-start">
               <p className={`${labelBase} mb-xs`}>Actions</p>
 
+              {/* Primary actions — filled dark */}
               <a
                 href={googleCalLink(booking)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-11 items-center justify-center border border-border bg-card px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:border-fg"
+                className="flex h-11 items-center justify-center px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity hover:opacity-80"
+                style={{ background: "var(--ink)", color: "var(--canvas)" }}
               >
                 Add to Google Calendar
               </a>
@@ -471,20 +473,22 @@ export default function BookingReferencePage() {
                 href={whatsappLink(whatsappMsg)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-11 items-center justify-center border border-border bg-card px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:border-fg"
+                className="flex h-11 items-center justify-center px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity hover:opacity-80"
+                style={{ background: "var(--ink)", color: "var(--canvas)" }}
               >
                 Send details to WhatsApp
               </a>
 
+              {/* Secondary actions — outlined */}
               <Link
                 href="/my-bookings"
-                className="flex h-11 items-center justify-center border border-border bg-card px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:border-fg"
+                className="flex h-11 items-center justify-center border border-fg px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:bg-fg hover:text-canvas"
               >
                 View booking history
               </Link>
               <Link
                 href="/book"
-                className="flex h-11 items-center justify-center border border-border bg-card px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:border-fg"
+                className="flex h-11 items-center justify-center border border-fg px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:bg-fg hover:text-canvas"
               >
                 Make another reservation
               </Link>

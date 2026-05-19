@@ -35,13 +35,18 @@ const STATUS_STYLE: Record<string, React.CSSProperties> = {
 async function getLocations(): Promise<Location[]> {
   try {
     const supabase = createAdminSupabaseClient();
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("locations")
       .select("id, name, slug")
       .eq("active", true)
       .order("name");
+    if (error) {
+      console.error("admin getLocations error:", error.message);
+      return [];
+    }
     return (data as Location[] | null) ?? [];
-  } catch {
+  } catch (e) {
+    console.error("admin getLocations exception:", e);
     return [];
   }
 }
@@ -60,16 +65,20 @@ function filterBookings(bookings: BookingRow[], q: string): BookingRow[] {
   );
 }
 
+// Returns { rows, dbError } so the page can show a banner when DB is unreachable
 async function getBookings(
   view: "today" | "all",
   locationId: string | null,
-): Promise<BookingRow[]> {
+): Promise<{ rows: BookingRow[]; dbError: string | null }> {
   try {
     const supabase = createAdminSupabaseClient();
+
+    // Use left joins (not !inner) so bookings still appear even if a related
+    // record is somehow inactive or missing in RLS-filtered views.
     let query = supabase
       .from("bookings")
       .select(
-        "id, reference_code, customer_name, customer_phone, customer_email, starts_at, status, locations!inner(name), services!inner(name, price_cents), staff!inner(name)",
+        "id, reference_code, customer_name, customer_phone, customer_email, starts_at, status, locations(name), services(name, price_cents), staff(name)",
       )
       .order("starts_at", { ascending: view === "today" })
       .limit(200);
@@ -87,13 +96,17 @@ async function getBookings(
     }
 
     const { data, error } = await query;
-    if (error || !data) return [];
+    if (error) {
+      console.error("admin getBookings error:", error.message, error.code);
+      return { rows: [], dbError: error.message };
+    }
+    if (!data) return { rows: [], dbError: null };
 
-    return (data as unknown[]).map((r: unknown) => {
+    const rows = (data as unknown[]).map((r: unknown) => {
       const row = r as Record<string, unknown>;
-      const loc = (row.locations as Record<string, unknown>) ?? {};
-      const svc = (row.services as Record<string, unknown>) ?? {};
-      const stf = (row.staff as Record<string, unknown>) ?? {};
+      const loc = (row.locations as Record<string, unknown> | null) ?? {};
+      const svc = (row.services as Record<string, unknown> | null) ?? {};
+      const stf = (row.staff as Record<string, unknown> | null) ?? {};
       return {
         id: String(row.id ?? ""),
         reference_code: String(row.reference_code ?? ""),
@@ -108,8 +121,11 @@ async function getBookings(
         staff_name: String(stf.name ?? "—"),
       };
     });
-  } catch {
-    return [];
+    return { rows, dbError: null };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("admin getBookings exception:", msg);
+    return { rows: [], dbError: msg };
   }
 }
 
@@ -155,7 +171,7 @@ export default async function AdminBookingsPage({
   const selectedLocation =
     locSlug === "all" ? null : (locations.find((l) => l.slug === locSlug) ?? null);
 
-  const allBookings = await getBookings(view, selectedLocation?.id ?? null);
+  const { rows: allBookings, dbError } = await getBookings(view, selectedLocation?.id ?? null);
   const bookings = filterBookings(allBookings, q);
   const confirmed = bookings.filter((b) => b.status === "confirmed").length;
   const cancelled = bookings.filter((b) => b.status === "cancelled").length;
@@ -178,6 +194,16 @@ export default async function AdminBookingsPage({
 
   return (
     <div>
+      {/* DB connection error banner */}
+      {dbError && (
+        <div className="mb-6 border border-warning bg-card px-4 py-3">
+          <p className="font-mono text-xs uppercase tracking-widest text-warning">
+            Database error — check SUPABASE_SERVICE_ROLE_KEY and run migrations.
+          </p>
+          <p className="mt-1 font-mono text-xs text-muted-fg">{dbError}</p>
+        </div>
+      )}
+
       {/* Page header */}
       <div className="mb-8 border-b border-border pb-6">
         <div className="flex items-start justify-between gap-4">

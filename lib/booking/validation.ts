@@ -3,7 +3,8 @@ import { z } from "zod";
 export const confirmFormSchema = z.object({
   customer_name: z.string().min(2, "Please enter your full name"),
   customer_phone: z.string().min(6, "Please enter a valid phone number"),
-  customer_email: z.string().optional(),
+  customer_email: z.string().email("Please enter a valid email address"),
+  customer_password: z.string().min(6, "Password must be at least 6 characters"),
   notes: z.string().max(400, "Notes may not exceed 400 characters").optional(),
 });
 

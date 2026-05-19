@@ -44,11 +44,33 @@ function saveSaved(data: SavedCustomer) {
   try { localStorage.setItem("yz_customer", JSON.stringify(data)); } catch { /* ignore */ }
 }
 
+async function tryAuth(email: string, password: string): Promise<void> {
+  try {
+    const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
+    const supabase = createBrowserSupabaseClient();
+
+    // Try sign-in first; if user doesn't exist, sign up
+    const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
+    if (signInErr) {
+      await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: {} },
+      });
+      // If email confirmation is on in Supabase dashboard, the session won't be
+      // returned yet — but we still proceed with the booking regardless.
+    }
+  } catch {
+    // Supabase not configured — skip auth, booking proceeds without an account
+  }
+}
+
 export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
   const router = useRouter();
   const [countryCode, setCountryCode] = useState("+961");
   const [serverError, setServerError] = useState<string | null>(null);
   const [savedCustomer, setSavedCustomer] = useState<SavedCustomer | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const submittingRef = useRef(false);
 
   const {
@@ -60,7 +82,6 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
     resolver: zodResolver(confirmFormSchema),
   });
 
-  // Pre-fill from localStorage on mount
   useEffect(() => {
     const saved = loadSaved();
     if (saved) {
@@ -76,7 +97,11 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
     if (submittingRef.current) return;
     submittingRef.current = true;
     setServerError(null);
+
     try {
+      // Create or sign in to account
+      await tryAuth(values.customer_email, values.customer_password);
+
       const rawPhone = `${countryCode}${values.customer_phone.replace(/^0+/, "")}`;
 
       const res = await fetch("/api/bookings", {
@@ -90,7 +115,7 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
           time,
           customer_name: values.customer_name,
           customer_phone: rawPhone,
-          customer_email: values.customer_email || null,
+          customer_email: values.customer_email,
           notes: values.notes || null,
         }),
       });
@@ -103,13 +128,13 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
         } else {
           setServerError(json.error ?? "Something went wrong. Please try again.");
         }
+        submittingRef.current = false;
         return;
       }
 
-      // Save customer details for future visits
       saveSaved({
         name: values.customer_name,
-        email: values.customer_email || "",
+        email: values.customer_email,
         phone: values.customer_phone,
         countryCode,
       });
@@ -149,6 +174,54 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
           </button>
         </div>
       )}
+
+      {/* Account section */}
+      <div className="grid gap-xs border-b border-border pb-lg">
+        <p className={`${labelBase} mb-xs`}>Your account</p>
+
+        {/* Email */}
+        <div className="grid gap-xs">
+          <label className={labelBase}>Email address</label>
+          <input
+            {...register("customer_email")}
+            type="email"
+            className={inputBase}
+            placeholder="your@email.com"
+            autoComplete="email"
+          />
+          {errors.customer_email && (
+            <p className={errorBase}>{errors.customer_email.message}</p>
+          )}
+        </div>
+
+        {/* Password */}
+        <div className="grid gap-xs">
+          <label className={labelBase}>Password</label>
+          <div className="relative">
+            <input
+              {...register("customer_password")}
+              type={showPassword ? "text" : "password"}
+              className={`${inputBase} pr-16`}
+              placeholder="New or existing password"
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              tabIndex={-1}
+              onClick={() => setShowPassword((v) => !v)}
+              className={`absolute right-0 bottom-sm ${labelBase} transition-opacity hover:opacity-70`}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+          {errors.customer_password && (
+            <p className={errorBase}>{errors.customer_password.message}</p>
+          )}
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-fg">
+            New customer? This creates your account. Returning? Sign you back in.
+          </p>
+        </div>
+      </div>
 
       {/* Name */}
       <div className="grid gap-xs">
@@ -192,24 +265,6 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
         )}
       </div>
 
-      {/* Email */}
-      <div className="grid gap-xs">
-        <label className={labelBase}>
-          Email address
-          <span className="ml-xs text-muted-fg">(to receive confirmation + view booking history)</span>
-        </label>
-        <input
-          {...register("customer_email")}
-          type="email"
-          className={inputBase}
-          placeholder="your@email.com"
-          autoComplete="email"
-        />
-        {errors.customer_email && (
-          <p className={errorBase}>{errors.customer_email.message}</p>
-        )}
-      </div>
-
       {/* Notes */}
       <div className="grid gap-xs">
         <label className={labelBase}>Notes <span className="text-muted-fg">(optional)</span></label>
@@ -231,8 +286,12 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex h-12 items-center justify-center border border-accent px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-accent transition-opacity disabled:opacity-50 hover:opacity-70"
-        style={{ borderRadius: "var(--radius-pill)" }}
+        className="inline-flex h-12 items-center justify-center px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity disabled:opacity-50 hover:opacity-80"
+        style={{
+          borderRadius: "var(--radius-pill)",
+          background: "var(--accent)",
+          color: "var(--canvas)",
+        }}
       >
         {isSubmitting ? "Confirming…" : "Confirm reservation"}
       </button>

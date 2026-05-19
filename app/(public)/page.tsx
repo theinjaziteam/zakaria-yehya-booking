@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { clientConfig } from "@/config/client";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { ProductsSection, type Product } from "@/components/products-section";
 
 type LandingLocation = {
   id: string;
@@ -145,8 +146,36 @@ const DEMO_LOCATIONS = [
   { id: "l3", slug: "kaslik", name: "Kaslik", address: "Main Road, Kaslik, Jounieh", phone: "+961 9 XXX XXX", timezone: "Asia/Beirut" },
 ];
 
+const DEMO_PRODUCTS: Product[] = [
+  { id: "p1", name: "Argan Oil Elixir", description: "Deep-conditioning Moroccan argan oil treatment. Repairs, strengthens, and adds luminous shine.", price_cents: 4500, image_url: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800&q=80&auto=format&fit=crop" },
+  { id: "p2", name: "Scalp Revival Serum", description: "Purifying serum that balances and nourishes the scalp. Strengthens roots from the source.", price_cents: 3800, image_url: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800&q=80&auto=format&fit=crop" },
+  { id: "p3", name: "Colour-Lock Conditioner", description: "Colour-preserving conditioner that seals the cuticle and extends the life of your colour treatment.", price_cents: 3200, image_url: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&q=80&auto=format&fit=crop" },
+  { id: "p4", name: "Styling Clay", description: "Medium-hold, matte-finish clay. Buildable texture with a clean, natural-looking result.", price_cents: 2800, image_url: "https://images.unsplash.com/photo-1590156562745-5d51c4e69e41?w=800&q=80&auto=format&fit=crop" },
+];
+
+async function getProducts(): Promise<Product[]> {
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    return DEMO_PRODUCTS;
+  }
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data } = await supabase
+      .from("products")
+      .select("id, name, description, price_cents, image_url")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .returns<Product[]>();
+    return data && data.length > 0 ? data : DEMO_PRODUCTS;
+  } catch {
+    return DEMO_PRODUCTS;
+  }
+}
+
 export default async function PublicHomePage() {
-  const rawData = await getLandingData();
+  const [rawData, products] = await Promise.all([getLandingData(), getProducts()]);
 
   const locations =
     rawData.locations.length > 0 ? rawData.locations : DEMO_LOCATIONS;
@@ -183,12 +212,6 @@ export default async function PublicHomePage() {
               className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
             >
               My bookings
-            </Link>
-            <Link
-              href="/admin"
-              className="hidden lg:inline font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
-            >
-              Admin
             </Link>
             <Link
               href="/book"
@@ -602,6 +625,9 @@ export default async function PublicHomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── PRODUCTS ────────────────────────────────────────────────── */}
+      <ProductsSection products={products} />
 
       {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
       <section className="border-b border-border bg-secondary">
