@@ -20,7 +20,6 @@ function AuthForm() {
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
 
-  // Already signed in — redirect immediately
   useEffect(() => {
     if (user) router.replace(from);
   }, [user, from, router]);
@@ -31,20 +30,19 @@ function AuthForm() {
     setErr(null);
 
     if (mode === "signin") {
-      const err = await signIn(email, password);
-      if (err) {
+      const error = await signIn(email, password);
+      if (error) {
         setErr("Incorrect email or password.");
         setBusy(false);
       }
-      // success: useEffect above will redirect
     } else {
-      const err = await signUp(email, password);
-      if (err) {
-        if (err.toLowerCase().includes("already")) {
-          setErr("An account with this email already exists. Try signing in.");
+      const error = await signUp(email, password);
+      if (error) {
+        if (error.toLowerCase().includes("already")) {
+          setErr("Account already exists. Try signing in.");
           setMode("signin");
         } else {
-          setErr(err);
+          setErr(error);
         }
         setBusy(false);
       } else {
@@ -54,33 +52,44 @@ function AuthForm() {
     }
   }
 
-  const inputBase = "w-full border-b border-input bg-transparent py-sm font-body text-[length:var(--body-md-size)] text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none transition-colors";
-  const labelBase = "font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg";
+  // 16px minimum on inputs prevents iOS auto-zoom
+  const inputBase =
+    "w-full border-b border-input bg-transparent py-3 font-body text-base text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none transition-colors";
+  const labelBase =
+    "font-mono text-[0.7rem] uppercase tracking-widest text-muted-fg";
 
   return (
-    <main className="min-h-screen bg-bg flex items-center justify-center px-md">
-      <div className="w-full max-w-sm">
+    // Scroll-safe layout: top-aligned so keyboard opening doesn't clip the form
+    <main className="min-h-screen bg-bg overflow-y-auto">
+      <div className="mx-auto w-full max-w-sm px-4 pt-12 pb-16 sm:pt-20">
+
         {/* Brand */}
         <Link
           href="/"
-          className="block mb-xl font-display uppercase text-fg text-center transition-opacity hover:opacity-70"
+          className="block mb-8 font-display uppercase text-fg text-center transition-opacity hover:opacity-70"
           style={{ fontSize: "var(--wordmark-size)", letterSpacing: "var(--wordmark-tracking)" }}
         >
           {clientConfig.brand.name}
         </Link>
 
-        <div className="border border-border bg-card p-lg sm:p-xl">
+        {/* Card */}
+        <div className="border border-border bg-card p-6 sm:p-8">
           {done ? (
-            <div className="text-center grid gap-md">
-              <p className="font-display uppercase text-fg" style={{ fontSize: "var(--title-md-size)", letterSpacing: "var(--title-md-tracking)" }}>
+            <div className="text-center grid gap-4">
+              <p
+                className="font-display uppercase text-fg"
+                style={{ fontSize: "var(--title-md-size)", letterSpacing: "var(--title-md-tracking)" }}
+              >
                 Check your email
               </p>
-              <p className="text-muted-fg" style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7 }}>
-                We sent a confirmation link to <strong className="text-fg">{email}</strong>. Click it to activate your account, then come back and sign in.
+              <p className="text-muted-fg text-sm leading-relaxed">
+                We sent a confirmation link to{" "}
+                <strong className="text-fg">{email}</strong>. Click it to
+                activate your account, then sign in below.
               </p>
               <button
                 onClick={() => { setDone(false); setMode("signin"); }}
-                className="mt-sm h-10 inline-flex items-center justify-center border border-fg px-6 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg hover:bg-fg hover:text-canvas transition-colors"
+                className="mt-2 h-11 w-full inline-flex items-center justify-center border border-fg font-mono text-xs uppercase tracking-widest text-fg hover:bg-fg hover:text-canvas transition-colors"
                 style={{ borderRadius: "var(--radius-pill)" }}
               >
                 Sign in →
@@ -89,29 +98,41 @@ function AuthForm() {
           ) : (
             <>
               {/* Tabs */}
-              <div className="flex gap-1 mb-lg border-b border-border pb-sm">
+              <div className="flex mb-6">
                 {(["signin", "signup"] as const).map((m) => (
                   <button
                     key={m}
                     type="button"
                     onClick={() => { setMode(m); setErr(null); }}
-                    className={[
-                      "flex-1 py-1.5 font-mono text-[0.65rem] uppercase tracking-widest transition-colors",
-                      mode === m ? "bg-card text-fg border border-border" : "text-muted-fg hover:text-fg",
-                    ].join(" ")}
+                    className="flex-1 py-2 font-mono text-xs uppercase tracking-widest transition-colors border-b-2"
+                    style={{
+                      borderBottomColor: mode === m ? "var(--fg)" : "var(--border)",
+                      color: mode === m ? "var(--fg)" : "var(--muted-fg)",
+                    }}
                   >
                     {m === "signin" ? "Sign in" : "Create account"}
                   </button>
                 ))}
               </div>
 
-              <form onSubmit={handleSubmit} className="grid gap-md">
-                <div className="grid gap-xs">
+              <form onSubmit={handleSubmit} className="grid gap-5">
+                {/* Email */}
+                <div className="grid gap-1">
                   <label className={labelBase}>Email</label>
-                  <input value={email} onChange={e => setEmail(e.target.value)} type="email" className={inputBase} placeholder="your@email.com" autoComplete="email" required />
+                  <input
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    type="email"
+                    className={inputBase}
+                    placeholder="your@email.com"
+                    autoComplete="email"
+                    inputMode="email"
+                    required
+                  />
                 </div>
 
-                <div className="grid gap-xs">
+                {/* Password */}
+                <div className="grid gap-1">
                   <label className={labelBase}>Password</label>
                   <div className="relative">
                     <input
@@ -119,42 +140,58 @@ function AuthForm() {
                       onChange={e => setPassword(e.target.value)}
                       type={showPw ? "text" : "password"}
                       className={`${inputBase} pr-14`}
-                      placeholder={mode === "signup" ? "Choose a password (6+ chars)" : "Your password"}
+                      placeholder={mode === "signup" ? "6 or more characters" : "Your password"}
                       autoComplete={mode === "signup" ? "new-password" : "current-password"}
                       required
                       minLength={6}
                     />
-                    <button type="button" tabIndex={-1} onClick={() => setShowPw(v => !v)} className={`absolute right-0 bottom-sm ${labelBase} hover:opacity-70`}>
+                    <button
+                      type="button"
+                      tabIndex={-1}
+                      onClick={() => setShowPw(v => !v)}
+                      className="absolute right-0 bottom-3 font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg hover:text-fg transition-colors"
+                    >
                       {showPw ? "Hide" : "Show"}
                     </button>
                   </div>
                 </div>
 
                 {err && (
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-warning">{err}</p>
+                  <p className="font-mono text-[0.65rem] uppercase tracking-widest text-warning">
+                    {err}
+                  </p>
                 )}
 
+                {/* Submit — full width always */}
                 <button
                   type="submit"
                   disabled={busy}
-                  className="mt-xs h-11 inline-flex items-center justify-center font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity disabled:opacity-40 hover:opacity-80"
-                  style={{ borderRadius: "var(--radius-pill)", background: "var(--ink)", color: "var(--canvas)" }}
+                  className="w-full h-12 inline-flex items-center justify-center font-mono text-sm uppercase tracking-widest transition-opacity disabled:opacity-40 hover:opacity-80 mt-1"
+                  style={{
+                    borderRadius: "var(--radius-pill)",
+                    background: "var(--ink)",
+                    color: "var(--canvas)",
+                  }}
                 >
                   {busy ? "…" : mode === "signin" ? "Sign in" : "Create account"}
                 </button>
               </form>
 
               {mode === "signup" && (
-                <p className="mt-md font-mono text-[10px] uppercase tracking-widest text-muted-fg">
-                  You can also create an account during the booking process.
+                <p className="mt-4 font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg leading-relaxed">
+                  Your account is also created automatically when you complete a booking.
                 </p>
               )}
             </>
           )}
         </div>
 
-        <div className="mt-md text-center">
-          <Link href="/" className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg hover:text-fg transition-colors">
+        {/* Back link */}
+        <div className="mt-4 text-center">
+          <Link
+            href="/"
+            className="font-mono text-[0.7rem] uppercase tracking-widest text-muted-fg hover:text-fg transition-colors"
+          >
             ← Back to site
           </Link>
         </div>
