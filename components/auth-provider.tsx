@@ -63,14 +63,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = useCallback(async (email: string, password: string): Promise<string | null> => {
     try {
+      // Server-side creation via admin API — marks email confirmed, no verification email sent
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const json = await res.json() as { ok?: boolean; existing?: boolean; error?: string };
+      if (!res.ok && !json.existing) return json.error ?? "Sign up failed";
+
+      // Account ready — sign in to establish session
       const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
-      const { error } = await createBrowserSupabaseClient().auth.signUp({ email, password });
-      if (!error) return null;
-      const msg = error.message ?? "";
-      if (msg.toLowerCase().includes("rate limit") || msg.toLowerCase().includes("email rate")) {
-        return "EMAIL_RATE_LIMIT";
-      }
-      return msg;
+      const { error } = await createBrowserSupabaseClient().auth.signInWithPassword({ email, password });
+      if (error) return "Account exists — check your password.";
+      return null;
     } catch { return "Sign up failed"; }
   }, []);
 

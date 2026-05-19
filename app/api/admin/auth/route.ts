@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Wrong password" }, { status: 401 });
   }
 
-  const token = Buffer.from(expected).toString("base64");
+  const token = btoa(expected);
   const res = NextResponse.json({ ok: true });
   res.cookies.set(COOKIE, token, {
     httpOnly: true,

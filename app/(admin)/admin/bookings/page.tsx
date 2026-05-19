@@ -19,6 +19,7 @@ type BookingRow = {
   customer_email: string | null;
   starts_at: string;
   status: string;
+  notes: string | null;
   location_name: string;
   service_name: string;
   service_price_cents: number;
@@ -78,7 +79,7 @@ async function getBookings(
     let query = supabase
       .from("bookings")
       .select(
-        "id, reference_code, customer_name, customer_phone, customer_email, starts_at, status, locations(name), services(name, price_cents), staff(name)",
+        "id, reference_code, customer_name, customer_phone, customer_email, starts_at, status, notes, locations(name), services(name, price_cents), staff(name)",
       )
       .order("starts_at", { ascending: view === "today" })
       .limit(200);
@@ -115,6 +116,7 @@ async function getBookings(
         customer_email: (row.customer_email as string | null) ?? null,
         starts_at: String(row.starts_at ?? ""),
         status: String(row.status ?? "confirmed"),
+        notes: (row.notes as string | null) ?? null,
         location_name: String(loc.name ?? "—"),
         service_name: String(svc.name ?? "—"),
         service_price_cents: Number(svc.price_cents ?? 0),
@@ -328,7 +330,7 @@ export default async function AdminBookingsPage({
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  {["Time", "Ref", "Client", "Service", "Stylist", "Salon", "Value", "Status", ""].map(
+                  {["Time", "Ref", "Client", "Service", "Stylist", "Salon", "Value", "Status", "Notes", ""].map(
                     (h) => (
                       <th
                         key={h}
@@ -376,6 +378,11 @@ export default async function AdminBookingsPage({
                         {b.status.replace("_", " ")}
                       </span>
                     </td>
+                    <td className="py-3 pr-4 max-w-[14rem]">
+                      {b.notes && (
+                        <p className="text-xs text-muted-fg leading-relaxed line-clamp-2">{b.notes}</p>
+                      )}
+                    </td>
                     <td className="py-3">
                       {b.status === "confirmed" && (
                         <CancelBookingButton refCode={b.reference_code} />
@@ -419,6 +426,12 @@ export default async function AdminBookingsPage({
                   {b.service_name} · {b.staff_name} · {b.location_name} ·{" "}
                   {formatPrice(b.service_price_cents)}
                 </p>
+                {b.notes && (
+                  <p className="text-xs text-muted-fg leading-relaxed border-t border-border pt-2 mt-1">
+                    <span className="font-mono uppercase tracking-widest mr-1" style={{ fontSize: "0.6rem" }}>Note:</span>
+                    {b.notes}
+                  </p>
+                )}
                 {b.status === "confirmed" && (
                   <CancelBookingButton refCode={b.reference_code} />
                 )}

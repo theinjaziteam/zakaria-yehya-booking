@@ -6,7 +6,7 @@ export const confirmFormSchema = z.object({
   customer_email: z.string().email("Please enter a valid email address"),
   // Optional when user is already signed in — form sets a bypass value in that case
   customer_password: z.string().optional(),
-  notes: z.string().max(400, "Notes may not exceed 400 characters").optional(),
+  notes: z.string().max(200, "Notes may not exceed 200 characters").optional(),
 });
 
 export type ConfirmFormValues = z.infer<typeof confirmFormSchema>;
@@ -20,7 +20,7 @@ export const bookingPayloadSchema = z.object({
   customer_name: z.string().min(2),
   customer_phone: z.string().min(6),
   customer_email: z.string().optional().nullable(),
-  notes: z.string().max(400).optional().nullable(),
+  notes: z.string().max(200).optional().nullable(),
 });
 
 export type BookingPayload = z.infer<typeof bookingPayloadSchema>;

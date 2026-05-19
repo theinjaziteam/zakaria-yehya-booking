@@ -836,6 +836,7 @@ async function ConfirmStep({
           date={date}
           time={time}
           products={products}
+          servicePriceCents={service?.price_cents ?? 0}
         />
       </div>
     </div>

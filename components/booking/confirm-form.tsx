@@ -16,6 +16,7 @@ type Props = {
   date: string;
   time: string;
   products: Product[];
+  servicePriceCents: number;
 };
 
 type SavedCustomer = { name: string; email: string; phone: string; countryCode: string };
@@ -47,9 +48,9 @@ function saveSaved(data: SavedCustomer) {
 
 function fmt(cents: number) { return `$${(cents / 100).toFixed(0)}`; }
 
-export function ConfirmForm({ loc, svc, staff, date, time, products }: Props) {
+export function ConfirmForm({ loc, svc, staff, date, time, products, servicePriceCents }: Props) {
   const router = useRouter();
-  const { user, signOut } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const sessionEmail = user?.email ?? null;
 
   const [countryCode, setCountryCode] = useState("+961");
@@ -108,6 +109,7 @@ export function ConfirmForm({ loc, svc, staff, date, time, products }: Props) {
     }));
 
   const addonTotal = addonItems.reduce((s, i) => s + i.quantity * i.unit_price_cents, 0);
+  const grandTotal = servicePriceCents + addonTotal;
 
   async function onSubmit(values: ConfirmFormValues) {
     if (submittingRef.current) return;
@@ -184,7 +186,7 @@ export function ConfirmForm({ loc, svc, staff, date, time, products }: Props) {
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-lg" noValidate>
 
       {/* ── Auth state ────────────────────────────────────── */}
-      {sessionEmail ? (
+      {authLoading ? null : sessionEmail ? (
         <div className="flex items-center justify-between border border-border bg-card px-md py-sm">
           <div>
             <p className={labelBase}>Signed in</p>
@@ -251,7 +253,7 @@ export function ConfirmForm({ loc, svc, staff, date, time, products }: Props) {
       {/* ── Notes ────────────────────────────────────────── */}
       <div className="grid gap-xs">
         <label className={labelBase}>Notes <span className="text-muted-fg">(optional)</span></label>
-        <textarea {...register("notes")} className={`${inputBase} resize-none`} rows={2} placeholder="Any preferences or details for the stylist" />
+        <textarea {...register("notes")} className={`${inputBase} resize-none`} rows={2} placeholder="Any preferences or details for the stylist" maxLength={200} />
         {errors.notes && <p className={errorBase}>{errors.notes.message}</p>}
       </div>
 
@@ -296,12 +298,24 @@ export function ConfirmForm({ loc, svc, staff, date, time, products }: Props) {
             })}
           </div>
 
-          {addonTotal > 0 && (
-            <div className="flex items-center justify-between border-t border-border pt-sm">
-              <p className={labelBase}>Add-ons total</p>
-              <p className="font-mono text-fg" style={{ fontSize: "var(--body-sm-size)" }}>{fmt(addonTotal)}</p>
+          <div className="mt-sm grid gap-0 border-t border-border pt-sm">
+            {servicePriceCents > 0 && (
+              <div className="flex items-center justify-between py-xxs">
+                <p className={labelBase}>Service</p>
+                <p className="font-mono text-muted-fg" style={{ fontSize: "var(--body-sm-size)" }}>{fmt(servicePriceCents)}</p>
+              </div>
+            )}
+            {addonTotal > 0 && (
+              <div className="flex items-center justify-between py-xxs">
+                <p className={labelBase}>Add-ons</p>
+                <p className="font-mono text-muted-fg" style={{ fontSize: "var(--body-sm-size)" }}>{fmt(addonTotal)}</p>
+              </div>
+            )}
+            <div className="flex items-center justify-between border-t border-border pt-sm mt-xxs">
+              <p className={labelBase}>Total</p>
+              <p className="font-mono text-fg font-medium" style={{ fontSize: "var(--body-md-size)" }}>{fmt(grandTotal)}</p>
             </div>
-          )}
+          </div>
         </div>
       )}
 
@@ -317,7 +331,7 @@ export function ConfirmForm({ loc, svc, staff, date, time, products }: Props) {
         className="inline-flex h-12 items-center justify-center px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity disabled:opacity-50 hover:opacity-80"
         style={{ borderRadius: "var(--radius-pill)", background: "var(--accent)", color: "var(--canvas)" }}
       >
-        {isSubmitting ? "Confirming…" : addonTotal > 0 ? `Confirm — ${fmt(addonTotal)} in add-ons` : "Confirm reservation"}
+        {isSubmitting ? "Confirming…" : grandTotal > 0 ? `Confirm — ${fmt(grandTotal)}` : "Confirm reservation"}
       </button>
     </form>
   );

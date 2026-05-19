@@ -10,9 +10,8 @@ export function middleware(req: NextRequest) {
   if (pathname.startsWith("/admin/login")) return NextResponse.next();
 
   const token = req.cookies.get(COOKIE)?.value;
-  const expected = process.env.ADMIN_PASSWORD
-    ? Buffer.from(process.env.ADMIN_PASSWORD).toString("base64")
-    : null;
+  const pw = process.env.ADMIN_PASSWORD;
+  const expected = pw ? btoa(pw) : null;
 
   if (!expected || token !== expected) {
     const loginUrl = new URL("/admin/login", req.url);
