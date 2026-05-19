@@ -110,7 +110,7 @@ export type ClientConfig = {
 
 export const clientConfig = {
   brand: {
-    name: "Yehia & Zakaria",
+    name: "Yehïa & Zakarïa",
     shortName: "Y & Z",
     tagline: "A Lebanese house of hair, since 1998.",
     domain: "yehiazakaria.com",

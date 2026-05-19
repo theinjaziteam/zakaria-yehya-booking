@@ -173,9 +173,12 @@ export default async function PublicHomePage() {
           </a>
 
           {/* Center wordmark — desktop only */}
-          <p className="hidden lg:block font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
-            {clientConfig.brand.name}
-          </p>
+          <img
+            src={clientConfig.brand.logoUrl}
+            alt={clientConfig.brand.name}
+            className="hidden lg:block h-6 w-auto"
+            style={{ filter: "invert(0)" }}
+          />
 
           {/* Right: actions */}
           <div className="flex items-center gap-sm sm:gap-md shrink-0">
@@ -761,15 +764,11 @@ export default async function PublicHomePage() {
         <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl">
           <div className="grid gap-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-xxl">
             <div className="grid gap-sm">
-              <p
-                className="font-display uppercase text-fg"
-                style={{
-                  fontSize: "var(--wordmark-size)",
-                  letterSpacing: "var(--wordmark-tracking)",
-                }}
-              >
-                {clientConfig.brand.name}
-              </p>
+              <img
+                src={clientConfig.brand.logoUrl}
+                alt={clientConfig.brand.name}
+                className="h-10 w-auto"
+              />
               <p
                 className="text-muted-fg"
                 style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7, maxWidth: "44ch" }}

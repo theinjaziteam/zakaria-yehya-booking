@@ -905,9 +905,7 @@ export default async function BookingStepPage({
           >
             {clientConfig.brand.shortName}
           </Link>
-          <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
-            {clientConfig.brand.name}
-          </p>
+          <img src={clientConfig.brand.logoUrl} alt={clientConfig.brand.name} className="h-6 w-auto" />
           <Link
             href="/"
             className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
