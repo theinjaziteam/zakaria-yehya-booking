@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ScrollReveal } from "@/components/scroll-reveal";
 
 export type Product = {
   id: string;
@@ -135,8 +136,10 @@ export function ProductsSection({ products }: { products: Product[] }) {
         </div>
 
         <div className="grid gap-md sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
+          {products.map((p, i) => (
+            <ScrollReveal key={p.id} delay={i * 80}>
+              <ProductCard product={p} />
+            </ScrollReveal>
           ))}
         </div>
       </div>

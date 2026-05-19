@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ScrollReveal } from "@/components/scroll-reveal";
 
 type Celeb = { name: string; title: string; img: string };
 
@@ -70,8 +71,10 @@ const CELEBS: Celeb[] = [
 export function CelebGrid() {
   return (
     <div className="grid grid-cols-2 gap-xs sm:gap-md lg:grid-cols-4">
-      {CELEBS.map((celeb) => (
-        <CelebCard key={celeb.name} celeb={celeb} />
+      {CELEBS.map((celeb, i) => (
+        <ScrollReveal key={celeb.name} delay={i * 90}>
+          <CelebCard celeb={celeb} />
+        </ScrollReveal>
       ))}
     </div>
   );

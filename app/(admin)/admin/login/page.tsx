@@ -30,116 +30,154 @@ export default function AdminLoginPage() {
     }
   }
 
-  // Inline styles only — no Tailwind spacing tokens (CSS vars) in layout
-  // Those caused rightward shift on mobile before CSS loaded
-  const page: React.CSSProperties = {
-    minHeight: "100vh",
-    width: "100%",
-    background: "var(--bg)",
-    overflowX: "hidden",
-    overflowY: "auto",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
-  const wrap: React.CSSProperties = {
-    width: "100%",
-    maxWidth: 380,
-    padding: "32px 20px",
-    boxSizing: "border-box",
-  };
-
-  const card: React.CSSProperties = {
-    background: "var(--card)",
-    border: "1px solid var(--border)",
-    padding: 28,
-  };
-
-  const label: React.CSSProperties = {
-    display: "block",
-    fontFamily: "var(--font-mono)",
-    fontSize: 11,
-    textTransform: "uppercase",
-    letterSpacing: "0.12em",
-    color: "var(--muted-fg)",
-    marginBottom: 8,
-  };
-
-  const input: React.CSSProperties = {
-    display: "block",
-    width: "100%",
-    background: "transparent",
-    border: "none",
-    borderBottom: "1px solid var(--input)",
-    padding: "10px 0",
-    fontSize: 16,
-    color: "var(--fg)",
-    fontFamily: "inherit",
-    outline: "none",
-    boxSizing: "border-box",
-  };
-
-  const btn: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    height: 48,
-    marginTop: 24,
-    background: busy || !password ? "var(--muted-fg)" : "var(--ink)",
-    color: "var(--canvas)",
-    border: "none",
-    borderRadius: 9999,
-    fontFamily: "var(--font-mono)",
-    fontSize: 13,
-    textTransform: "uppercase",
-    letterSpacing: "0.12em",
-    cursor: busy || !password ? "default" : "pointer",
-    opacity: busy || !password ? 0.5 : 1,
-    transition: "opacity 0.2s",
-  };
-
   return (
-    <div style={page}>
-      <div style={wrap}>
-        {/* Brand */}
-        <p style={{ fontFamily: "var(--font-display)", fontSize: 13, letterSpacing: "0.35em", textTransform: "uppercase", color: "var(--fg)", textAlign: "center", marginBottom: 32 }}>
+    <div style={{
+      minHeight: "100vh",
+      width: "100%",
+      background: "#1C1714",   // ink — dark, private, backstage
+      overflowX: "hidden",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "32px 20px",
+      boxSizing: "border-box",
+    }}>
+      <div style={{ width: "100%", maxWidth: 360, boxSizing: "border-box" }}>
+
+        {/* Brand — floats above card in cream */}
+        <p style={{
+          fontFamily: "var(--font-display)",
+          fontSize: 12,
+          letterSpacing: "0.4em",
+          textTransform: "uppercase",
+          color: "rgba(249,246,241,0.55)",
+          textAlign: "center",
+          marginBottom: 28,
+          animation: "loginCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.05s both",
+        }}>
           {clientConfig.brand.name}
         </p>
 
-        <div style={card}>
-          <p style={{ fontFamily: "var(--font-display)", fontSize: 20, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg)", marginBottom: 6 }}>
-            Admin access
-          </p>
-          <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-fg)", marginBottom: 24 }}>
-            Enter your admin password to continue
+        {/* Card — cream on dark, floats in */}
+        <div style={{
+          background: "#F9F6F1",
+          padding: "36px 32px",
+          boxShadow: "0 32px 80px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.3)",
+          animation: "loginCardIn 0.65s cubic-bezier(0.22,1,0.36,1) 0.12s both",
+          boxSizing: "border-box",
+        }}>
+          {/* Eyebrow */}
+          <p style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 10,
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+            color: "#865F10",     // gold accent
+            marginBottom: 10,
+          }}>
+            Admin
           </p>
 
+          {/* Heading */}
+          <p style={{
+            fontFamily: "var(--font-display)",
+            fontSize: 26,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+            color: "#1C1714",
+            marginBottom: 24,
+            lineHeight: 1.1,
+          }}>
+            Enter password
+          </p>
+
+          <div style={{ height: 1, background: "var(--border)", marginBottom: 24 }} />
+
           <form onSubmit={handleSubmit}>
-            <label style={label}>Password</label>
+            {/* Password input */}
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={input}
               placeholder="••••••••"
               autoFocus
               autoComplete="current-password"
               required
+              style={{
+                display: "block",
+                width: "100%",
+                background: "transparent",
+                border: "none",
+                borderBottom: `1px solid ${error ? "var(--warning)" : "var(--input)"}`,
+                padding: "10px 0",
+                fontSize: 16,
+                color: "#1C1714",
+                fontFamily: "inherit",
+                outline: "none",
+                boxSizing: "border-box",
+                marginBottom: error ? 8 : 24,
+                transition: "border-color 0.2s",
+              }}
+              onFocus={e => { e.currentTarget.style.borderBottomColor = "#1C1714"; }}
+              onBlur={e => { e.currentTarget.style.borderBottomColor = error ? "var(--warning)" : "var(--input)"; }}
             />
 
             {error && (
-              <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--warning)", marginTop: 10 }}>
+              <p style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                textTransform: "uppercase",
+                letterSpacing: "0.12em",
+                color: "var(--warning)",
+                marginBottom: 20,
+              }}>
                 {error}
               </p>
             )}
 
-            <button type="submit" disabled={busy || !password} style={btn}>
+            <button
+              type="submit"
+              disabled={busy || !password}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+                height: 48,
+                background: busy || !password ? "rgba(28,23,20,0.3)" : "#1C1714",
+                color: "#F9F6F1",
+                border: "none",
+                borderRadius: 9999,
+                fontFamily: "var(--font-mono)",
+                fontSize: 12,
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                cursor: busy || !password ? "default" : "pointer",
+                transition: "background 0.2s, transform 0.15s",
+                WebkitTapHighlightColor: "transparent",
+              }}
+              onMouseEnter={e => { if (!busy && password) (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
+            >
               {busy ? "Checking…" : "Enter"}
             </button>
           </form>
         </div>
+
+        {/* Back link */}
+        <p style={{ textAlign: "center", marginTop: 20 }}>
+          <a href="/" style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 10,
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+            color: "rgba(249,246,241,0.35)",
+            textDecoration: "none",
+            WebkitTapHighlightColor: "transparent",
+          }}>
+            ← Back to site
+          </a>
+        </p>
       </div>
     </div>
   );

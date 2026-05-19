@@ -38,10 +38,19 @@ function AuthForm() {
         if (error === "EMAIL_RATE_LIMIT") {
           setErr("RATE_LIMIT");
         } else if (error.toLowerCase().includes("already")) {
-          setErr("Account already exists — try signing in."); setMode("signin");
+          // Email exists — auto sign them in instead
+          const signInErr = await signIn(email, password);
+          if (signInErr) { setErr("Account exists — check your password."); }
+          // success: useEffect will redirect via user state change
         } else { setErr(error); }
         setBusy(false);
-      } else { setDone(true); setBusy(false); }
+      } else {
+        // Sign-up succeeded — if email confirmation is off, session fires
+        // immediately and useEffect redirects. If confirmation is on, show
+        // the "check email" message so user knows what to do.
+        setBusy(false);
+        setDone(true);
+      }
     }
   }
 
