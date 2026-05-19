@@ -69,6 +69,7 @@ export default function MyBookingsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fetched, setFetched] = useState(false);
+  const [refInput, setRefInput] = useState("");
 
   // Load saved customer from localStorage on mount
   useEffect(() => {
@@ -165,34 +166,70 @@ export default function MyBookingsPage() {
           )}
         </div>
 
-        {/* Email lookup */}
+        {/* Lookup options */}
         {!fetched && (
-          <form onSubmit={handleLookup} className="mb-xl max-w-md">
-            <p className={`${labelBase} mb-sm`}>Enter your email to view your bookings</p>
-            <div className="flex gap-sm">
-              <input
-                type="email"
-                value={emailInput}
-                onChange={(e) => setEmailInput(e.target.value)}
-                placeholder="your@email.com"
-                required
-                className="flex-1 border-b border-input bg-transparent py-sm font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none"
-              />
-              <button
-                type="submit"
-                disabled={loading}
-                className="shrink-0 inline-flex h-10 items-center justify-center border border-fg px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-opacity disabled:opacity-50 hover:opacity-70"
-                style={{ borderRadius: "var(--radius-pill)" }}
-              >
-                {loading ? "…" : "Look up"}
-              </button>
+          <div className="mb-xl grid gap-xl max-w-md">
+            {/* Ref code lookup */}
+            <div>
+              <p className={`${labelBase} mb-sm`}>Find by reservation reference</p>
+              <div className="flex gap-sm">
+                <input
+                  type="text"
+                  value={refInput}
+                  onChange={(e) => setRefInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))}
+                  placeholder="e.g. ABC123"
+                  maxLength={8}
+                  className="flex-1 border-b border-input bg-transparent py-sm font-mono text-[length:var(--nav-size)] uppercase tracking-widest text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none"
+                />
+                <a
+                  href={refInput.length >= 4 ? `/booking/${refInput}` : undefined}
+                  onClick={(e) => { if (refInput.length < 4) e.preventDefault(); }}
+                  className={`shrink-0 inline-flex h-10 items-center justify-center border px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity ${
+                    refInput.length >= 4
+                      ? "border-fg text-fg hover:opacity-70"
+                      : "border-border text-muted-fg opacity-50 cursor-default"
+                  }`}
+                  style={{ borderRadius: "var(--radius-pill)" }}
+                >
+                  View
+                </a>
+              </div>
             </div>
-            {error && (
-              <p className="mt-sm font-mono text-[10px] uppercase tracking-widest text-warning">
-                {error}
-              </p>
-            )}
-          </form>
+
+            <div className="flex items-center gap-md">
+              <div className="flex-1 border-t border-border" />
+              <p className={labelBase}>or look up by email</p>
+              <div className="flex-1 border-t border-border" />
+            </div>
+
+            {/* Email lookup */}
+            <form onSubmit={handleLookup}>
+              <p className={`${labelBase} mb-sm`}>View all bookings for your email</p>
+              <div className="flex gap-sm">
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  className="flex-1 border-b border-input bg-transparent py-sm font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="shrink-0 inline-flex h-10 items-center justify-center border border-fg px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-opacity disabled:opacity-50 hover:opacity-70"
+                  style={{ borderRadius: "var(--radius-pill)" }}
+                >
+                  {loading ? "…" : "Look up"}
+                </button>
+              </div>
+              {error && (
+                <p className="mt-sm font-mono text-[10px] uppercase tracking-widest text-warning">
+                  {error}
+                </p>
+              )}
+            </form>
+          </div>
         )}
 
         {fetched && (

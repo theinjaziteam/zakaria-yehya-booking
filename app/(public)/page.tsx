@@ -246,11 +246,18 @@ export default async function PublicHomePage() {
             >
               {clientConfig.copy.hero.body}
             </p>
-            <div className="flex flex-wrap items-center gap-sm">
+            <div className="flex flex-wrap items-center gap-md">
               <Link
                 href="/book"
-                className="inline-flex h-11 items-center justify-center border border-fg px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-opacity hover:opacity-70"
-                style={{ borderRadius: "var(--radius-pill)" }}
+                className="inline-flex h-14 items-center justify-center px-10 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
+                style={{
+                  borderRadius: "var(--radius-pill)",
+                  background: "var(--ink)",
+                  color: "var(--canvas)",
+                  fontSize: "0.9375rem",
+                  letterSpacing: "0.15em",
+                  fontWeight: 500,
+                }}
               >
                 {clientConfig.copy.hero.primaryCtaLabel}
               </Link>
@@ -258,18 +265,21 @@ export default async function PublicHomePage() {
                 href="#services"
                 className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
               >
-                View the menu ↓
+                View services ↓
               </a>
             </div>
           </div>
         </div>
 
         {/* Corner caption */}
-        <p
-          className="absolute right-md top-6 font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-fg sm:right-xl"
+        <a
+          href="https://www.instagram.com/yehiaandzakaria/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute right-md top-6 font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-fg transition-opacity hover:opacity-70 sm:right-xl"
         >
           {clientConfig.contact.instagram}
-        </p>
+        </a>
       </section>
 
       {/* ── MARQUEE TICKER ──────────────────────────────────────────── */}
@@ -778,7 +788,7 @@ export default async function PublicHomePage() {
                   {clientConfig.contact.supportPhone}
                 </p>
                 <a
-                  href={`https://instagram.com/${clientConfig.contact.instagram.replace("@", "")}`}
+                  href="https://www.instagram.com/yehiaandzakaria/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70"

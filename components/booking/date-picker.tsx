@@ -186,11 +186,6 @@ export function DatePicker({ loc, svc, staff, from, to, availableDays }: Props) 
         })}
       </div>
 
-      {availableDays === null && (
-        <p className="mt-md font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
-          Connect Supabase to see real-time availability
-        </p>
-      )}
     </div>
   );
 }
