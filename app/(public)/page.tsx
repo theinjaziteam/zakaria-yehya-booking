@@ -3,6 +3,7 @@ import { clientConfig } from "@/config/client";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { ProductsSection, type Product } from "@/components/products-section";
 import { CelebGrid } from "@/components/celeb-grid";
+import { NavActions } from "@/components/nav-actions";
 
 type LandingLocation = {
   id: string;
@@ -206,14 +207,8 @@ export default async function PublicHomePage() {
             {clientConfig.brand.name}
           </p>
 
-          {/* Right: single action */}
-          <Link
-            href="/my-bookings"
-            className="shrink-0 inline-flex h-8 items-center justify-center border border-fg px-4 sm:px-5 font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-colors hover:bg-fg hover:text-canvas"
-            style={{ borderRadius: "var(--radius-pill)" }}
-          >
-            My bookings
-          </Link>
+          {/* Right: cart + my bookings + auth */}
+          <NavActions />
         </div>
       </nav>
 

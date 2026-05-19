@@ -41,3 +41,9 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# local scripts with credentials
+push-to-github.ps1
+
+# claude code local settings
+.claude/

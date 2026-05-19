@@ -8,6 +8,7 @@ import {
   confirmFormSchema,
   type ConfirmFormValues,
 } from "@/lib/booking/validation";
+import { useAuth } from "@/components/auth-provider";
 
 type Props = {
   loc: string;
@@ -46,11 +47,12 @@ function saveSaved(data: SavedCustomer) {
 
 export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
   const router = useRouter();
+  const { user, signOut } = useAuth();
+  const sessionEmail = user?.email ?? null;
   const [countryCode, setCountryCode] = useState("+961");
   const [serverError, setServerError] = useState<string | null>(null);
   const [savedCustomer, setSavedCustomer] = useState<SavedCustomer | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [sessionEmail, setSessionEmail] = useState<string | null>(null); // active Supabase session email
   const submittingRef = useRef(false);
 
   const {
@@ -62,47 +64,22 @@ export function ConfirmForm({ loc, svc, staff, date, time }: Props) {
     resolver: zodResolver(confirmFormSchema),
   });
 
-  // On mount: check for active session first, then fall back to localStorage
+  // Pre-fill from session or localStorage
   useEffect(() => {
-    async function init() {
-      // 1. Try to restore active Supabase session
-      try {
-        const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
-        const supabase = createBrowserSupabaseClient();
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user?.email) {
-          setSessionEmail(session.user.email);
-          setValue("customer_email", session.user.email);
-          // customer_password not needed — skip validation for this field
-        }
-      } catch {
-        // Supabase not configured — fall through to localStorage
-      }
+    if (sessionEmail) setValue("customer_email", sessionEmail);
 
-      // 2. Pre-fill name/phone from localStorage regardless of auth state
-      const saved = loadSaved();
-      if (saved) {
-        setSavedCustomer(saved);
-        setValue("customer_name", saved.name);
-        setValue("customer_phone", saved.phone);
-        setCountryCode(saved.countryCode || "+961");
-        // Only use saved email if not already set from session
-        if (!sessionEmail) {
-          setValue("customer_email", saved.email);
-        }
-      }
+    const saved = loadSaved();
+    if (saved) {
+      setSavedCustomer(saved);
+      setValue("customer_name", saved.name);
+      setValue("customer_phone", saved.phone);
+      setCountryCode(saved.countryCode || "+961");
+      if (!sessionEmail) setValue("customer_email", saved.email);
     }
-    init();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setValue]);
+  }, [sessionEmail, setValue]);
 
   async function handleSignOut() {
-    try {
-      const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
-      const supabase = createBrowserSupabaseClient();
-      await supabase.auth.signOut();
-    } catch { /* ignore */ }
-    setSessionEmail(null);
+    await signOut();
     setValue("customer_email", savedCustomer?.email ?? "");
   }
 
