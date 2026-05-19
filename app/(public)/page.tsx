@@ -171,16 +171,16 @@ export default async function PublicHomePage() {
             {clientConfig.brand.shortName}
           </a>
 
-          {/* Center wordmark */}
-          <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
+          {/* Center wordmark — hidden on mobile where it crowds the nav */}
+          <p className="hidden sm:block font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
             {clientConfig.brand.name}
           </p>
 
           {/* Right: actions */}
-          <div className="flex items-center gap-sm sm:gap-md shrink-0">
+          <div className="flex items-center gap-xs sm:gap-md shrink-0">
             <Link
               href="/my-bookings"
-              className="hidden sm:inline font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
+              className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70"
             >
               My bookings
             </Link>
