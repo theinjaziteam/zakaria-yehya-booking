@@ -42,8 +42,8 @@ export default function AdminLayout({
                   className={[
                     "shrink-0 px-3 py-1.5 font-mono text-xs uppercase tracking-widest transition-colors",
                     active
-                      ? "bg-fg text-canvas"
-                      : "text-muted-fg hover:bg-card hover:text-fg",
+                      ? "bg-card text-fg"
+                      : "text-muted-fg hover:text-fg",
                   ].join(" ")}
                 >
                   {item.label}

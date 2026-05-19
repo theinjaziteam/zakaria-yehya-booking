@@ -5,6 +5,7 @@ import Link from "next/link";
 import { clientConfig } from "@/config/client";
 import { formatDisplayDatetime } from "@/lib/utils/time";
 import { displayPhone } from "@/lib/utils/phone";
+import { useAuth } from "@/components/auth-provider";
 
 type Booking = {
   booking_id: string;
@@ -58,15 +59,93 @@ function safeFormatDt(ts: string, tz: string): string {
 const labelBase =
   "font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg";
 
+function SignInPrompt({ onSignedIn }: { onSignedIn: () => void }) {
+  const { signIn, signUp } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const inputBase = "w-full border-b border-input bg-transparent py-sm font-mono text-[length:var(--body-md-size)] text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none transition-colors";
+  const labelBase = "font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg";
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setErr(null);
+    const signInErr = await signIn(email, password);
+    if (signInErr) {
+      const signUpErr = await signUp(email, password);
+      if (signUpErr) {
+        setErr("Wrong password, or try a different email.");
+        setBusy(false);
+        return;
+      }
+    }
+    onSignedIn();
+  }
+
+  return (
+    <div className="border border-border bg-card p-xl max-w-sm">
+      <p className="font-display uppercase text-fg mb-xs" style={{ fontSize: "var(--title-md-size)", letterSpacing: "var(--title-md-tracking)" }}>
+        Sign in to view your bookings
+      </p>
+      <p className="text-muted-fg mb-lg" style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.6 }}>
+        Enter your email and password to see all your reservations.
+      </p>
+      <form onSubmit={handleSubmit} className="grid gap-md">
+        <div className="grid gap-xs">
+          <label className={labelBase}>Email</label>
+          <input value={email} onChange={e => setEmail(e.target.value)} type="email" className={inputBase} placeholder="your@email.com" autoComplete="email" required />
+        </div>
+        <div className="grid gap-xs">
+          <label className={labelBase}>Password</label>
+          <input value={password} onChange={e => setPassword(e.target.value)} type="password" className={inputBase} placeholder="Your password" autoComplete="current-password" required />
+        </div>
+        {err && <p className="font-mono text-[10px] uppercase tracking-widest text-warning">{err}</p>}
+        <button
+          type="submit"
+          disabled={busy}
+          className="h-11 inline-flex items-center justify-center px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity disabled:opacity-50 hover:opacity-80"
+          style={{ borderRadius: "var(--radius-pill)", background: "var(--accent)", color: "var(--canvas)" }}
+        >
+          {busy ? "…" : "Sign in"}
+        </button>
+      </form>
+      <div className="mt-md border-t border-border pt-md">
+        <p className="text-muted-fg mb-sm" style={{ fontSize: "var(--body-sm-size)" }}>
+          No account yet? Complete a booking first — your account is created at checkout.
+        </p>
+        <Link href="/book" className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-fg hover:opacity-70">
+          Make a reservation →
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default function MyBookingsPage() {
+  const { user, loading: authLoading } = useAuth();
   const [customer, setCustomer] = useState<SavedCustomer | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
   const [refInput, setRefInput] = useState("");
 
-  // Auto-load from localStorage on mount
+  // Auto-load when user session is available (from sign-in at checkout or nav sign-in)
   useEffect(() => {
+    if (authLoading) return;
+
+    const sessionEmail = user?.email;
+
+    if (sessionEmail) {
+      // Signed-in user — fetch by session email
+      fetchBookings(sessionEmail);
+      setCustomer((prev) => prev ?? { name: sessionEmail.split("@")[0], email: sessionEmail, phone: "" });
+      return;
+    }
+
+    // Fall back to localStorage for users who booked without creating an account
     const raw = localStorage.getItem("yz_customer");
     if (raw) {
       try {
@@ -75,14 +154,16 @@ export default function MyBookingsPage() {
         if (saved.email?.includes("@")) {
           fetchBookings(saved.email);
         } else {
-          // No valid email — skip fetch but mark as done so the UI renders
           setFetched(true);
         }
       } catch {
         setFetched(true);
       }
+    } else {
+      setFetched(true); // no session, no localStorage → show sign-in prompt
     }
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, user?.email]);
 
   async function fetchBookings(email: string) {
     setLoading(true);
@@ -260,25 +341,9 @@ export default function MyBookingsPage() {
           </>
         )}
 
-        {!loading && !fetched && !customer && (
-          <div className="border border-border bg-card p-xl text-center">
-            <p
-              className="font-display uppercase text-fg"
-              style={{ fontSize: "var(--title-md-size)", letterSpacing: "var(--title-md-tracking)" }}
-            >
-              No saved details.
-            </p>
-            <p className="mt-sm text-muted-fg" style={{ fontSize: "var(--body-sm-size)" }}>
-              Complete a booking and your details will be remembered here automatically. Use a reference code above to look up any booking.
-            </p>
-            <Link
-              href="/book"
-              className="mt-md inline-flex h-10 items-center justify-center border border-fg px-6 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg hover:opacity-70"
-              style={{ borderRadius: "var(--radius-pill)" }}
-            >
-              Reserve now
-            </Link>
-          </div>
+        {/* Not signed in and nothing in localStorage — show sign-in prompt */}
+        {!authLoading && !user && !loading && fetched && !customer && (
+          <SignInPrompt onSignedIn={() => { /* useEffect will re-run when user changes */ }} />
         )}
       </div>
 

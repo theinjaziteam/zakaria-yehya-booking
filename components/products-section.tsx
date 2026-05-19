@@ -1,6 +1,4 @@
-"use client";
-
-import { useCart } from "@/components/cart-provider";
+import Link from "next/link";
 
 export type Product = {
   id: string;
@@ -11,53 +9,6 @@ export type Product = {
 };
 
 function fmt(cents: number) { return `$${(cents / 100).toFixed(0)}`; }
-
-function ProductCard({ product }: { product: Product }) {
-  const { addItem, items } = useCart();
-  const inCart = items.some((i) => i.product_id === product.id);
-
-  return (
-    <article className="border border-border bg-card">
-      {product.image_url && (
-        <div className="overflow-hidden" style={{ height: "200px" }}>
-          <img src={product.image_url} alt={product.name} className="h-full w-full object-cover" />
-        </div>
-      )}
-      <div className="p-md grid gap-xs">
-        <div className="flex items-start justify-between gap-sm">
-          <h3
-            className="font-display uppercase text-fg"
-            style={{ fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)" }}
-          >
-            {product.name}
-          </h3>
-          <p className="shrink-0 font-mono text-fg" style={{ fontSize: "var(--title-sm-size)" }}>
-            {fmt(product.price_cents)}
-          </p>
-        </div>
-
-        {product.description && (
-          <p className="text-muted-fg" style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.65 }}>
-            {product.description}
-          </p>
-        )}
-
-        <button
-          onClick={() => addItem(product)}
-          className="mt-xs inline-flex h-9 items-center justify-center border px-md font-mono text-[0.75rem] uppercase tracking-[0.12em] transition-colors"
-          style={inCart
-            ? { borderColor: "var(--accent)", color: "var(--accent)" }
-            : { borderColor: "var(--fg)", color: "var(--fg)" }
-          }
-          onMouseEnter={e => { if (!inCart) { (e.currentTarget as HTMLButtonElement).style.background = "var(--fg)"; (e.currentTarget as HTMLButtonElement).style.color = "var(--canvas)"; }}}
-          onMouseLeave={e => { if (!inCart) { (e.currentTarget as HTMLButtonElement).style.background = ""; (e.currentTarget as HTMLButtonElement).style.color = "var(--fg)"; }}}
-        >
-          {inCart ? "Added ✓" : "Add to cart"}
-        </button>
-      </div>
-    </article>
-  );
-}
 
 export function ProductsSection({ products }: { products: Product[] }) {
   if (products.length === 0) return null;
@@ -76,14 +27,48 @@ export function ProductsSection({ products }: { products: Product[] }) {
             Our product range
           </h2>
           <p className="text-muted-fg" style={{ fontSize: "var(--body-md-size)", lineHeight: 1.8, maxWidth: "44ch" }}>
-            Professional-grade products used and sold in our salons. Add to cart and complete your order in one go.
+            Professional-grade products used in our salons. Add them to your booking when you reserve your appointment.
           </p>
         </div>
 
         <div className="grid gap-md sm:grid-cols-2 lg:grid-cols-4">
           {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <article key={p.id} className="border border-border bg-card">
+              {p.image_url && (
+                <div className="overflow-hidden" style={{ height: "200px" }}>
+                  <img src={p.image_url} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
+                </div>
+              )}
+              <div className="p-md grid gap-xs">
+                <div className="flex items-start justify-between gap-sm">
+                  <h3
+                    className="font-display uppercase text-fg"
+                    style={{ fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)" }}
+                  >
+                    {p.name}
+                  </h3>
+                  <p className="shrink-0 font-mono text-fg" style={{ fontSize: "var(--title-sm-size)" }}>
+                    {fmt(p.price_cents)}
+                  </p>
+                </div>
+                {p.description && (
+                  <p className="text-muted-fg" style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.65 }}>
+                    {p.description}
+                  </p>
+                )}
+              </div>
+            </article>
           ))}
+        </div>
+
+        <div className="mt-xl">
+          <Link
+            href="/book"
+            className="inline-flex h-10 items-center justify-center border border-fg px-6 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-colors hover:bg-fg hover:text-canvas"
+            style={{ borderRadius: "var(--radius-pill)" }}
+          >
+            Book & add products →
+          </Link>
         </div>
       </div>
     </section>

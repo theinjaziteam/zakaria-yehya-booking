@@ -705,16 +705,17 @@ async function ConfirmStep({
   date: string;
   time: string;
 }) {
-  // Fetch summary data
+  // Fetch summary data + products
   let location: Location | null = null;
   let service: Service | null = null;
   let staffMember: Staff | null = null;
+  let products: import("@/components/products-section").Product[] = [];
 
   const supabase = await getSupabase();
   if (supabase) {
     try {
       const client = await supabase;
-      const [locRes, svcRes] = await Promise.all([
+      const [locRes, svcRes, prodRes] = await Promise.all([
         client
           .from("locations")
           .select("id, slug, name, address, phone, timezone")
@@ -727,9 +728,15 @@ async function ConfirmStep({
           )
           .eq("id", svc)
           .single(),
+        client
+          .from("products")
+          .select("id, name, description, price_cents, image_url")
+          .eq("active", true)
+          .order("sort_order", { ascending: true }),
       ]);
       location = (locRes.data as Location | null) ?? null;
       service = (svcRes.data as Service | null) ?? null;
+      products = (prodRes.data as typeof products | null) ?? [];
 
       if (staff !== "any") {
         const { data } = await client
@@ -828,6 +835,7 @@ async function ConfirmStep({
           staff={staff}
           date={date}
           time={time}
+          products={products}
         />
       </div>
     </div>

@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/components/auth-provider";
-import { useCart } from "@/components/cart-provider";
 
-function SignInDropdown({ onClose }: { onClose: () => void }) {
+function SignInDropdown({ onClose, redirectAfter }: { onClose: () => void; redirectAfter?: string }) {
   const { signIn, signUp } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,22 +18,24 @@ function SignInDropdown({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     setBusy(true);
     setErr(null);
-    // Try sign-in; fall back to sign-up automatically
     const signInErr = await signIn(email, password);
     if (signInErr) {
       const signUpErr = await signUp(email, password);
       if (signUpErr) {
-        setErr(signInErr); // show original sign-in error
+        setErr("Wrong password, or try a different email.");
         setBusy(false);
         return;
       }
     }
     onClose();
+    if (redirectAfter) window.location.href = redirectAfter;
   }
 
   return (
     <div className="absolute right-0 top-full mt-2 w-72 border border-border bg-bg shadow-lg z-50 p-4 grid gap-3">
-      <p className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg">Sign in or create account</p>
+      <p className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg">
+        Sign in or create account
+      </p>
       <form onSubmit={handleSubmit} className="grid gap-3">
         <div>
           <label className={labelCls}>Email</label>
@@ -60,57 +61,62 @@ function SignInDropdown({ onClose }: { onClose: () => void }) {
 
 export function NavActions() {
   const { user, loading, signOut } = useAuth();
-  const { itemCount, openCart } = useCart();
   const [showSignIn, setShowSignIn] = useState(false);
+  const [signInRedirect, setSignInRedirect] = useState<string | undefined>(undefined);
+
+  function openSignIn(redirect?: string) {
+    setSignInRedirect(redirect);
+    setShowSignIn(true);
+  }
 
   return (
     <div className="flex items-center gap-2 shrink-0">
-      {/* Cart button */}
-      <button
-        onClick={openCart}
-        className="relative inline-flex h-8 items-center justify-center border border-border px-3 font-mono text-[0.7rem] uppercase tracking-widest text-fg transition-colors hover:border-fg"
-        aria-label="Open cart"
-      >
-        Cart
-        {itemCount > 0 && (
-          <span
-            className="ml-1.5 inline-flex h-4 w-4 items-center justify-center font-mono text-[0.6rem] text-canvas"
-            style={{ background: "var(--accent)", borderRadius: "9999px" }}
+      {/* My Bookings — smart: signed in goes to page, guest prompts sign-in */}
+      {!loading && (
+        user ? (
+          <Link
+            href="/my-bookings"
+            className="inline-flex h-8 items-center justify-center border border-fg px-3 sm:px-4 font-mono text-[0.7rem] uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas"
+            style={{ borderRadius: "var(--radius-pill)" }}
           >
-            {itemCount}
-          </span>
-        )}
-      </button>
+            My bookings
+          </Link>
+        ) : (
+          <button
+            onClick={() => openSignIn("/my-bookings")}
+            className="inline-flex h-8 items-center justify-center border border-fg px-3 sm:px-4 font-mono text-[0.7rem] uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas"
+            style={{ borderRadius: "var(--radius-pill)" }}
+          >
+            My bookings
+          </button>
+        )
+      )}
 
-      {/* My Bookings */}
-      <Link
-        href="/my-bookings"
-        className="inline-flex h-8 items-center justify-center border border-fg px-3 sm:px-4 font-mono text-[0.7rem] uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas"
-        style={{ borderRadius: "var(--radius-pill)" }}
-      >
-        My bookings
-      </Link>
-
-      {/* Auth */}
+      {/* Sign in / out */}
       {!loading && (
         <div className="relative">
           {user ? (
             <button
               onClick={() => signOut()}
-              className="hidden sm:inline-flex h-8 items-center justify-center font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg transition-opacity hover:opacity-70"
+              className="hidden sm:inline-flex h-8 items-center font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg transition-opacity hover:opacity-70 px-1"
               title={`Signed in as ${user.email}`}
             >
-              {user.email?.split("@")[0]} ·&nbsp;out
+              {user.email?.split("@")[0]} · sign out
             </button>
           ) : (
             <>
               <button
-                onClick={() => setShowSignIn((v) => !v)}
-                className="hidden sm:inline-flex h-8 items-center justify-center font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg transition-opacity hover:opacity-70"
+                onClick={() => openSignIn()}
+                className="hidden sm:inline-flex h-8 items-center font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg transition-opacity hover:opacity-70 px-1"
               >
                 Sign in
               </button>
-              {showSignIn && <SignInDropdown onClose={() => setShowSignIn(false)} />}
+              {showSignIn && (
+                <SignInDropdown
+                  onClose={() => setShowSignIn(false)}
+                  redirectAfter={signInRedirect}
+                />
+              )}
             </>
           )}
         </div>
