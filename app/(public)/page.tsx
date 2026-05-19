@@ -202,7 +202,7 @@ export default async function PublicHomePage() {
       </nav>
 
       {/* ── HERO — full-bleed photo band ────────────────────────────── */}
-      <section className="relative h-[92vh] min-h-[560px] overflow-hidden">
+      <section className="relative h-[65vh] min-h-[480px] overflow-hidden">
         <img
           src={HERO_IMAGE}
           alt="Salon interior — styling in progress"
