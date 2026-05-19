@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import Link from "next/link";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { CancelBookingButton } from "@/components/admin/cancel-booking-button";
+import { RefreshButton } from "@/components/admin/refresh-button";
 
 const TZ = "Asia/Beirut";
 
@@ -179,12 +180,17 @@ export default async function AdminBookingsPage({
     <div>
       {/* Page header */}
       <div className="mb-8 border-b border-border pb-6">
-        <p className="mb-1 font-mono text-xs uppercase tracking-widest text-muted-fg">
-          Admin · Bookings
-        </p>
-        <h1 className="font-display text-3xl uppercase tracking-wide text-fg">
-          {selectedLocation ? selectedLocation.name : "All Salons"}
-        </h1>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-muted-fg">
+              Admin · Bookings
+            </p>
+            <h1 className="font-display text-3xl uppercase tracking-wide text-fg">
+              {selectedLocation ? selectedLocation.name : "All Salons"}
+            </h1>
+          </div>
+          <RefreshButton />
+        </div>
         <div className="mt-3 flex flex-wrap gap-6">
           <span className="font-mono text-xs uppercase tracking-widest text-fg">
             {bookings.length} total
