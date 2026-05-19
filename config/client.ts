@@ -167,9 +167,9 @@ export const clientConfig = {
       ],
     },
     services: {
-      eyebrow: "The menu",
+      eyebrow: "Services",
       title: "Services shaped with time in mind.",
-      intro: "The menu moves between polished essentials and longer sitting appointments — from a gentleman's shave to bridal ceremony hair. Durations and prices shown with clarity, so the rhythm of the visit is understood before you arrive.",
+      intro: "From a gentleman's shave to bridal ceremony hair — polished essentials alongside longer sitting appointments. Durations and prices shown with clarity, so the rhythm of the visit is understood before you arrive.",
       consultationLabel: "Consultation required",
     },
     salons: {
@@ -188,7 +188,7 @@ export const clientConfig = {
         },
         {
           title: "Select service and stylist",
-          body: "Browse the house menu, then continue with the stylist whose practice suits the appointment.",
+          body: "Browse services, then continue with the stylist whose practice suits the appointment.",
         },
         {
           title: "Confirm your time",
