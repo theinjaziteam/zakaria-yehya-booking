@@ -226,42 +226,42 @@ export default async function PublicHomePage() {
       </nav>
 
       {/* ── HERO — full-bleed photo band ────────────────────────────── */}
-      {/* min-h ensures content never gets clipped on short/small screens */}
       <section
         className="relative overflow-hidden"
-        style={{ minHeight: "min(100dvh, 900px)", height: "clamp(580px, 70vh, 900px)" }}
+        style={{ height: "clamp(560px, 72vh, 820px)" }}
       >
         <img
           src={HERO_IMAGE}
           alt="Salon interior — styling in progress"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: "center 30%" }}
           fetchPriority="high"
         />
-        {/* Dark gradient overlay — bottom-heavy so type is readable */}
+        {/* Dark gradient overlay */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.50) 50%, rgba(0,0,0,0.88) 100%)",
+              "linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.50) 55%, rgba(0,0,0,0.88) 100%)",
           }}
         />
 
-        {/* Content — always white text, lives over a dark photo overlay */}
+        {/* Content */}
         <div
           className="absolute inset-0 flex flex-col justify-end px-md sm:px-xl"
-          style={{ color: "#F9F6F1", paddingBottom: "clamp(2rem, 6vh, 5rem)" }}
+          style={{ color: "#F9F6F1", paddingBottom: "clamp(1.5rem, 5vh, 4rem)" }}
         >
           <div className="mx-auto w-full max-w-7xl">
             <p
-              className="mb-4 font-mono uppercase"
+              className="mb-3 font-mono uppercase"
               style={{ fontSize: "0.75rem", letterSpacing: "0.18em", opacity: 0.72 }}
             >
               {clientConfig.copy.hero.eyebrow}
             </p>
             <h1
-              className="mb-5 font-display uppercase"
+              className="mb-4 font-display uppercase"
               style={{
-                fontSize: "clamp(2rem, 6vw, 6rem)",
+                fontSize: "clamp(2rem, 6.5vw, 6rem)",
                 lineHeight: 1.0,
                 letterSpacing: "0.03em",
                 maxWidth: "14ch",
@@ -269,27 +269,26 @@ export default async function PublicHomePage() {
             >
               {clientConfig.copy.hero.title}
             </h1>
-            {/* Body text hidden on very small phones to prevent overflow */}
             <p
-              className="mb-7 hidden sm:block"
+              className="mb-6"
               style={{
-                fontSize: "clamp(0.9375rem, 1.4vw, 1.125rem)",
-                lineHeight: 1.75,
-                maxWidth: "44ch",
-                color: "rgba(249,246,241,0.85)",
+                fontSize: "clamp(0.875rem, 1.5vw, 1.0625rem)",
+                lineHeight: 1.72,
+                maxWidth: "42ch",
+                color: "rgba(249,246,241,0.82)",
               }}
             >
               {clientConfig.copy.hero.body}
             </p>
-            <div className="flex flex-wrap items-center gap-sm sm:gap-md">
+            <div className="flex flex-wrap items-center gap-sm">
               <Link
                 href="/book"
-                className="inline-flex h-12 sm:h-14 items-center justify-center px-7 sm:px-10 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
+                className="inline-flex h-11 sm:h-13 items-center justify-center px-6 sm:px-9 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
                 style={{
                   borderRadius: "var(--radius-pill)",
                   background: "#F9F6F1",
                   color: "#1C1714",
-                  fontSize: "0.875rem",
+                  fontSize: "clamp(0.75rem, 1.2vw, 0.9375rem)",
                   letterSpacing: "0.15em",
                   fontWeight: 600,
                 }}
@@ -298,8 +297,8 @@ export default async function PublicHomePage() {
               </Link>
               <a
                 href="#services"
-                className="hidden sm:inline font-mono uppercase transition-opacity hover:opacity-100"
-                style={{ fontSize: "0.8125rem", letterSpacing: "0.14em", color: "rgba(249,246,241,0.7)" }}
+                className="font-mono uppercase transition-opacity hover:opacity-100"
+                style={{ fontSize: "0.75rem", letterSpacing: "0.14em", color: "rgba(249,246,241,0.65)" }}
               >
                 View services ↓
               </a>
@@ -307,12 +306,12 @@ export default async function PublicHomePage() {
           </div>
         </div>
 
-        {/* Corner caption — hidden on mobile to avoid crowding */}
+        {/* Instagram corner caption */}
         <a
           href="https://www.instagram.com/yehiaandzakaria/"
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute right-md top-6 hidden sm:block font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-white transition-opacity hover:opacity-70 sm:right-xl"
+          className="absolute right-md top-5 sm:right-xl sm:top-6 font-mono text-[0.625rem] sm:text-[length:var(--caption-size)] uppercase tracking-widest text-white transition-opacity hover:opacity-70"
         >
           {clientConfig.contact.instagram}
         </a>
