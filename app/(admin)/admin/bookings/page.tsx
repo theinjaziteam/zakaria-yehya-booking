@@ -168,8 +168,8 @@ export default async function AdminBookingsPage({
   }
 
   const activeStyle: React.CSSProperties = {
-    background: "var(--ink)",
-    color: "var(--canvas)",
+    background: "#ffffff",
+    color: "#000000",
   };
 
   return (
