@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         unsub = () => subscription.unsubscribe();
       } catch {
-        // Supabase not configured — auth simply unavailable
+        // Supabase not configured
       } finally {
         setLoading(false);
       }
@@ -65,7 +65,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
       const { error } = await createBrowserSupabaseClient().auth.signUp({ email, password });
-      return error?.message ?? null;
+      if (!error) return null;
+      const msg = error.message ?? "";
+      if (msg.toLowerCase().includes("rate limit") || msg.toLowerCase().includes("email rate")) {
+        return "EMAIL_RATE_LIMIT";
+      }
+      return msg;
     } catch { return "Sign up failed"; }
   }, []);
 

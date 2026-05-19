@@ -30,69 +30,117 @@ export default function AdminLoginPage() {
     }
   }
 
+  // Inline styles only — no Tailwind spacing tokens (CSS vars) in layout
+  // Those caused rightward shift on mobile before CSS loaded
+  const page: React.CSSProperties = {
+    minHeight: "100vh",
+    width: "100%",
+    background: "var(--bg)",
+    overflowX: "hidden",
+    overflowY: "auto",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+
+  const wrap: React.CSSProperties = {
+    width: "100%",
+    maxWidth: 380,
+    padding: "32px 20px",
+    boxSizing: "border-box",
+  };
+
+  const card: React.CSSProperties = {
+    background: "var(--card)",
+    border: "1px solid var(--border)",
+    padding: 28,
+  };
+
+  const label: React.CSSProperties = {
+    display: "block",
+    fontFamily: "var(--font-mono)",
+    fontSize: 11,
+    textTransform: "uppercase",
+    letterSpacing: "0.12em",
+    color: "var(--muted-fg)",
+    marginBottom: 8,
+  };
+
+  const input: React.CSSProperties = {
+    display: "block",
+    width: "100%",
+    background: "transparent",
+    border: "none",
+    borderBottom: "1px solid var(--input)",
+    padding: "10px 0",
+    fontSize: 16,
+    color: "var(--fg)",
+    fontFamily: "inherit",
+    outline: "none",
+    boxSizing: "border-box",
+  };
+
+  const btn: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: 48,
+    marginTop: 24,
+    background: busy || !password ? "var(--muted-fg)" : "var(--ink)",
+    color: "var(--canvas)",
+    border: "none",
+    borderRadius: 9999,
+    fontFamily: "var(--font-mono)",
+    fontSize: 13,
+    textTransform: "uppercase",
+    letterSpacing: "0.12em",
+    cursor: busy || !password ? "default" : "pointer",
+    opacity: busy || !password ? 0.5 : 1,
+    transition: "opacity 0.2s",
+  };
+
   return (
-    <main className="min-h-screen bg-bg flex items-center justify-center px-md">
-      <div className="w-full max-w-sm">
+    <div style={page}>
+      <div style={wrap}>
         {/* Brand */}
-        <p
-          className="mb-xl font-display uppercase text-fg text-center"
-          style={{ fontSize: "var(--wordmark-size)", letterSpacing: "var(--wordmark-tracking)" }}
-        >
+        <p style={{ fontFamily: "var(--font-display)", fontSize: 13, letterSpacing: "0.35em", textTransform: "uppercase", color: "var(--fg)", textAlign: "center", marginBottom: 32 }}>
           {clientConfig.brand.name}
         </p>
 
-        {/* Card */}
-        <div className="border border-border bg-card p-lg sm:p-xl">
-          <p
-            className="mb-xs font-display uppercase text-fg"
-            style={{ fontSize: "var(--title-md-size)", letterSpacing: "var(--title-md-tracking)" }}
-          >
+        <div style={card}>
+          <p style={{ fontFamily: "var(--font-display)", fontSize: 20, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg)", marginBottom: 6 }}>
             Admin access
           </p>
-          <p
-            className="mb-lg font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg"
-          >
+          <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted-fg)", marginBottom: 24 }}>
             Enter your admin password to continue
           </p>
 
-          <form onSubmit={handleSubmit} className="grid gap-md">
-            <div className="grid gap-xs">
-              <label className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoFocus
-                autoComplete="current-password"
-                className="w-full border-b border-input bg-transparent py-sm font-body text-[length:var(--body-md-size)] text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none transition-colors"
-                placeholder="••••••••"
-                required
-              />
-            </div>
+          <form onSubmit={handleSubmit}>
+            <label style={label}>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={input}
+              placeholder="••••••••"
+              autoFocus
+              autoComplete="current-password"
+              required
+            />
 
             {error && (
-              <p className="font-mono text-[10px] uppercase tracking-widest text-warning">
+              <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--warning)", marginTop: 10 }}>
                 {error}
               </p>
             )}
 
-            <button
-              type="submit"
-              disabled={busy || password.length === 0}
-              className="mt-xs h-11 inline-flex items-center justify-center font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity disabled:opacity-40 hover:opacity-80"
-              style={{
-                borderRadius: "var(--radius-pill)",
-                background: "var(--ink)",
-                color: "var(--canvas)",
-              }}
-            >
+            <button type="submit" disabled={busy || !password} style={btn}>
               {busy ? "Checking…" : "Enter"}
             </button>
           </form>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

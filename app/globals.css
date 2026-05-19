@@ -77,6 +77,22 @@ select {
   font: inherit;
 }
 
+/* ── Touch / press states ───────────────────────────────────────────── */
+/* Kill the ugly black flash on mobile tap */
+a,
+button,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Pill buttons fill on press — mirrors hover, gives clear tap feedback */
+.btn-pill:active {
+  background: var(--fg) !important;
+  color: var(--canvas) !important;
+  border-color: var(--fg) !important;
+  opacity: 1 !important;
+}
+
 /* ── Scroll reveal ───────────────────────────────────────────────────── */
 @keyframes fadeUp {
   from {
