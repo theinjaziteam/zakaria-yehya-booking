@@ -42,6 +42,20 @@ async function getLocations(): Promise<Location[]> {
   }
 }
 
+function filterBookings(bookings: BookingRow[], q: string): BookingRow[] {
+  const term = q.toLowerCase().trim();
+  if (!term) return bookings;
+  return bookings.filter(
+    (b) =>
+      b.reference_code.toLowerCase().includes(term) ||
+      b.customer_name.toLowerCase().includes(term) ||
+      b.customer_phone.includes(term) ||
+      b.staff_name.toLowerCase().includes(term) ||
+      b.service_name.toLowerCase().includes(term) ||
+      b.location_name.toLowerCase().includes(term),
+  );
+}
+
 async function getBookings(
   view: "today" | "all",
   locationId: string | null,
@@ -131,20 +145,26 @@ export default async function AdminBookingsPage({
   const sp = await searchParams;
   const view = sp.view === "all" ? "all" : "today";
   const locSlug = sp.loc ?? "all";
+  const q = (sp.q ?? "").trim();
 
   const locations = await getLocations();
   const selectedLocation =
     locSlug === "all" ? null : (locations.find((l) => l.slug === locSlug) ?? null);
 
-  const bookings = await getBookings(view, selectedLocation?.id ?? null);
+  const allBookings = await getBookings(view, selectedLocation?.id ?? null);
+  const bookings = filterBookings(allBookings, q);
   const confirmed = bookings.filter((b) => b.status === "confirmed").length;
   const cancelled = bookings.filter((b) => b.status === "cancelled").length;
 
   function branchHref(slug: string) {
-    return `/admin/bookings?loc=${slug}&view=${view}`;
+    const p = new URLSearchParams({ loc: slug, view });
+    if (q) p.set("q", q);
+    return `/admin/bookings?${p}`;
   }
   function viewHref(v: string) {
-    return `/admin/bookings?loc=${locSlug}&view=${v}`;
+    const p = new URLSearchParams({ loc: locSlug, view: v });
+    if (q) p.set("q", q);
+    return `/admin/bookings?${p}`;
   }
 
   const activeStyle: React.CSSProperties = {
@@ -226,6 +246,33 @@ export default async function AdminBookingsPage({
           </Link>
         </div>
       </div>
+
+      {/* Search */}
+      <form method="GET" action="/admin/bookings" className="mb-6 flex gap-3">
+        <input type="hidden" name="loc" value={locSlug} />
+        <input type="hidden" name="view" value={view} />
+        <input
+          type="search"
+          name="q"
+          defaultValue={q}
+          placeholder="Search ref, client, stylist, service…"
+          className="flex-1 border border-border bg-transparent px-4 py-2 font-mono text-xs uppercase tracking-widest text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none"
+        />
+        <button
+          type="submit"
+          className="shrink-0 border border-border px-5 py-2 font-mono text-xs uppercase tracking-widest text-muted-fg transition-colors hover:border-fg hover:text-fg"
+        >
+          Search
+        </button>
+        {q && (
+          <a
+            href={`/admin/bookings?loc=${locSlug}&view=${view}`}
+            className="shrink-0 border border-border px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted-fg transition-colors hover:border-fg hover:text-fg"
+          >
+            Clear
+          </a>
+        )}
+      </form>
 
       {/* Bookings list */}
       {bookings.length === 0 ? (
