@@ -221,10 +221,7 @@ export default async function PublicHomePage() {
         className="relative overflow-hidden"
         style={{ height: "clamp(560px, 72vh, 820px)" }}
       >
-        <HeroVideo
-          videos={["/hero-video.mp4", "/hero-video-2.mp4"]}
-          poster={HERO_IMAGE}
-        />
+        <HeroVideo videos={["/hero-video.mp4", "/hero-video-2.mp4"]} />
         {/* Dark gradient overlay */}
         <div
           className="absolute inset-0"
