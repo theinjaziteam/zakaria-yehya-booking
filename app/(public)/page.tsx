@@ -316,11 +316,12 @@ export default async function PublicHomePage() {
           rel="noopener noreferrer"
           aria-label="Instagram"
           className="absolute right-md top-5 sm:right-xl sm:top-6 text-white transition-opacity hover:opacity-70"
+          style={{ filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" }}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
             <circle cx="12" cy="12" r="4.5"/>
-            <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
           </svg>
         </a>
       </section>
