@@ -243,7 +243,8 @@ export default function BookingReferencePage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-bg">
+      <main className="flex min-h-screen items-center justify-center gap-sm bg-bg">
+        <span className="spinner" style={{ color: "var(--muted-fg)" }} />
         <p className={labelBase}>Loading reservation…</p>
       </main>
     );

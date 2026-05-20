@@ -145,20 +145,18 @@ export default function MyBookingsPage() {
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-md sm:px-xl">
           <Link
             href="/"
-            className="inline-flex items-center gap-xs font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70 shrink-0"
+            className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg shrink-0 transition-opacity hover:opacity-70"
           >
-            <span aria-hidden>←</span>
-            <span>Home</span>
+            {clientConfig.brand.shortName}
           </Link>
           <p className="hidden sm:block font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
             {clientConfig.brand.name}
           </p>
           <Link
             href="/book"
-            className="inline-flex h-9 items-center justify-center border border-fg px-4 sm:px-6 font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg hover:opacity-70 shrink-0"
-            style={{ borderRadius: "var(--radius-pill)" }}
+            className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70 shrink-0"
           >
-            Reserve
+            Book →
           </Link>
         </div>
       </nav>
@@ -216,7 +214,10 @@ export default function MyBookingsPage() {
 
         {/* Bookings from localStorage */}
         {loading && (
-          <p className={`${labelBase} mb-lg`}>Loading your bookings…</p>
+          <div className="flex items-center gap-sm mb-lg">
+            <span className="spinner" style={{ color: "var(--muted-fg)" }} />
+            <p className={labelBase}>Loading your bookings…</p>
+          </div>
         )}
 
         {!loading && fetched && customer && (

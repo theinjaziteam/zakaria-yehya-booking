@@ -22,10 +22,10 @@ export function TimePicker({ slots, loc, svc, staff, date }: Props) {
     return (
       <div className="border border-border bg-card p-md">
         <p className="font-display text-[length:var(--title-md-size)] uppercase tracking-[var(--title-md-tracking)] text-fg">
-          No times available on this date.
+          All slots are booked.
         </p>
         <p className="mt-xs text-[length:var(--body-sm-size)] leading-relaxed text-muted-fg">
-          Please go back and choose another date, or contact us directly.
+          This date is fully booked. Go back and choose another date, or call us to check for cancellations.
         </p>
       </div>
     );
@@ -37,10 +37,10 @@ export function TimePicker({ slots, loc, svc, staff, date }: Props) {
     return (
       <div className="border border-border bg-card p-md">
         <p className="font-display text-[length:var(--title-md-size)] uppercase tracking-[var(--title-md-tracking)] text-fg">
-          No times available on this date.
+          No availability on this date.
         </p>
         <p className="mt-xs text-[length:var(--body-sm-size)] leading-relaxed text-muted-fg">
-          Please go back and choose another date.
+          The selected stylist has no open slots on this day. Go back and try a different date or choose "Next available" to see all stylists.
         </p>
       </div>
     );

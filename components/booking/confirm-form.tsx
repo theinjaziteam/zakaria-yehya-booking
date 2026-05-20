@@ -22,17 +22,17 @@ type Props = {
 type SavedCustomer = { name: string; email: string; phone: string; countryCode: string };
 
 const COUNTRY_CODES = [
-  { code: "+961", label: "LB +961" },
-  { code: "+966", label: "SA +966" },
-  { code: "+971", label: "AE +971" },
-  { code: "+974", label: "QA +974" },
-  { code: "+965", label: "KW +965" },
-  { code: "+973", label: "BH +973" },
-  { code: "+968", label: "OM +968" },
-  { code: "+20",  label: "EG +20"  },
-  { code: "+33",  label: "FR +33"  },
-  { code: "+44",  label: "GB +44"  },
-  { code: "+1",   label: "US +1"   },
+  { code: "+961", label: "LB +961", placeholder: "76 123 456"    },
+  { code: "+966", label: "SA +966", placeholder: "50 123 4567"   },
+  { code: "+971", label: "AE +971", placeholder: "50 123 4567"   },
+  { code: "+974", label: "QA +974", placeholder: "5012 3456"     },
+  { code: "+965", label: "KW +965", placeholder: "9999 1234"     },
+  { code: "+973", label: "BH +973", placeholder: "3601 2345"     },
+  { code: "+968", label: "OM +968", placeholder: "9123 4567"     },
+  { code: "+20",  label: "EG +20",  placeholder: "100 123 4567"  },
+  { code: "+33",  label: "FR +33",  placeholder: "6 12 34 56 78" },
+  { code: "+44",  label: "GB +44",  placeholder: "7700 900123"   },
+  { code: "+1",   label: "US +1",   placeholder: "555 012 3456"  },
 ];
 
 function loadSaved(): SavedCustomer | null {
@@ -229,19 +229,25 @@ export function ConfirmForm({ loc, svc, staff, date, time, products, servicePric
 
       {/* ── Name ─────────────────────────────────────────── */}
       <div className="grid gap-xs">
-        <label className={labelBase}>Full name</label>
+        <label className={labelBase}>Full name <span className="text-warning">*</span></label>
         <input {...register("customer_name")} className={inputBase} placeholder="As it appears on your ID" autoComplete="name" />
         {errors.customer_name && <p className={errorBase}>{errors.customer_name.message}</p>}
       </div>
 
       {/* ── Phone ────────────────────────────────────────── */}
       <div className="grid gap-xs">
-        <label className={labelBase}>Phone number</label>
+        <label className={labelBase}>Phone number <span className="text-warning">*</span></label>
         <div className="flex items-end gap-sm">
           <select value={countryCode} onChange={e => setCountryCode(e.target.value)} className="shrink-0 border-b border-input bg-transparent py-sm font-mono text-[length:var(--body-sm-size)] text-fg focus:border-fg focus:outline-none">
             {COUNTRY_CODES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
           </select>
-          <input {...register("customer_phone")} type="tel" className={inputBase} placeholder="76 123 456" autoComplete="tel-national" />
+          <input
+            {...register("customer_phone")}
+            type="tel"
+            className={inputBase}
+            placeholder={COUNTRY_CODES.find(c => c.code === countryCode)?.placeholder ?? ""}
+            autoComplete="tel-national"
+          />
         </div>
         {errors.customer_phone && <p className={errorBase}>{errors.customer_phone.message}</p>}
       </div>
@@ -326,9 +332,10 @@ export function ConfirmForm({ loc, svc, staff, date, time, products, servicePric
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex h-12 items-center justify-center px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity disabled:opacity-50 hover:opacity-80"
+        className="inline-flex h-12 items-center justify-center gap-sm px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] transition-opacity disabled:opacity-60 hover:opacity-80"
         style={{ borderRadius: "var(--radius-pill)", background: "var(--accent)", color: "var(--canvas)" }}
       >
+        {isSubmitting && <span className="spinner" style={{ color: "var(--canvas)", width: 16, height: 16 }} />}
         {isSubmitting ? "Confirming…" : grandTotal > 0 ? `Confirm — ${fmt(grandTotal)}` : "Confirm reservation"}
       </button>
     </form>
