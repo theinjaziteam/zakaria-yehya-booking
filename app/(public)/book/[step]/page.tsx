@@ -185,9 +185,6 @@ async function LocationStep() {
 
   return (
     <div>
-      <div className="mb-md">
-        <BackLink href="/" label="Home" />
-      </div>
       <SectionHead
         eyebrow="Step 1 of 6"
         title="Choose your salon."
@@ -287,9 +284,6 @@ async function ServiceStep({ loc }: { loc: string }) {
 
   return (
     <div>
-      <div className="mb-md">
-        <BackLink href="/book/location" />
-      </div>
       <SectionHead eyebrow="Step 2 of 6" title="Choose a service." />
 
       <div className="grid gap-xl">
@@ -418,9 +412,6 @@ async function StylistStep({ loc, svc }: { loc: string; svc: string }) {
 
   return (
     <div>
-      <div className="mb-md">
-        <BackLink href={`/book/service?loc=${loc}`} />
-      </div>
       <SectionHead eyebrow="Step 3 of 6" title="Choose your stylist." />
 
       <div className="grid gap-xs sm:grid-cols-2 lg:grid-cols-3">
@@ -579,9 +570,6 @@ async function DateStep({
 
   return (
     <div>
-      <div className="mb-md">
-        <BackLink href={`/book/stylist?loc=${loc}&svc=${svc}`} />
-      </div>
       <SectionHead eyebrow="Step 4 of 6" title="Choose a date." />
       <DatePicker
         loc={loc}
@@ -676,9 +664,6 @@ async function TimeStep({
 
   return (
     <div>
-      <div className="mb-md">
-        <BackLink href={`/book/date?loc=${loc}&svc=${svc}&staff=${staff}`} />
-      </div>
       <SectionHead
         eyebrow="Step 5 of 6"
         title={`Available times · ${formatDisplayDate(date)}`}
@@ -775,11 +760,6 @@ async function ConfirmStep({
     <div className="grid gap-xl lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start lg:gap-xxl">
       {/* Booking summary */}
       <div>
-        <div className="mb-md">
-          <BackLink
-            href={`/book/time?loc=${loc}&svc=${svc}&staff=${staff}&date=${date}`}
-          />
-        </div>
         <SectionHead eyebrow="Step 6 of 6" title="Confirm your reservation." />
 
         <div className="border border-border bg-card p-md sm:p-lg">
@@ -915,7 +895,7 @@ export default async function BookingStepPage({
   }
 
   return (
-    <main className="min-h-screen bg-bg text-body">
+    <main className="bg-bg text-body">
       {/* Booking nav */}
       <nav className="sticky top-0 z-50 border-b border-border bg-bg/95" style={{ backdropFilter: "blur(8px)" }}>
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-md sm:px-xl">
@@ -924,7 +904,7 @@ export default async function BookingStepPage({
             className="inline-flex items-center gap-xs font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70 shrink-0"
           >
             <span aria-hidden>←</span>
-            <span>Back</span>
+            <span>{stepIndex === 0 ? "Home" : "Back"}</span>
           </Link>
           <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
             {clientConfig.brand.name}
@@ -936,7 +916,7 @@ export default async function BookingStepPage({
 
       <Stepper currentIndex={stepIndex} />
 
-      <div className="mx-auto max-w-5xl px-md py-xl sm:px-xl sm:py-xxl">
+      <div className="mx-auto max-w-5xl px-md pt-xl pb-xl sm:px-xl sm:pt-xxl sm:pb-xl">
         <StepContent />
       </div>
     </main>
