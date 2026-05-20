@@ -146,6 +146,7 @@ async function LocationStep() {
         .from("locations")
         .select("id, slug, name, address, phone, timezone")
         .eq("active", true)
+        .in("slug", clientConfig.presentation.locationOrder)
         .order("name");
       locations = (data as Location[] | null) ?? [];
     } catch {
