@@ -208,38 +208,23 @@ export function ConfirmForm({ loc, svc, staff, date, time, products, servicePric
       )}
 
       {!authLoading && !sessionEmail && (
-        <>
-          {savedCustomer && (
-            <div className="flex items-center justify-between border border-border bg-card px-md py-sm">
-              <p className={labelBase}>Welcome back, {savedCustomer.name.split(" ")[0]}</p>
-              <button type="button" onClick={() => {
-                localStorage.removeItem("yz_customer");
-                setSavedCustomer(null);
-                setValue("customer_name", ""); setValue("customer_email", ""); setValue("customer_phone", "");
-              }} className={`${labelBase} transition-opacity hover:opacity-70`}>Not you?</button>
-            </div>
-          )}
-
-          <div className="grid gap-xs border-b border-border pb-lg">
-            <p className={`${labelBase} mb-xs`}>Your account</p>
-            <div className="grid gap-xs">
-              <label className={labelBase}>Email address</label>
-              <input {...register("customer_email")} type="email" className={inputBase} placeholder="your@email.com" autoComplete="email" />
-              {errors.customer_email && <p className={errorBase}>{errors.customer_email.message}</p>}
-            </div>
-            <div className="grid gap-xs">
-              <label className={labelBase}>Password</label>
-              <div className="relative">
-                <input {...register("customer_password")} type={showPassword ? "text" : "password"} className={`${inputBase} pr-16`} placeholder="New or existing password" autoComplete="current-password" />
-                <button type="button" tabIndex={-1} onClick={() => setShowPassword(v => !v)} className={`absolute right-0 bottom-sm ${labelBase} transition-opacity hover:opacity-70`}>
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              </div>
-              {errors.customer_password && <p className={errorBase}>{errors.customer_password.message}</p>}
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-fg">New here? Creates your account. Already have one? Signs you in.</p>
-            </div>
+        <div className="grid gap-xs border-b border-border pb-lg">
+          <div className="grid gap-xs">
+            <label className={labelBase}>Email</label>
+            <input {...register("customer_email")} type="email" className={inputBase} placeholder="your@email.com" autoComplete="email" inputMode="email" />
+            {errors.customer_email && <p className={errorBase}>{errors.customer_email.message}</p>}
           </div>
-        </>
+          <div className="grid gap-xs">
+            <label className={labelBase}>Password</label>
+            <div className="relative">
+              <input {...register("customer_password")} type={showPassword ? "text" : "password"} className={`${inputBase} pr-16`} placeholder="New or existing" autoComplete="current-password" />
+              <button type="button" tabIndex={-1} onClick={() => setShowPassword(v => !v)} className={`absolute right-0 bottom-sm ${labelBase} transition-opacity hover:opacity-70`}>
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            {errors.customer_password && <p className={errorBase}>{errors.customer_password.message}</p>}
+          </div>
+        </div>
       )}
 
       {/* ── Name ─────────────────────────────────────────── */}
