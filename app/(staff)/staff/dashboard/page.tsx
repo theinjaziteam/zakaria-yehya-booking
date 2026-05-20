@@ -60,7 +60,8 @@ export default function StaffDashboard() {
     const cookie = document.cookie.split(";").find(c => c.trim().startsWith("yz_staff_session="));
     if (!cookie) { router.replace("/staff/login"); return; }
     try {
-      const data = JSON.parse(atob(cookie.split("=")[1]!.trim()));
+      const value = cookie.trim().substring(cookie.indexOf("=") + 1);
+      const data = JSON.parse(atob(value));
       setStaffName(data.name ?? "");
       setIsOwner(data.is_owner === true);
     } catch { router.replace("/staff/login"); }
