@@ -219,7 +219,7 @@ export default function MyBookingsPage() {
           <p className={`${labelBase} mb-lg`}>Loading your bookings…</p>
         )}
 
-        {!loading && fetched && (
+        {!loading && fetched && customer && (
           <>
             <div className="mb-lg flex items-center justify-between">
               <p className={labelBase}>
@@ -290,8 +290,8 @@ export default function MyBookingsPage() {
 
         {/* Not signed in and nothing in localStorage — direct to auth page */}
         {!authLoading && !user && !loading && fetched && !customer && (
-          <div className="border border-border bg-card p-xl max-w-sm">
-            <p className="font-display uppercase text-fg mb-xs" style={{ fontSize: "var(--title-md-size)", letterSpacing: "var(--title-md-tracking)" }}>
+          <div className="border border-border bg-card p-md sm:p-lg">
+            <p className="font-display uppercase text-fg mb-xs" style={{ fontSize: "clamp(1.1rem, 4vw, 1.4rem)", letterSpacing: "0.04em", lineHeight: 1.2 }}>
               Sign in to view your bookings
             </p>
             <p className="text-muted-fg mb-lg" style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.6 }}>

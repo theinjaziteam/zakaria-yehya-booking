@@ -280,12 +280,14 @@ export function ConfirmForm({ loc, svc, staff, date, time, products, servicePric
                       type="button"
                       onClick={() => setAddonQty(p.id, qty - 1)}
                       disabled={qty === 0}
+                      aria-label={`Remove one ${p.name}`}
                       className="h-7 w-7 border border-border font-mono text-sm text-fg transition-colors hover:bg-fg hover:text-canvas disabled:opacity-30"
                     >−</button>
-                    <span className="w-5 text-center font-mono text-sm text-fg">{qty}</span>
+                    <span className="w-5 text-center font-mono text-sm text-fg" aria-live="polite">{qty}</span>
                     <button
                       type="button"
                       onClick={() => setAddonQty(p.id, qty + 1)}
+                      aria-label={`Add one ${p.name}`}
                       className="h-7 w-7 border border-border font-mono text-sm text-fg transition-colors hover:bg-fg hover:text-canvas"
                     >+</button>
                   </div>

@@ -494,21 +494,21 @@ export default function BookingReferencePage() {
               </Link>
 
               {!cancelled && (
-                <button
-                  onClick={() => setShowCancel(true)}
-                  className="mt-sm flex h-11 items-center justify-center border border-border px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-muted-fg transition-colors hover:border-warning hover:text-warning"
-                >
-                  Cancel this reservation
-                </button>
+                <>
+                  <p
+                    className="mt-xs text-muted-fg"
+                    style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.6 }}
+                  >
+                    Cancellations are accepted up to 4 hours before the appointment time.
+                  </p>
+                  <button
+                    onClick={() => setShowCancel(true)}
+                    className="flex h-11 items-center justify-center border border-border px-md font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-muted-fg transition-colors hover:border-warning hover:text-warning"
+                  >
+                    Cancel this reservation
+                  </button>
+                </>
               )}
-
-              <p
-                className="mt-xs text-muted-fg"
-                style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.6 }}
-              >
-                Cancellations are accepted up to 4 hours before the appointment
-                time.
-              </p>
             </div>
           </div>
         </div>
