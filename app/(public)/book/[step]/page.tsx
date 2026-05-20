@@ -174,7 +174,7 @@ async function LocationStep() {
 
   // Only one location — skip the selection step entirely
   if (locations.length === 1) {
-    redirect(`/book/service?loc=${locations[0]!.id}`);
+    redirect(`/book/service`);
   }
 
   return (
@@ -187,7 +187,7 @@ async function LocationStep() {
         {locations.map((loc, i) => (
           <Link
             key={loc.id}
-            href={`/book/service?loc=${loc.id}`}
+            href={`/book/service`}
             className="group block border border-border bg-card p-md transition-colors hover:border-fg sm:p-lg"
           >
             <p className="mb-xs font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
@@ -296,7 +296,7 @@ async function ServiceStep({ loc }: { loc: string }) {
                 {catServices.map((svc, i) => (
                   <Link
                     key={svc.id}
-                    href={`/book/stylist?loc=${loc}&svc=${svc.id}`}
+                    href={`/book/stylist?svc=${svc.id}`}
                     className={`group flex items-center justify-between gap-md py-md transition-opacity hover:opacity-70 ${
                       i < catServices.length - 1 ? "border-b border-border" : ""
                     }`}
@@ -415,7 +415,7 @@ async function StylistStep({ loc, svc }: { loc: string; svc: string }) {
       <div className="grid gap-xs sm:grid-cols-2 lg:grid-cols-3">
         {/* Any available option */}
         <Link
-          href={`/book/date?loc=${loc}&svc=${svc}&staff=any`}
+          href={`/book/date?svc=${svc}&staff=any`}
           className="group flex items-center gap-md border border-border bg-card p-md transition-colors hover:border-fg sm:p-lg"
         >
           <div className="flex h-14 w-14 shrink-0 items-center justify-center border border-border bg-secondary">
@@ -445,7 +445,7 @@ async function StylistStep({ loc, svc }: { loc: string; svc: string }) {
         {staffList.map((member) => (
           <Link
             key={member.id}
-            href={`/book/date?loc=${loc}&svc=${svc}&staff=${member.id}`}
+            href={`/book/date?svc=${svc}&staff=${member.id}`}
             className="group flex items-center gap-md border border-border bg-card p-md transition-colors hover:border-fg sm:p-lg"
           >
             {member.photo_url ? (
@@ -542,7 +542,6 @@ async function DateStep({
     <div>
       <SectionHead eyebrow="Step 3 of 5" title="Choose a date." />
       <DatePicker
-        loc={loc}
         svc={svc}
         staff={staff}
         from={from}
@@ -643,7 +642,7 @@ async function TimeStep({
         eyebrow="Step 4 of 5"
         title={`Available times · ${formatDisplayDate(date)}`}
       />
-      <TimePicker slots={slots} loc={loc} svc={svc} staff={staff} date={date} />
+      <TimePicker slots={slots} svc={svc} staff={staff} date={date} />
     </div>
   );
 }
@@ -816,16 +815,16 @@ export default async function BookingStepPage({
   const currentStep = step as StepName;
   const stepIndex = STEPS.indexOf(currentStep);
 
-  // Param helpers
-  const loc = str(sp, "loc");
+  // Single location — Verdun UUID is fixed, never read from URL
+  const LOC = "d264fa27-56af-44a3-adc6-98f97d5a910e";
+
   const svc = str(sp, "svc");
   const staff = str(sp, "staff");
   const date = str(sp, "date");
   const time = str(sp, "time");
 
-  // Back href — carries accumulated params to previous step
+  // Back href
   const backParams = new URLSearchParams();
-  if (loc) backParams.set("loc", loc);
   if (svc) backParams.set("svc", svc);
   if (staff) backParams.set("staff", staff);
   if (date) backParams.set("date", date);
@@ -834,30 +833,28 @@ export default async function BookingStepPage({
     ? `/book/${prevStep}${backParams.size ? "?" + backParams.toString() : ""}`
     : "/";
 
-  // UUID shape check — demo IDs like "s1" must never propagate
+  // Guard: redirect if required params are missing or not valid UUIDs
   const isUUID = (v?: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v ?? "");
 
-  // Guard: redirect to /book (entry point) if required params are missing or invalid
-  if (currentStep === "service" && !loc) redirect("/book");
-  if (currentStep === "stylist" && (!loc || !svc || !isUUID(loc) || !isUUID(svc))) redirect("/book");
-  if (currentStep === "date" && (!loc || !svc || !staff || !isUUID(loc) || !isUUID(svc))) redirect("/book");
-  if (currentStep === "time" && (!loc || !svc || !staff || !date || !isUUID(loc) || !isUUID(svc) || (staff !== "any" && !isUUID(staff)))) redirect("/book");
-  if (currentStep === "confirm" && (!loc || !svc || !staff || !date || !time || !isUUID(loc) || !isUUID(svc) || (staff !== "any" && !isUUID(staff)))) redirect("/book");
+  if (currentStep === "stylist" && (!svc || !isUUID(svc))) redirect("/book");
+  if (currentStep === "date" && (!svc || !staff || !isUUID(svc))) redirect("/book");
+  if (currentStep === "time" && (!svc || !staff || !date || !isUUID(svc) || (staff !== "any" && !isUUID(staff)))) redirect("/book");
+  if (currentStep === "confirm" && (!svc || !staff || !date || !time || !isUUID(svc) || (staff !== "any" && !isUUID(staff)))) redirect("/book");
 
   function StepContent() {
     switch (currentStep) {
       case "service":
-        return <ServiceStep loc={loc!} />;
+        return <ServiceStep loc={LOC} />;
       case "stylist":
-        return <StylistStep loc={loc!} svc={svc!} />;
+        return <StylistStep loc={LOC} svc={svc!} />;
       case "date":
-        return <DateStep loc={loc!} svc={svc!} staff={staff!} />;
+        return <DateStep loc={LOC} svc={svc!} staff={staff!} />;
       case "time":
-        return <TimeStep loc={loc!} svc={svc!} staff={staff!} date={date!} />;
+        return <TimeStep loc={LOC} svc={svc!} staff={staff!} date={date!} />;
       case "confirm":
         return (
           <ConfirmStep
-            loc={loc!}
+            loc={LOC}
             svc={svc!}
             staff={staff!}
             date={date!}

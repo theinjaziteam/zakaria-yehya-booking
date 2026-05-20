@@ -7,7 +7,6 @@ import { clientConfig } from "@/config/client";
 
 type Props = {
   slots: Slot[] | null;
-  loc: string;
   svc: string;
   staff: string;
   date: string;
@@ -15,7 +14,7 @@ type Props = {
 
 const TZ = clientConfig.business.defaultTimezone;
 
-export function TimePicker({ slots, loc, svc, staff, date }: Props) {
+export function TimePicker({ slots, svc, staff, date }: Props) {
   const router = useRouter();
 
   if (slots === null) {
@@ -49,7 +48,7 @@ export function TimePicker({ slots, loc, svc, staff, date }: Props) {
   function handleSlotClick(slot: Slot) {
     const time = formatInTimeZone(new Date(slot.starts_at), TZ, "HH:mm");
     router.push(
-      `/book/confirm?loc=${loc}&svc=${svc}&staff=${staff}&date=${date}&time=${time}`,
+      `/book/confirm?svc=${svc}&staff=${staff}&date=${date}&time=${time}`,
     );
   }
 

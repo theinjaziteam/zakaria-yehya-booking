@@ -21,7 +21,6 @@ import { useState } from "react";
 import type { AvailableDay } from "@/lib/booking/slots";
 
 type Props = {
-  loc: string;
   svc: string;
   staff: string;
   from: string;
@@ -31,7 +30,7 @@ type Props = {
 
 const DAY_NAMES = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
-export function DatePicker({ loc, svc, staff, from, to, availableDays }: Props) {
+export function DatePicker({ svc, staff, from, to, availableDays }: Props) {
   const router = useRouter();
   const fromDate = parseISO(from);
   const toDate = parseISO(to);
@@ -60,9 +59,7 @@ export function DatePicker({ loc, svc, staff, from, to, availableDays }: Props) 
   function handleDayClick(day: Date) {
     if (!isDayAvailable(day)) return;
     const dateStr = format(day, "yyyy-MM-dd");
-    router.push(
-      `/book/time?loc=${loc}&svc=${svc}&staff=${staff}&date=${dateStr}`,
-    );
+    router.push(`/book/time?svc=${svc}&staff=${staff}&date=${dateStr}`);
   }
 
   return (
