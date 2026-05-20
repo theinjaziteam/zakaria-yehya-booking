@@ -315,12 +315,13 @@ export default function MyBookingsPage() {
 
       <footer className="mt-xl border-t border-border">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-md py-md sm:px-xl">
-          <p className={labelBase}>
-            {clientConfig.brand.name} · Est. 1998 · <a href="tel:011780710" className="hover:opacity-70">01 780 710</a>
-          </p>
-          <Link href="/book" className={`${labelBase} hover:opacity-70`}>
-            Reserve →
-          </Link>
+          <div>
+            <p className={labelBase}>{clientConfig.brand.name}</p>
+            <p className={labelBase}>Est. 1998</p>
+          </div>
+          <a href="tel:011780710" className={`${labelBase} shrink-0 hover:opacity-70`}>
+            01 780 710
+          </a>
         </div>
       </footer>
     </main>
