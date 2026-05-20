@@ -117,16 +117,19 @@ export function ConfirmForm({ loc, svc, staff, date, time, products, servicePric
     setServerError(null);
 
     try {
-      // Auth for new/guest users
+      // Auth for new/guest users — use admin API so no confirmation email is sent
       if (!sessionEmail) {
         const password = values.customer_password ?? "";
         if (password.length >= 6) {
           try {
+            await fetch("/api/auth/signup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: values.customer_email, password }),
+            });
             const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
-            const sb = createBrowserSupabaseClient();
-            const { error } = await sb.auth.signInWithPassword({ email: values.customer_email, password });
-            if (error) await sb.auth.signUp({ email: values.customer_email, password });
-          } catch { /* proceed */ }
+            await createBrowserSupabaseClient().auth.signInWithPassword({ email: values.customer_email, password });
+          } catch { /* proceed — booking still goes through */ }
         }
       }
 
