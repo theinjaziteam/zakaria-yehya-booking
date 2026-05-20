@@ -14,26 +14,19 @@ export function NavActions() {
 
   return (
     <div className="flex items-center gap-2 shrink-0">
-      {!loading && (
-        user ? (
+      {!loading && user && (
+        <>
           <Link href="/my-bookings" className={pill} style={{ borderRadius: "9999px" }}>
             My bookings
           </Link>
-        ) : (
-          <Link href="/auth?from=/my-bookings" className={pill} style={{ borderRadius: "9999px" }}>
-            My bookings
-          </Link>
-        )
-      )}
-
-      {!loading && user && (
-        <button
-          onClick={() => signOut()}
-          className="btn-pill hidden sm:inline-flex h-8 items-center px-2 font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg transition-opacity hover:opacity-70 select-none"
-          title={`Signed in as ${user.email}`}
-        >
-          {user.email?.split("@")[0]} · sign out
-        </button>
+          <button
+            onClick={() => signOut()}
+            className="btn-pill hidden sm:inline-flex h-8 items-center px-2 font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg transition-opacity hover:opacity-70 select-none"
+            title={`Signed in as ${user.email}`}
+          >
+            {user.email?.split("@")[0]} · sign out
+          </button>
+        </>
       )}
     </div>
   );
