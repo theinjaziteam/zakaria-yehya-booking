@@ -219,7 +219,7 @@ export default async function PublicHomePage() {
       {/* ── HERO — full-bleed video band ────────────────────────────── */}
       <section
         className="relative overflow-hidden"
-        style={{ height: "clamp(560px, 72vh, 820px)" }}
+        style={{ height: "clamp(560px, 72vh, 820px)", background: "#1C1714" }}
       >
         <HeroVideo videos={["/hero-video.mp4", "/hero-video-2.mp4"]} />
         {/* Dark gradient overlay */}
