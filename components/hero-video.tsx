@@ -11,11 +11,8 @@ export function HeroVideo({ src, poster }: Props) {
     const v = ref.current;
     if (!v) return;
     v.muted = true;
-    // If autoplay is blocked (mobile data-saver etc.), hide the video element
-    // so the poster shows cleanly with no native play-button overlay.
-    v.play().catch(() => {
-      if (ref.current) ref.current.style.display = "none";
-    });
+    // If autoplay is blocked the video stays paused and the poster shows — nothing to do.
+    v.play().catch(() => {});
   }, []);
 
   return (
@@ -26,9 +23,8 @@ export function HeroVideo({ src, poster }: Props) {
       loop
       playsInline
       poster={poster}
-      // pointer-events:none removes the clickable native play overlay on Android
       className="absolute inset-0 h-full w-full object-cover"
-      style={{ objectPosition: "center 30%", pointerEvents: "none" }}
+      style={{ objectPosition: "center 40%", pointerEvents: "none" }}
     >
       <source src={src} type="video/mp4" />
     </video>

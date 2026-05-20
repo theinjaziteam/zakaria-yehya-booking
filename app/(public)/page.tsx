@@ -5,6 +5,7 @@ import { ProductsSection, type Product } from "@/components/products-section";
 import { CelebGrid } from "@/components/celeb-grid";
 import { NavActions } from "@/components/nav-actions";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { HeroVideo } from "@/components/hero-video";
 
 type LandingLocation = {
   id: string;
@@ -220,12 +221,7 @@ export default async function PublicHomePage() {
         className="relative overflow-hidden"
         style={{ height: "clamp(560px, 72vh, 820px)" }}
       >
-        <img
-          src={HERO_IMAGE}
-          alt="Salon interior — styling in progress"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: "center 30%" }}
-        />
+        <HeroVideo src="/hero-video.mp4" poster={HERO_IMAGE} />
         {/* Dark gradient overlay */}
         <div
           className="absolute inset-0"
@@ -436,7 +432,7 @@ export default async function PublicHomePage() {
       </section>
 
       {/* ── AS SEEN AT ──────────────────────────────────────────────── */}
-      <section className="border-b border-border" style={{ background: "#EDE8E2" }}>
+      <section className="border-b border-border" style={{ background: "#E5DDD4" }}>
         <ScrollReveal className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="mb-xl grid gap-sm">
             <p
@@ -581,7 +577,7 @@ export default async function PublicHomePage() {
 
       {/* ── PRODUCTS ────────────────────────────────────────────────── */}
       {/* Warm amber band — signals "shop" without leaving the brand palette */}
-      <div style={{ background: "#EDE4D5", borderBottom: "1px solid var(--hairline)" }}>
+      <div style={{ background: "#DDD0BC", borderBottom: "1px solid var(--hairline)" }}>
         <ProductsSection products={products} />
       </div>
 
