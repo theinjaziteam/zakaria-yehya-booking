@@ -205,28 +205,11 @@ function AuthForm() {
               </div>
             </div>
 
-            {err === "RATE_LIMIT" ? (
-              <div style={{ background:"var(--surface-soft)", border:"1px solid var(--border)", padding:"12px 14px", fontSize:12 }}>
-                <p style={{ fontFamily:"var(--font-mono)", fontSize:10, textTransform:"uppercase", letterSpacing:"0.1em", color:"var(--warning)", marginBottom:8 }}>
-                  Email limit reached
-                </p>
-                <p style={{ color:"var(--body)", lineHeight:1.6, marginBottom:8 }}>
-                  Supabase limits confirmation emails to 4/hour on the free tier. To fix this permanently:
-                </p>
-                <ol style={{ color:"var(--body)", lineHeight:1.8, paddingLeft:16, marginBottom:0 }}>
-                  <li>Go to your <strong>Supabase dashboard</strong></li>
-                  <li>Authentication → Settings</li>
-                  <li>Turn off <strong>"Confirm email"</strong></li>
-                </ol>
-                <p style={{ fontFamily:"var(--font-mono)", fontSize:10, color:"var(--muted-fg)", marginTop:8, textTransform:"uppercase", letterSpacing:"0.1em" }}>
-                  Once off, sign-up works instantly with no email needed.
-                </p>
-              </div>
-            ) : err ? (
+            {err && (
               <p style={{ fontFamily:"var(--font-mono)", fontSize:10, textTransform:"uppercase", letterSpacing:"0.12em", color:"var(--warning)", margin:0 }}>
                 {err}
               </p>
-            ) : null}
+            )}
 
             <button type="submit" disabled={busy} style={btn}>
               {busy ? "…" : mode === "signin" ? "Sign in" : "Create account"}
