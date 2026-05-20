@@ -3,8 +3,8 @@
 
   /* color */
   --canvas: #F9F6F1;
-  --surface-soft: #F2EDE6;
-  --surface-card: #FFFFFF;
+  --surface-soft: #F8EFF2;   /* soft pink tint — replaces plain off-white */
+  --surface-card: #FDFAFB;   /* barely-pink white card */
   --surface-elevated: #FDF9F5;
   --hairline: #E5DDD4;
   --hairline-strong: #D4C9BC;

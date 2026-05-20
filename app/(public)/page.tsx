@@ -596,7 +596,9 @@ export default async function PublicHomePage() {
       </section>
 
       {/* ── PRODUCTS ────────────────────────────────────────────────── */}
-      <ProductsSection products={products} />
+      <div style={{ background: "#B5C7EB" }}>
+        <ProductsSection products={products} />
+      </div>
 
       {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
       <section className="border-b border-border bg-secondary">
