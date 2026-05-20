@@ -2,8 +2,6 @@ import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 const MAPS_LINKS: Record<string, string> = {
   verdun: "https://www.google.com/maps/place/Yehia+%26+Zakaria/@33.8835072,35.482611,18z/data=!4m6!3m5!1s0x151f17318abbb91b:0xbb90c0d1bcda0af!8m2!3d33.8831131!4d35.4830562!16s%2Fg%2F11g6nvvjm4",
-  achrafieh: "https://www.google.com/maps/search/Yehia+Zakaria+Achrafieh+Beirut",
-  kaslik: "https://www.google.com/maps/search/Yehia+Zakaria+Kaslik+Jounieh",
 };
 
 type Location = { id: string; slug: string; name: string; address: string; phone: string | null; timezone: string; active: boolean; bookings_count: number; };
