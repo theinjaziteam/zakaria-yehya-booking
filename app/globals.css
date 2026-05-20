@@ -35,6 +35,14 @@
   border-color: var(--border);
 }
 
+/* Suppress native mobile video controls overlay */
+video::-webkit-media-controls,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
 html {
   background: var(--bg);
   color: var(--fg);
