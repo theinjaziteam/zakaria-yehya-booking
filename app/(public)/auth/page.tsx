@@ -103,30 +103,6 @@ function AuthForm() {
     opacity: busy ? 0.5 : 1,
   };
 
-  if (done) {
-    return (
-      <div style={page}>
-        <div style={wrap}>
-          <Link href="/" style={{ display:"block", textAlign:"center", marginBottom:32, fontFamily:"var(--font-display)", fontSize:14, letterSpacing:"0.35em", textTransform:"uppercase", color:"var(--fg)", textDecoration:"none" }}>
-            {clientConfig.brand.name}
-          </Link>
-          <div style={{ ...card, textAlign:"center" }}>
-            <p style={{ fontFamily:"var(--font-display)", fontSize:20, textTransform:"uppercase", letterSpacing:"0.06em", color:"var(--fg)", marginBottom:12 }}>
-              Check your email
-            </p>
-            <p style={{ fontSize:14, color:"var(--muted-fg)", lineHeight:1.7, marginBottom:20 }}>
-              We sent a link to <strong style={{ color:"var(--fg)" }}>{email}</strong>. Click it to activate your account, then sign in.
-            </p>
-            <button onClick={() => { setDone(false); setMode("signin"); }}
-              style={{ ...btn, width:"auto", padding:"0 24px", background:"transparent", border:"1px solid var(--fg)", color:"var(--fg)" }}>
-              Sign in →
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div style={page}>
       <div style={wrap}>
