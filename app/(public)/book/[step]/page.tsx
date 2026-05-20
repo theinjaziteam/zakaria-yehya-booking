@@ -929,12 +929,8 @@ export default async function BookingStepPage({
           <p className="font-display text-[length:var(--wordmark-size)] uppercase tracking-[var(--wordmark-tracking)] text-fg">
             {clientConfig.brand.name}
           </p>
-          <Link
-            href="/"
-            className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg transition-opacity hover:opacity-70 shrink-0"
-          >
-            Home
-          </Link>
+          {/* spacer keeps brand centred */}
+          <span className="w-10 shrink-0" aria-hidden />
         </div>
       </nav>
 
