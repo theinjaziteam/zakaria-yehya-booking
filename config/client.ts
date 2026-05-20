@@ -146,7 +146,7 @@ export const clientConfig = {
     reviewsSection: true,
   },
   presentation: {
-    locationOrder: ["verdun", "achrafieh", "kaslik"],
+    locationOrder: ["verdun"],
   },
   copy: {
     hero: {
@@ -174,8 +174,8 @@ export const clientConfig = {
     },
     salons: {
       eyebrow: "The addresses",
-      title: "Three salons. One manner of service.",
-      intro: "Verdun remains the original address. Achrafieh and Kaslik followed as the clientele spread. Each salon keeps the same welcome, the same finish, and the same discretion. Choose the address that best suits the day.",
+      title: "Verdun.",
+      intro: "The original address, open since 1998. Every appointment keeps the same welcome, the same finish, and the same discretion the house has always been known for.",
       appointmentLine: "By appointment · Monday to Saturday · 09:00–20:00",
     },
     howItWorks: {
@@ -184,7 +184,7 @@ export const clientConfig = {
       steps: [
         {
           title: "Choose your salon",
-          body: "Begin with the address that suits the day — Verdun, Achrafieh, or Kaslik.",
+          body: "Begin with the address — Verdun, Rashid Karameh Street.",
         },
         {
           title: "Select service and stylist",
