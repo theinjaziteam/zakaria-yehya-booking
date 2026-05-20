@@ -8,9 +8,10 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { HeroVideo } from "@/components/hero-video";
 import { HeroContent } from "@/components/hero-content";
 import { StatsRow } from "@/components/stats-row";
-import { Reveal, StaggerReveal, staggerItem, TextReveal } from "@/components/reveal";
+import { Reveal, TextReveal } from "@/components/reveal";
 import { MagneticButton } from "@/components/magnetic-button";
-import { motion } from "framer-motion";
+import { HowItWorksSteps } from "@/components/how-it-works-steps";
+import { ParallaxImage } from "@/components/parallax-image";
 
 type LandingLocation = {
   id: string;
@@ -603,29 +604,10 @@ export default async function PublicHomePage() {
             </div>
           </Reveal>
 
-          <StaggerReveal className="grid gap-0">
-            {[
-              ...clientConfig.copy.howItWorks.steps,
-              { title: "Keep the reference", body: "A reservation code is issued on confirmation — use it to look up, cancel, or modify the booking at any time." },
-            ].map((step, i) => (
-              <motion.div
-                key={step.title}
-                variants={staggerItem}
-                className="grid grid-cols-[3rem_1fr] gap-md border-t border-border py-md sm:grid-cols-[4rem_1fr_1fr] sm:items-start"
-              >
-                <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg pt-xxs">
-                  {String(i + 1).padStart(2, "0")}
-                </p>
-                <h3 className="font-display uppercase text-fg" style={{ fontSize: "var(--title-md-size)", letterSpacing: "var(--title-md-tracking)" }}>
-                  {step.title}
-                </h3>
-                <p className="col-start-2 text-body sm:col-start-3" style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7 }}>
-                  {step.body}
-                </p>
-              </motion.div>
-            ))}
-            <div className="border-t border-border" />
-          </StaggerReveal>
+          <HowItWorksSteps steps={[
+            ...clientConfig.copy.howItWorks.steps,
+            { title: "Keep the reference", body: "A reservation code is issued on confirmation — use it to look up, cancel, or modify the booking at any time." },
+          ]} />
 
           <Reveal delay={0.2} className="mt-xl">
             <MagneticButton href="/book" style={{
@@ -701,14 +683,10 @@ export default async function PublicHomePage() {
 
           {/* Photo — left half with slow zoom */}
           <div className="relative overflow-hidden" style={{ minHeight: "clamp(280px, 40vh, 500px)" }}>
-            <motion.img
+            <ParallaxImage
               src={CTA_IMAGE}
               alt="Ready — the salon, the chair, the craft"
               className="absolute inset-0 h-full w-full object-cover object-center"
-              initial={{ scale: 1.08 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
             />
           </div>
 
