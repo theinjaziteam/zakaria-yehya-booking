@@ -122,12 +122,14 @@ function SectionHead({
 // ──────────────────────────────────────────────
 
 async function getSupabase() {
-  if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  ) {
-    return null;
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return null;
+  // Prefer admin client (no cookies dependency, always works server-side).
+  // Falls back to anon server client if service role key is absent.
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    const { createAdminSupabaseClient } = await import("@/lib/supabase/admin");
+    return createAdminSupabaseClient();
   }
+  if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return null;
   const { createServerSupabaseClient } = await import("@/lib/supabase/server");
   return createServerSupabaseClient();
 }
