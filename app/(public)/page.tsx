@@ -452,7 +452,7 @@ export default async function PublicHomePage() {
       </section>
 
       {/* ── AS SEEN AT ──────────────────────────────────────────────── */}
-      <section className="border-b border-border">
+      <section className="border-b border-border" style={{ background: "#EDE8E2" }}>
         <ScrollReveal className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="mb-xl grid gap-sm">
             <p
@@ -596,12 +596,25 @@ export default async function PublicHomePage() {
       </section>
 
       {/* ── PRODUCTS ────────────────────────────────────────────────── */}
-      <div style={{ background: "#B5C7EB" }}>
+      {/* Warm amber band — signals "shop" without leaving the brand palette */}
+      <div style={{ background: "#EDE4D5", borderBottom: "1px solid var(--hairline)" }}>
         <ProductsSection products={products} />
       </div>
 
       {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
-      <section className="border-b border-border bg-secondary">
+      {/* Full dark-ink section — creates the strongest visual break on the page */}
+      <section
+        className="border-b"
+        style={{
+          background: "#1C1714",
+          borderColor: "rgba(249,246,241,0.08)",
+          // Override CSS tokens so all child classes (text-fg, border-border etc.) invert
+          ["--fg" as string]: "#F9F6F1",
+          ["--body" as string]: "rgba(249,246,241,0.72)",
+          ["--muted-fg" as string]: "rgba(249,246,241,0.42)",
+          ["--border" as string]: "rgba(249,246,241,0.12)",
+        }}
+      >
         <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="mb-xl grid gap-sm">
             <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
