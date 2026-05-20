@@ -46,6 +46,8 @@ const INTERIOR_IMAGE =
   "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1800&q=85&auto=format&fit=crop";
 const CRAFT_IMAGE =
   "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=1800&q=85&auto=format&fit=crop";
+const CTA_IMAGE =
+  "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1400&q=85&auto=format&fit=crop";
 
 function formatPrice(priceCents: number) {
   const amount = priceCents / 100;
@@ -790,38 +792,68 @@ export default async function PublicHomePage() {
 
       {/* ── CTA BAND ────────────────────────────────────────────────── */}
       <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
-          <div className="grid gap-md lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-            <div className="grid gap-sm">
-              <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
+        <div className="grid lg:grid-cols-2" style={{ minHeight: "clamp(500px, 65vh, 780px)" }}>
+
+          {/* Photo — left half */}
+          <div className="relative overflow-hidden" style={{ minHeight: "clamp(280px, 40vh, 500px)" }}>
+            <img
+              src={CTA_IMAGE}
+              alt="Ready — the salon, the chair, the craft"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+          </div>
+
+          {/* Text — right half */}
+          <div
+            className="flex flex-col justify-center gap-lg px-md py-xl sm:px-xl lg:px-xxl"
+            style={{ background: "var(--ink)" }}
+          >
+            <div className="grid gap-md">
+              <p
+                className="font-mono uppercase"
+                style={{ fontSize: "var(--caption-size)", letterSpacing: "0.18em", color: "rgba(249,246,241,0.45)" }}
+              >
                 Reserve
               </p>
               <h2
-                className="font-display uppercase text-fg"
+                className="font-display uppercase"
                 style={{
-                  fontSize: "clamp(2rem, 6vw, 4rem)",
-                  lineHeight: 0.98,
+                  fontSize: "clamp(2rem, 5vw, 3.5rem)",
+                  lineHeight: 1.0,
                   letterSpacing: "0.05em",
                   maxWidth: "14ch",
+                  color: "#F9F6F1",
                 }}
               >
                 The chair is ready when you are.
               </h2>
               <p
-                className="text-body"
-                style={{ fontSize: "var(--body-md-size)", lineHeight: 1.8, maxWidth: "44ch" }}
+                style={{
+                  fontSize: "var(--body-md-size)",
+                  lineHeight: 1.8,
+                  maxWidth: "40ch",
+                  color: "rgba(249,246,241,0.65)",
+                }}
               >
                 Walk-ins are welcomed when the schedule allows. A reservation keeps the hour, the stylist, and the service in order before you arrive — and is always the wiser approach.
               </p>
             </div>
+
             <Link
               href="/book"
-              className="self-end inline-flex h-11 items-center justify-center border border-accent px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-accent transition-opacity hover:opacity-70"
-              style={{ borderRadius: "var(--radius-pill)" }}
+              className="self-start inline-flex h-12 items-center justify-center px-8 font-mono uppercase transition-opacity hover:opacity-85"
+              style={{
+                borderRadius: "var(--radius-pill)",
+                background: "#F9F6F1",
+                color: "#1C1714",
+                fontSize: "var(--button-size)",
+                letterSpacing: "var(--button-tracking)",
+              }}
             >
               Reserve your chair
             </Link>
           </div>
+
         </div>
       </section>
 
