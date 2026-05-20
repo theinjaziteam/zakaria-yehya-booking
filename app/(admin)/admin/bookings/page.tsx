@@ -8,6 +8,7 @@ import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { CancelBookingButton } from "@/components/admin/cancel-booking-button";
 import { DeleteBookingButton } from "@/components/admin/delete-booking-button";
 import { RefreshButton } from "@/components/admin/refresh-button";
+import { NewBookingForm } from "@/components/admin/new-booking-form";
 
 const TZ = "Asia/Beirut";
 
@@ -220,7 +221,10 @@ export default async function AdminBookingsPage({
               {selectedLocation ? selectedLocation.name : "All Salons"}
             </h1>
           </div>
-          <RefreshButton />
+          <div className="flex items-center gap-3">
+            <NewBookingForm locations={locations} onCreated={() => {}} />
+            <RefreshButton />
+          </div>
         </div>
         <div className="mt-3 flex flex-wrap gap-6">
           <span className="font-mono text-xs uppercase tracking-widest text-fg">
