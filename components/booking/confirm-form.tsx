@@ -70,14 +70,20 @@ export function ConfirmForm({ loc, svc, staff, date, time, products, servicePric
 
   useEffect(() => {
     if (sessionEmail) setValue("customer_email", sessionEmail);
+
     const saved = loadSaved();
-    if (saved) {
+    // Only use saved localStorage details if they belong to the current session user
+    // (or there is no session — pure guest flow). Prevents showing "Welcome back, Ryan"
+    // to a different signed-in user.
+    const savedMatchesSession = saved && (!sessionEmail || saved.email === sessionEmail);
+    if (savedMatchesSession) {
       setSavedCustomer(saved);
       setValue("customer_name", saved.name);
       setValue("customer_phone", saved.phone);
       setCountryCode(saved.countryCode || "+961");
       if (!sessionEmail) setValue("customer_email", saved.email);
     }
+
     // Pre-select any products tapped on the landing page
     const pending = loadPendingProducts();
     if (pending.length > 0 && products.length > 0) {
@@ -189,17 +195,19 @@ export function ConfirmForm({ loc, svc, staff, date, time, products, servicePric
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-lg" noValidate>
 
       {/* ── Auth state ────────────────────────────────────── */}
-      {authLoading ? null : sessionEmail ? (
+      {!authLoading && sessionEmail && (
         <div className="flex items-center justify-between border border-border bg-card px-md py-sm">
           <div>
-            <p className={labelBase}>Signed in</p>
+            <p className={labelBase}>Booking as</p>
             <p className="mt-xxs text-fg" style={{ fontSize: "var(--body-sm-size)" }}>{sessionEmail}</p>
           </div>
           <button type="button" onClick={() => signOut()} className={`${labelBase} transition-opacity hover:opacity-70`}>
-            Not you?
+            Sign out
           </button>
         </div>
-      ) : (
+      )}
+
+      {!authLoading && !sessionEmail && (
         <>
           {savedCustomer && (
             <div className="flex items-center justify-between border border-border bg-card px-md py-sm">
