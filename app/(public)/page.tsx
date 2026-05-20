@@ -218,28 +218,12 @@ export default async function PublicHomePage() {
         className="relative overflow-hidden"
         style={{ height: "clamp(560px, 72vh, 820px)" }}
       >
-        {/* Video background — autoplay muted loop, poster as fallback */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster={HERO_IMAGE}
+        <img
+          src={HERO_IMAGE}
+          alt="Salon interior — styling in progress"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ objectPosition: "center 30%" }}
-        >
-          <source
-            src="https://assets.mixkit.co/videos/preview/mixkit-hairdresser-blow-drying-a-womans-hair-in-a-salon-49556-large.mp4"
-            type="video/mp4"
-          />
-          {/* Fallback for browsers that don't support video */}
-          <img
-            src={HERO_IMAGE}
-            alt="Salon interior — styling in progress"
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{ objectPosition: "center 30%" }}
-          />
-        </video>
+        />
         {/* Dark gradient overlay */}
         <div
           className="absolute inset-0"
