@@ -44,7 +44,7 @@ export default function StaffDashboard() {
   const [isOwner, setIsOwner] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tips, setTips] = useState<Tip[]>([]);
-  const [filter, setFilter] = useState<"today" | "upcoming" | "all">("today");
+  const [filter, setFilter] = useState<"today" | "upcoming" | "all">("upcoming");
   const [tab, setTab] = useState<"bookings" | "tips">("bookings");
   const [loading, setLoading] = useState(true);
 
