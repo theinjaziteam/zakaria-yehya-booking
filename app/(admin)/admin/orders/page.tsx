@@ -3,6 +3,7 @@ export const revalidate = 0;
 
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { formatInTimeZone } from "date-fns-tz";
+import { FulfillOrderButton } from "@/components/admin/fulfill-order-button";
 
 const TZ = "Asia/Beirut";
 
@@ -108,7 +109,7 @@ export default async function AdminOrdersPage() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b border-border">
-                  {["Time", "Customer", "Phone", "Email", "Items", "Total", "Status", "Notes"].map((h) => (
+                  {["Time", "Customer", "Phone", "Email", "Items", "Total", "Status", "Notes", ""].map((h) => (
                     <th
                       key={h}
                       className="pb-2 pr-6 text-left font-mono text-xs uppercase tracking-widest text-muted-fg"
@@ -152,6 +153,11 @@ export default async function AdminOrdersPage() {
                     <td className="py-3 pr-6 text-xs text-muted-fg max-w-[12rem] truncate">
                       {order.notes ?? "—"}
                     </td>
+                    <td className="py-3">
+                      {order.status !== "completed" && order.status !== "cancelled" && (
+                        <FulfillOrderButton orderId={order.id} />
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -186,6 +192,11 @@ export default async function AdminOrdersPage() {
                   ))}
                 </div>
                 <p className="font-mono text-xs text-muted-fg">{formatDt(order.created_at)}</p>
+                {order.status !== "completed" && order.status !== "cancelled" && (
+                  <div className="border-t border-border pt-xs">
+                    <FulfillOrderButton orderId={order.id} />
+                  </div>
+                )}
               </div>
             ))}
           </div>

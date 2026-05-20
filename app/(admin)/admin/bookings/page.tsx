@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import Link from "next/link";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { CancelBookingButton } from "@/components/admin/cancel-booking-button";
+import { DeleteBookingButton } from "@/components/admin/delete-booking-button";
 import { RefreshButton } from "@/components/admin/refresh-button";
 
 const TZ = "Asia/Beirut";
@@ -378,15 +379,23 @@ export default async function AdminBookingsPage({
                         {b.status.replace("_", " ")}
                       </span>
                     </td>
-                    <td className="py-3 pr-4 max-w-[14rem]">
+                    <td className="py-3 pr-4 max-w-[16rem]">
                       {b.notes && (
-                        <p className="text-xs text-muted-fg leading-relaxed line-clamp-2">{b.notes}</p>
+                        <div className="border-l-2 border-warning pl-2">
+                          <p className="font-mono text-[0.6rem] uppercase tracking-widest text-warning mb-0.5">Note</p>
+                          <p className="text-xs text-fg leading-relaxed">{b.notes}</p>
+                        </div>
                       )}
                     </td>
                     <td className="py-3">
-                      {b.status === "confirmed" && (
-                        <CancelBookingButton refCode={b.reference_code} />
-                      )}
+                      <div className="flex flex-col gap-1">
+                        {b.status === "confirmed" && (
+                          <CancelBookingButton refCode={b.reference_code} />
+                        )}
+                        {b.status === "cancelled" && (
+                          <DeleteBookingButton refCode={b.reference_code} />
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -427,13 +436,16 @@ export default async function AdminBookingsPage({
                   {formatPrice(b.service_price_cents)}
                 </p>
                 {b.notes && (
-                  <p className="text-xs text-muted-fg leading-relaxed border-t border-border pt-2 mt-1">
-                    <span className="font-mono uppercase tracking-widest mr-1" style={{ fontSize: "0.6rem" }}>Note:</span>
-                    {b.notes}
-                  </p>
+                  <div className="border-l-2 border-warning pl-2 mt-1">
+                    <p className="font-mono text-[0.6rem] uppercase tracking-widest text-warning mb-0.5">Note</p>
+                    <p className="text-xs text-fg leading-relaxed">{b.notes}</p>
+                  </div>
                 )}
                 {b.status === "confirmed" && (
                   <CancelBookingButton refCode={b.reference_code} />
+                )}
+                {b.status === "cancelled" && (
+                  <DeleteBookingButton refCode={b.reference_code} />
                 )}
               </div>
             ))}
