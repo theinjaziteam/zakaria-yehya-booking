@@ -6,6 +6,11 @@ import { CelebGrid } from "@/components/celeb-grid";
 import { NavActions } from "@/components/nav-actions";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { HeroVideo } from "@/components/hero-video";
+import { HeroContent } from "@/components/hero-content";
+import { StatsRow } from "@/components/stats-row";
+import { Reveal, StaggerReveal, staggerItem, TextReveal } from "@/components/reveal";
+import { MagneticButton } from "@/components/magnetic-button";
+import { motion } from "framer-motion";
 
 type LandingLocation = {
   id: string;
@@ -234,64 +239,17 @@ export default async function PublicHomePage() {
           }}
         />
 
-        {/* Content */}
+        {/* Content — animated */}
         <div
           className="absolute inset-0 flex flex-col justify-end px-md sm:px-xl"
           style={{ color: "#F9F6F1", paddingBottom: "clamp(1.75rem, 6vh, 4.5rem)" }}
         >
-          <div className="mx-auto w-full max-w-7xl">
-            <p
-              className="hero-eyebrow mb-4 font-mono uppercase"
-              style={{ fontSize: "0.8125rem", letterSpacing: "0.18em", opacity: 0.65 }}
-            >
-              {clientConfig.copy.hero.eyebrow}
-            </p>
-            <h1
-              className="hero-h1 mb-6 font-display uppercase"
-              style={{
-                fontSize: "clamp(2.5rem, 7.5vw, 6.5rem)",
-                lineHeight: 0.95,
-                letterSpacing: "0.03em",
-                maxWidth: "14ch",
-              }}
-            >
-              {clientConfig.copy.hero.title}
-            </h1>
-            <p
-              className="hero-body mb-8"
-              style={{
-                fontSize: "clamp(0.9375rem, 1.5vw, 1.125rem)",
-                lineHeight: 1.78,
-                maxWidth: "44ch",
-                color: "rgba(249,246,241,0.80)",
-              }}
-            >
-              {clientConfig.copy.hero.body}
-            </p>
-            <div className="hero-cta flex flex-wrap items-center gap-md">
-              <Link
-                href="/book"
-                className="inline-flex h-14 items-center justify-center px-10 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
-                style={{
-                  borderRadius: "var(--radius-pill)",
-                  background: "#F9F6F1",
-                  color: "#1C1714",
-                  fontSize: "1rem",
-                  letterSpacing: "0.15em",
-                  fontWeight: 600,
-                }}
-              >
-                {clientConfig.copy.hero.primaryCtaLabel}
-              </Link>
-              <a
-                href="#services"
-                className="font-mono uppercase transition-opacity hover:opacity-100"
-                style={{ fontSize: "0.8125rem", letterSpacing: "0.14em", color: "rgba(249,246,241,0.65)" }}
-              >
-                View services ↓
-              </a>
-            </div>
-          </div>
+          <HeroContent
+            eyebrow={clientConfig.copy.hero.eyebrow}
+            title={clientConfig.copy.hero.title}
+            body={clientConfig.copy.hero.body}
+            ctaLabel={clientConfig.copy.hero.primaryCtaLabel}
+          />
         </div>
 
         {/* Instagram icon — top-right corner */}
@@ -332,35 +290,46 @@ export default async function PublicHomePage() {
         </div>
       </div>
 
+      {/* ── STATS ───────────────────────────────────────────────────── */}
+      <StatsRow />
+
       {/* ── PHILOSOPHY ──────────────────────────────────────────────── */}
       <section className="border-b border-border">
         <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="grid gap-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-xxl lg:items-center">
             {/* Photo */}
-            <div className="relative overflow-hidden" style={{ aspectRatio: "4/5" }}>
-              <img
-                src={INTERIOR_IMAGE}
-                alt="Inside the salon — mirrors, chairs, quiet craft"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
+            <Reveal y={40}>
+              <div className="relative overflow-hidden" style={{ aspectRatio: "4/5" }}>
+                <img
+                  src={INTERIOR_IMAGE}
+                  alt="Inside the salon — mirrors, chairs, quiet craft"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </div>
+            </Reveal>
 
             {/* Text */}
             <div className="grid gap-md">
-              <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
-                {clientConfig.copy.philosophy.eyebrow}
-              </p>
-              <h2
-                className="font-display uppercase text-fg"
-                style={{
-                  fontSize: "clamp(1.75rem, 5vw, 3.25rem)",
-                  lineHeight: 1.04,
-                  letterSpacing: "0.05em",
-                  maxWidth: "13ch",
-                }}
-              >
-                {clientConfig.copy.philosophy.title}
-              </h2>
+              <Reveal delay={0.1}>
+                <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
+                  {clientConfig.copy.philosophy.eyebrow}
+                </p>
+              </Reveal>
+              <div style={{ overflow: "hidden" }}>
+                <TextReveal delay={0.2}>
+                  <h2
+                    className="font-display uppercase text-fg"
+                    style={{
+                      fontSize: "clamp(1.75rem, 5vw, 3.25rem)",
+                      lineHeight: 1.04,
+                      letterSpacing: "0.05em",
+                      maxWidth: "13ch",
+                    }}
+                  >
+                    {clientConfig.copy.philosophy.title}
+                  </h2>
+                </TextReveal>
+              </div>
               <div className="grid gap-sm">
                 {clientConfig.copy.philosophy.paragraphs.map((p) => (
                   <p
@@ -585,81 +554,90 @@ export default async function PublicHomePage() {
       </div>
 
       {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
-      {/* Full dark-ink section — creates the strongest visual break on the page */}
       <section
-        className="border-b"
+        className="border-b relative overflow-hidden"
         style={{
           background: "#1C1714",
           borderColor: "rgba(249,246,241,0.08)",
-          // Override CSS tokens so all child classes (text-fg, border-border etc.) invert
           ["--fg" as string]: "#F9F6F1",
           ["--body" as string]: "rgba(249,246,241,0.82)",
           ["--muted-fg" as string]: "rgba(249,246,241,0.55)",
           ["--border" as string]: "rgba(249,246,241,0.14)",
         }}
       >
-        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
-          <div className="mb-xl grid gap-sm">
-            <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
-              {clientConfig.copy.howItWorks.eyebrow}
-            </p>
-            <h2
-              className="font-display uppercase text-fg"
-              style={{
-                fontSize: "clamp(1.75rem, 5vw, 3.25rem)",
-                lineHeight: 1.04,
-                letterSpacing: "0.05em",
-                maxWidth: "14ch",
-              }}
-            >
-              {clientConfig.copy.howItWorks.title}
-            </h2>
-          </div>
+        {/* Kinetic chapter watermark */}
+        <Reveal y={0}>
+          <p
+            aria-hidden
+            style={{
+              position: "absolute",
+              right: "-0.05em",
+              top: "50%",
+              transform: "translateY(-50%)",
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(12rem, 28vw, 22rem)",
+              lineHeight: 1,
+              letterSpacing: "-0.04em",
+              color: "rgba(249,246,241,0.03)",
+              pointerEvents: "none",
+              userSelect: "none",
+              whiteSpace: "nowrap",
+            }}
+          >
+            I
+          </p>
+        </Reveal>
 
-          <div className="grid gap-0">
+        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section relative">
+          <Reveal>
+            <div className="mb-xl grid gap-sm">
+              <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
+                {clientConfig.copy.howItWorks.eyebrow}
+              </p>
+              <h2
+                className="font-display uppercase text-fg"
+                style={{ fontSize: "clamp(1.75rem, 5vw, 3.25rem)", lineHeight: 1.04, letterSpacing: "0.05em", maxWidth: "14ch" }}
+              >
+                {clientConfig.copy.howItWorks.title}
+              </h2>
+            </div>
+          </Reveal>
+
+          <StaggerReveal className="grid gap-0">
             {[
               ...clientConfig.copy.howItWorks.steps,
-              {
-                title: "Keep the reference",
-                body: "A reservation code is issued on confirmation — use it to look up, cancel, or modify the booking at any time.",
-              },
+              { title: "Keep the reference", body: "A reservation code is issued on confirmation — use it to look up, cancel, or modify the booking at any time." },
             ].map((step, i) => (
-              <div
+              <motion.div
                 key={step.title}
+                variants={staggerItem}
                 className="grid grid-cols-[3rem_1fr] gap-md border-t border-border py-md sm:grid-cols-[4rem_1fr_1fr] sm:items-start"
               >
                 <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg pt-xxs">
                   {String(i + 1).padStart(2, "0")}
                 </p>
-                <h3
-                  className="font-display uppercase text-fg"
-                  style={{
-                    fontSize: "var(--title-md-size)",
-                    letterSpacing: "var(--title-md-tracking)",
-                  }}
-                >
+                <h3 className="font-display uppercase text-fg" style={{ fontSize: "var(--title-md-size)", letterSpacing: "var(--title-md-tracking)" }}>
                   {step.title}
                 </h3>
-                <p
-                  className="col-start-2 text-body sm:col-start-3"
-                  style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7 }}
-                >
+                <p className="col-start-2 text-body sm:col-start-3" style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7 }}>
                   {step.body}
                 </p>
-              </div>
+              </motion.div>
             ))}
             <div className="border-t border-border" />
-          </div>
+          </StaggerReveal>
 
-          <div className="mt-xl">
-            <Link
-              href="/book"
-              className="inline-flex h-11 items-center justify-center border border-fg px-8 font-mono text-[length:var(--button-size)] uppercase tracking-[var(--button-tracking)] text-fg transition-opacity hover:opacity-70"
-              style={{ borderRadius: "var(--radius-pill)" }}
-            >
+          <Reveal delay={0.2} className="mt-xl">
+            <MagneticButton href="/book" style={{
+              display: "inline-flex", height: "2.75rem", alignItems: "center", justifyContent: "center",
+              border: "1px solid #F9F6F1", padding: "0 2rem",
+              fontFamily: "var(--font-mono)", fontSize: "var(--button-size)", textTransform: "uppercase",
+              letterSpacing: "var(--button-tracking)", color: "#F9F6F1", borderRadius: "var(--radius-pill)",
+              textDecoration: "none", transition: "opacity 0.2s",
+            }}>
               Begin reservation
-            </Link>
-          </div>
+            </MagneticButton>
+          </Reveal>
         </div>
       </section>
 
@@ -721,12 +699,16 @@ export default async function PublicHomePage() {
       <section className="border-b border-border">
         <div className="grid lg:grid-cols-2" style={{ minHeight: "clamp(500px, 65vh, 780px)" }}>
 
-          {/* Photo — left half */}
+          {/* Photo — left half with slow zoom */}
           <div className="relative overflow-hidden" style={{ minHeight: "clamp(280px, 40vh, 500px)" }}>
-            <img
+            <motion.img
               src={CTA_IMAGE}
               alt="Ready — the salon, the chair, the craft"
               className="absolute inset-0 h-full w-full object-cover object-center"
+              initial={{ scale: 1.08 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
             />
           </div>
 
@@ -736,49 +718,42 @@ export default async function PublicHomePage() {
             style={{ background: "var(--ink)" }}
           >
             <div className="grid gap-md">
-              <p
-                className="font-mono uppercase"
-                style={{ fontSize: "var(--caption-size)", letterSpacing: "0.18em", color: "rgba(249,246,241,0.45)" }}
-              >
-                Reserve
-              </p>
-              <h2
-                className="font-display uppercase"
-                style={{
-                  fontSize: "clamp(2rem, 5vw, 3.5rem)",
-                  lineHeight: 1.0,
-                  letterSpacing: "0.05em",
-                  maxWidth: "14ch",
-                  color: "#F9F6F1",
-                }}
-              >
-                The chair is ready when you are.
-              </h2>
-              <p
-                style={{
-                  fontSize: "var(--body-md-size)",
-                  lineHeight: 1.8,
-                  maxWidth: "40ch",
-                  color: "rgba(249,246,241,0.65)",
-                }}
-              >
-                Walk-ins are welcomed when the schedule allows. A reservation keeps the hour, the stylist, and the service in order before you arrive — and is always the wiser approach.
-              </p>
+              <Reveal delay={0.1}>
+                <p className="font-mono uppercase" style={{ fontSize: "var(--caption-size)", letterSpacing: "0.18em", color: "rgba(249,246,241,0.45)" }}>
+                  Reserve
+                </p>
+              </Reveal>
+              <div style={{ overflow: "hidden" }}>
+                <TextReveal delay={0.2}>
+                  <h2
+                    className="font-display uppercase"
+                    style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", lineHeight: 1.0, letterSpacing: "0.05em", maxWidth: "14ch", color: "#F9F6F1" }}
+                  >
+                    The chair is ready when you are.
+                  </h2>
+                </TextReveal>
+              </div>
+              <Reveal delay={0.35}>
+                <p style={{ fontSize: "var(--body-md-size)", lineHeight: 1.8, maxWidth: "40ch", color: "rgba(249,246,241,0.65)" }}>
+                  Walk-ins are welcomed when the schedule allows. A reservation keeps the hour, the stylist, and the service in order before you arrive — and is always the wiser approach.
+                </p>
+              </Reveal>
             </div>
 
-            <Link
-              href="/book"
-              className="self-start inline-flex h-12 items-center justify-center px-8 font-mono uppercase transition-opacity hover:opacity-85"
-              style={{
-                borderRadius: "var(--radius-pill)",
-                background: "#F9F6F1",
-                color: "#1C1714",
-                fontSize: "var(--button-size)",
-                letterSpacing: "var(--button-tracking)",
-              }}
-            >
-              Reserve your chair
-            </Link>
+            <Reveal delay={0.5}>
+              <MagneticButton
+                href="/book"
+                style={{
+                  display: "inline-flex", height: "3rem", alignItems: "center", justifyContent: "center",
+                  padding: "0 2rem", fontFamily: "var(--font-mono)", textTransform: "uppercase",
+                  borderRadius: "var(--radius-pill)", background: "#F9F6F1", color: "#1C1714",
+                  fontSize: "var(--button-size)", letterSpacing: "var(--button-tracking)",
+                  textDecoration: "none", transition: "opacity 0.2s",
+                }}
+              >
+                Reserve your chair
+              </MagneticButton>
+            </Reveal>
           </div>
 
         </div>
