@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Staff = { id: string; name: string };
 type Service = { id: string; name: string; duration_min: number; price_cents: number };
 type Location = { id: string; name: string };
 
-type Props = { locations: Location[]; onCreated: () => void };
+type Props = { locations: Location[] };
 
 const COUNTRY_CODES = [
   { code: "+961", label: "LB" },
@@ -16,7 +17,8 @@ const COUNTRY_CODES = [
   { code: "+44",  label: "GB" },
 ];
 
-export function NewBookingForm({ locations, onCreated }: Props) {
+export function NewBookingForm({ locations }: Props) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,7 +82,7 @@ export function NewBookingForm({ locations, onCreated }: Props) {
         setSuccess(`Booking created — ref ${json.reference_code}`);
         setName(""); setPhone(""); setEmail(""); setNotes("");
         setDate(""); setTime(""); setServiceId(""); setStaffId("");
-        onCreated();
+        router.refresh();
         setTimeout(() => { setSuccess(null); setOpen(false); }, 3000);
       }
     } catch {

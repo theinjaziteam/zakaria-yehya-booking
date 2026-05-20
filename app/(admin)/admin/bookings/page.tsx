@@ -222,7 +222,7 @@ export default async function AdminBookingsPage({
             </h1>
           </div>
           <div className="flex items-center gap-3">
-            <NewBookingForm locations={locations} onCreated={() => {}} />
+            <NewBookingForm locations={locations} />
             <RefreshButton />
           </div>
         </div>
