@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Stepper } from "@/components/booking/stepper";
@@ -523,37 +525,9 @@ async function DateStep({
           );
         }
       } else {
-        const { data: atLoc } = await client
-          .from("staff_locations")
-          .select("staff_id")
-          .eq("location_id", loc);
-        const { data: forSvc } = await client
-          .from("staff_services")
-          .select("staff_id")
-          .eq("service_id", svc);
-
-        const atLocIds = (atLoc ?? []).map((r: { staff_id: string }) => r.staff_id);
-        const forSvcIds = (forSvc ?? []).map((r: { staff_id: string }) => r.staff_id);
-        const eligible = atLocIds.filter((id) => forSvcIds.includes(id));
-
-        if (eligible.length > 0) {
-          const { data: wh } = await client
-            .from("working_hours")
-            .select("day_of_week")
-            .eq("location_id", loc)
-            .in("staff_id", eligible);
-
-          const workingDows = new Set(
-            (wh ?? []).map((r: { day_of_week: number }) => r.day_of_week),
-          );
-          const days = eachDayOfInterval({ start: parseISO(from), end: parseISO(to) });
-          availableDays = days.map((day) => ({
-            date: format(day, "yyyy-MM-dd"),
-            available: workingDows.has(getDay(day)),
-          }));
-        } else {
-          availableDays = [];
-        }
+        // "any" staff — leave availableDays null so all weekdays show as
+        // selectable. Real slot availability is resolved in the time step.
+        availableDays = null;
       }
     } catch {
       /* fall through – null keeps all days selectable */
@@ -595,15 +569,18 @@ async function TimeStep({
   const supabase = await getSupabase();
   if (supabase && staff !== "any") {
     try {
-      const { data } = await (await supabase).rpc("get_available_slots", {
+      const { data, error } = await (await supabase).rpc("get_available_slots", {
         p_staff_id: staff,
         p_service_id: svc,
         p_date: date,
         p_location_id: loc,
       });
-      if (data) slots = data as Slot[];
-    } catch {
-      /* RPC not deployed yet */
+      if (error) { console.error("get_available_slots:", error.message); slots = []; }
+      else if (data) slots = data as Slot[];
+      else slots = [];
+    } catch (e) {
+      console.error("get_available_slots threw:", e);
+      slots = [];
     }
   } else if (supabase && staff === "any") {
     // For "any" staff — get all eligible staff, merge slots
@@ -624,12 +601,13 @@ async function TimeStep({
 
       const allSlots: Slot[] = [];
       for (const staffId of eligible) {
-        const { data } = await client.rpc("get_available_slots", {
+        const { data, error } = await client.rpc("get_available_slots", {
           p_staff_id: staffId,
           p_service_id: svc,
           p_date: date,
           p_location_id: loc,
         });
+        if (error) console.error("get_available_slots (any):", staffId, error.message);
         if (data) allSlots.push(...(data as Slot[]));
       }
 
@@ -649,8 +627,9 @@ async function TimeStep({
           )!.starts_at,
           available,
         }));
-    } catch {
-      /* ignore */
+    } catch (e) {
+      console.error("TimeStep any catch:", e);
+      slots = [];
     }
   }
 
