@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { clientConfig } from "@/config/client";
 import { formatInTimeZone } from "date-fns-tz";
+import { ClientHistoryModal } from "@/components/client-history-modal";
 
 const TZ = clientConfig.business.defaultTimezone;
 
@@ -47,6 +48,11 @@ export default function StaffDashboard() {
   const [filter, setFilter] = useState<"today" | "upcoming" | "all">("upcoming");
   const [tab, setTab] = useState<"bookings" | "tips">("bookings");
   const [loading, setLoading] = useState(true);
+
+  // Client history modal
+  const [selectedClient, setSelectedClient] = useState<{ name: string; phone: string } | null>(null);
+  // Marking late: bookingId -> state
+  const [lateMarking, setLateMarking] = useState<Record<string, "idle" | "saving" | "done">>({});
 
   // Tip form
   const [tipAmount, setTipAmount] = useState("");
@@ -92,6 +98,24 @@ export default function StaffDashboard() {
     setTimeout(() => setTipMsg(null), 2500);
   }
 
+  async function markLate(booking: Booking) {
+    if (lateMarking[booking.id] === "saving" || lateMarking[booking.id] === "done") return;
+    setLateMarking(prev => ({ ...prev, [booking.id]: "saving" }));
+    await fetch("/api/staff/penalties", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        booking_id: booking.id,
+        customer_phone: booking.customer_phone,
+        customer_name: booking.customer_name,
+        type: "late_arrival",
+        amount_cents: 500,
+        note: `Late arrival — ref ${booking.reference_code}`,
+      }),
+    });
+    setLateMarking(prev => ({ ...prev, [booking.id]: "done" }));
+  }
+
   async function deleteTip(id: string) {
     await fetch("/api/staff/tips", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
     setTips(tips.filter(t => t.id !== id));
@@ -111,6 +135,13 @@ export default function StaffDashboard() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#F9F6F1" }}>
+      {selectedClient && (
+        <ClientHistoryModal
+          customerName={selectedClient.name}
+          customerPhone={selectedClient.phone}
+          onClose={() => setSelectedClient(null)}
+        />
+      )}
       {/* Nav */}
       <nav style={{ borderBottom: "1px solid var(--hairline)", background: "#F9F6F1", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ maxWidth: 768, margin: "0 auto", padding: "0 1rem", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -168,23 +199,46 @@ export default function StaffDashboard() {
                         {b.status}
                       </span>
                     </div>
-                    <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid var(--hairline)", display: "flex", gap: 24 }}>
-                      <div>
-                        <p className={label}>Client</p>
-                        <p style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "#1C1714" }}>{b.customer_name}</p>
-                        <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "rgba(28,23,20,0.45)", letterSpacing: "0.06em" }}>{b.customer_phone}</p>
-                        {freq[b.customer_name] && freq[b.customer_name]! > 1 && (
-                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: "#865F10", marginTop: 2 }}>
-                            {freq[b.customer_name]}× visits
-                          </p>
-                        )}
-                      </div>
-                      {b.services?.price_cents ? (
+                    <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid var(--hairline)", display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 12 }}>
+                      <div style={{ display: "flex", gap: 24 }}>
                         <div>
-                          <p className={label}>Value</p>
-                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 14, color: "#1C1714" }}>{fmt(b.services.price_cents)}</p>
+                          <p className={label}>Client</p>
+                          <button
+                            onClick={() => setSelectedClient({ name: b.customer_name, phone: b.customer_phone })}
+                            style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "#1C1714", background: "none", border: "none", cursor: "pointer", padding: 0, textDecoration: "underline", textDecorationColor: "rgba(28,23,20,0.25)" }}
+                          >
+                            {b.customer_name}
+                          </button>
+                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "rgba(28,23,20,0.45)", letterSpacing: "0.06em" }}>{b.customer_phone}</p>
+                          {freq[b.customer_name] && freq[b.customer_name]! > 1 && (
+                            <p style={{ fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: "#865F10", marginTop: 2 }}>
+                              {freq[b.customer_name]}× visits
+                            </p>
+                          )}
                         </div>
-                      ) : null}
+                        {b.services?.price_cents ? (
+                          <div>
+                            <p className={label}>Value</p>
+                            <p style={{ fontFamily: "var(--font-mono)", fontSize: 14, color: "#1C1714" }}>{fmt(b.services.price_cents)}</p>
+                          </div>
+                        ) : null}
+                      </div>
+                      {b.status === "confirmed" && (
+                        <button
+                          onClick={() => markLate(b)}
+                          disabled={lateMarking[b.id] === "saving" || lateMarking[b.id] === "done"}
+                          style={{
+                            fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase",
+                            padding: "5px 10px", border: "1px solid",
+                            borderColor: lateMarking[b.id] === "done" ? "rgba(28,23,20,0.2)" : "#C4871F",
+                            color: lateMarking[b.id] === "done" ? "rgba(28,23,20,0.35)" : "#C4871F",
+                            background: "none", cursor: lateMarking[b.id] === "done" ? "default" : "pointer",
+                            opacity: lateMarking[b.id] === "saving" ? 0.5 : 1,
+                          }}
+                        >
+                          {lateMarking[b.id] === "done" ? "Late recorded" : lateMarking[b.id] === "saving" ? "…" : "Mark late +$5"}
+                        </button>
+                      )}
                     </div>
                     {b.notes && (
                       <p style={{ marginTop: 8, fontFamily: "var(--font-body)", fontSize: 12, color: "rgba(28,23,20,0.6)", borderLeft: "2px solid #C4871F", paddingLeft: 8 }}>{b.notes}</p>

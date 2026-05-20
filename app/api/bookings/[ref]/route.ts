@@ -27,12 +27,38 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ r
   }
   const supabase = await getSupabase();
   if (!supabase) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
-  const { data, error } = await (await supabase).rpc("cancel_booking", { p_ref: ref.toUpperCase(), p_phone_last4: body.phoneLast4 });
+
+  // Fetch booking before cancelling so we can check for same-day cancel penalty
+  const { data: bookingData } = await supabase
+    .from("bookings")
+    .select("id, customer_phone, customer_name, starts_at")
+    .eq("reference_code", ref.toUpperCase())
+    .single();
+
+  const { data, error } = await supabase.rpc("cancel_booking", { p_ref: ref.toUpperCase(), p_phone_last4: body.phoneLast4 });
   if (error) return NextResponse.json({ error: "Cancellation failed." }, { status: 500 });
   type R = { error?: string; success?: boolean };
   const result = data as R;
   if (result?.error === "not_found") return NextResponse.json({ error: "Booking not found or phone does not match" }, { status: 404 });
   if (result?.error === "window_closed") return NextResponse.json({ error: "Cancellations must be made at least 4 hours before the appointment." }, { status: 422 });
   if (result?.error) return NextResponse.json({ error: result.error }, { status: 422 });
+
+  // Auto-record same-day cancellation penalty
+  if (bookingData) {
+    const bookingDate = new Date(bookingData.starts_at).toISOString().slice(0, 10);
+    const todayDate = new Date().toISOString().slice(0, 10);
+    if (bookingDate === todayDate) {
+      await supabase.from("penalties").insert({
+        booking_id: bookingData.id,
+        staff_id: null,
+        customer_phone: bookingData.customer_phone,
+        customer_name: bookingData.customer_name,
+        type: "same_day_cancel",
+        amount_cents: 1000,
+        note: `Same-day cancellation of ref ${ref.toUpperCase()}`,
+      });
+    }
+  }
+
   return NextResponse.json({ success: true });
 }

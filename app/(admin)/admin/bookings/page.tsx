@@ -9,6 +9,7 @@ import { CancelBookingButton } from "@/components/admin/cancel-booking-button";
 import { DeleteBookingButton } from "@/components/admin/delete-booking-button";
 import { RefreshButton } from "@/components/admin/refresh-button";
 import { NewBookingForm } from "@/components/admin/new-booking-form";
+import { ClientHistoryButton } from "@/components/admin/client-history-button";
 
 const TZ = "Asia/Beirut";
 
@@ -368,8 +369,7 @@ export default async function AdminBookingsPage({
                       </Link>
                     </td>
                     <td className="py-3 pr-4">
-                      <p className="font-medium text-fg">{b.customer_name}</p>
-                      <p className="text-xs text-muted-fg">{b.customer_phone}</p>
+                      <ClientHistoryButton name={b.customer_name} phone={b.customer_phone} />
                     </td>
                     <td className="py-3 pr-4 text-fg">{b.service_name}</td>
                     <td className="py-3 pr-4 text-fg">{b.staff_name}</td>
@@ -433,10 +433,7 @@ export default async function AdminBookingsPage({
                     {b.status.replace("_", " ")}
                   </span>
                 </div>
-                <div>
-                  <p className="text-base font-medium text-fg">{b.customer_name}</p>
-                  <p className="text-sm text-muted-fg">{b.customer_phone}</p>
-                </div>
+                <ClientHistoryButton name={b.customer_name} phone={b.customer_phone} />
                 <p className="text-sm text-muted-fg">
                   {b.service_name} · {b.staff_name} · {b.location_name} ·{" "}
                   {formatPrice(b.service_price_cents)}
