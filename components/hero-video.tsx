@@ -15,9 +15,11 @@ export function HeroVideo({ videos }: { videos: string[] }) {
     // so iOS ignores it when making the autoplay decision at insertion time.
     const els: HTMLVideoElement[] = videos.map((src, i) => {
       const v = document.createElement("video");
+      // Set ALL attributes before appendChild so iOS reads them at insertion time
       v.muted = true;
       (v as HTMLVideoElement & { defaultMuted: boolean }).defaultMuted = true;
       v.setAttribute("muted", "");
+      v.setAttribute("autoplay", "");
       v.setAttribute("playsinline", "");
       v.setAttribute("webkit-playsinline", "");
       v.setAttribute("preload", "auto");
@@ -34,6 +36,8 @@ export function HeroVideo({ videos }: { videos: string[] }) {
         transition: "opacity 0.9s ease",
       });
       wrap.appendChild(v);
+      // load() after appendChild so the browser can fetch using byte-range requests
+      v.load();
       return v;
     });
 
@@ -41,6 +45,7 @@ export function HeroVideo({ videos }: { videos: string[] }) {
       els.forEach((v, i) => { v.style.opacity = i === idx ? "1" : "0"; });
       const v = els[idx]!;
       v.currentTime = 0;
+      v.load();
       v.play().catch(() => {});
     }
 
@@ -48,7 +53,8 @@ export function HeroVideo({ videos }: { videos: string[] }) {
       v.addEventListener("ended", () => show((i + 1) % els.length));
     });
 
-    els[0]!.play().catch(() => {});
+    // Small delay gives the browser a frame to process the appended elements
+    setTimeout(() => { els[0]!.play().catch(() => {}); }, 0);
 
     return () => { els.forEach(v => { v.pause(); wrap.removeChild(v); }); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
