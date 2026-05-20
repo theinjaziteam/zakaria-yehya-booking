@@ -55,60 +55,65 @@ function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <article className="border border-border bg-card overflow-hidden">
-      {/* Clickable photo */}
-      <button
-        type="button"
-        onClick={handleClick}
-        className="block w-full overflow-hidden relative group focus:outline-none focus-visible:ring-1 focus-visible:ring-fg"
-        style={{ height: 220 }}
-        aria-label={`Add ${product.name} to your booking`}
-      >
+    <article
+      className="group cursor-pointer"
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`Add ${product.name} to your booking`}
+      onKeyDown={(e) => e.key === "Enter" && handleClick()}
+    >
+      {/* Portrait image — 3:4 */}
+      <div className="relative overflow-hidden" style={{ aspectRatio: "3/4" }}>
         {product.image_url ? (
           <img
             src={product.image_url}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
           <div className="h-full w-full bg-secondary flex items-center justify-center">
-            <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg">No image</span>
+            <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg">—</span>
           </div>
         )}
-        {/* Overlay hint */}
-        <div className="absolute inset-0 flex items-center justify-center bg-ink/0 group-hover:bg-ink/30 transition-colors duration-300">
+        {/* Hover overlay */}
+        <div
+          className="absolute inset-0 flex items-end p-md transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+          style={{ background: "linear-gradient(to top, rgba(28,23,20,0.72) 0%, transparent 55%)" }}
+        >
           <span
-            className="font-mono text-[0.65rem] uppercase tracking-widest text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{ textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}
+            className="font-mono uppercase text-white"
+            style={{ fontSize: "var(--caption-size)", letterSpacing: "0.16em" }}
           >
             Add to booking →
           </span>
         </div>
-      </button>
+      </div>
 
-      {/* Info */}
-      <div className="p-4 grid gap-1">
-        <div className="flex items-start justify-between gap-2">
+      {/* Label */}
+      <div className="mt-sm grid gap-xxs">
+        <div className="flex items-baseline justify-between gap-sm">
           <h3
             className="font-display uppercase text-fg"
-            style={{ fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)" }}
+            style={{ fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)", lineHeight: 1.2 }}
           >
             {product.name}
           </h3>
-          <p className="shrink-0 font-mono text-fg" style={{ fontSize: "var(--title-sm-size)" }}>
+          <p
+            className="shrink-0 font-mono text-muted-fg"
+            style={{ fontSize: "var(--caption-size)", letterSpacing: "0.06em" }}
+          >
             {fmt(product.price_cents)}
           </p>
         </div>
         {product.description && (
-          <p className="text-muted-fg text-sm leading-relaxed">{product.description}</p>
+          <p
+            className="text-muted-fg"
+            style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.55 }}
+          >
+            {product.description}
+          </p>
         )}
-        <button
-          type="button"
-          onClick={handleClick}
-          className="mt-2 h-8 w-full border border-fg font-mono text-[0.65rem] uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas"
-        >
-          Add to booking
-        </button>
       </div>
     </article>
   );
@@ -120,22 +125,30 @@ export function ProductsSection({ products }: { products: Product[] }) {
   return (
     <section className="border-b border-border">
       <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
-        <div className="mb-xl grid gap-sm">
-          <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
-            Shop
-          </p>
-          <h2
-            className="font-display uppercase text-fg"
-            style={{ fontSize: "clamp(1.75rem, 5vw, 3.25rem)", lineHeight: 1.04, letterSpacing: "0.05em", maxWidth: "14ch" }}
+
+        {/* Header */}
+        <div className="mb-xl grid gap-sm lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <div className="grid gap-sm">
+            <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
+              The shelf
+            </p>
+            <h2
+              className="font-display uppercase text-fg"
+              style={{ fontSize: "clamp(1.75rem, 5vw, 3.25rem)", lineHeight: 1.04, letterSpacing: "0.05em", maxWidth: "14ch" }}
+            >
+              What we carry.
+            </h2>
+          </div>
+          <p
+            className="text-muted-fg lg:text-right lg:max-w-[34ch]"
+            style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7 }}
           >
-            Our product range
-          </h2>
-          <p className="text-muted-fg" style={{ fontSize: "var(--body-md-size)", lineHeight: 1.8, maxWidth: "44ch" }}>
-            Tap any product to add it to your next booking. It will be waiting for you at the salon on the day.
+            Tap any product to add it to your booking — it will be waiting at the salon on the day.
           </p>
         </div>
 
-        <div className="grid gap-md sm:grid-cols-2 lg:grid-cols-4">
+        {/* Product grid */}
+        <div className="grid grid-cols-2 gap-md sm:grid-cols-2 lg:grid-cols-4 lg:gap-lg">
           {products.map((p, i) => (
             <ScrollReveal key={p.id} delay={i * 80}>
               <ProductCard product={p} />

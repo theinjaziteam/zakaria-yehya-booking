@@ -5,6 +5,7 @@ import { ProductsSection, type Product } from "@/components/products-section";
 import { CelebGrid } from "@/components/celeb-grid";
 import { NavActions } from "@/components/nav-actions";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { HeroVideo } from "@/components/hero-video";
 
 type LandingLocation = {
   id: string;
@@ -216,14 +217,9 @@ export default async function PublicHomePage() {
       {/* ── HERO — full-bleed video band ────────────────────────────── */}
       <section
         className="relative overflow-hidden"
-        style={{ height: "clamp(560px, 72vh, 820px)" }}
+        style={{ height: "clamp(560px, 72vh, 820px)", background: "#1C1714" }}
       >
-        <img
-          src={HERO_IMAGE}
-          alt="Salon interior — styling in progress"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: "center 30%" }}
-        />
+        <HeroVideo videos={["/hero-video.mp4", "/hero-video-2.mp4"]} />
         {/* Dark gradient overlay */}
         <div
           className="absolute inset-0"
@@ -314,7 +310,7 @@ export default async function PublicHomePage() {
       <div className="overflow-hidden py-3" style={{ background: "#1C1714", borderBottom: "1px solid rgba(249,246,241,0.08)" }}>
         <div
           className="flex gap-xl whitespace-nowrap font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]"
-          style={{ animation: "marquee 14s linear infinite", color: "rgba(249,246,241,0.45)" }}
+          style={{ animation: "marquee 14s linear infinite", color: "rgba(249,246,241,0.5)" }}
         >
           {[...Array(4)].map((_, i) => (
             <span key={i} className="flex shrink-0 gap-xl">
@@ -441,7 +437,7 @@ export default async function PublicHomePage() {
       </section>
 
       {/* ── AS SEEN AT ──────────────────────────────────────────────── */}
-      <section className="border-b border-border">
+      <section className="border-b border-border" style={{ background: "#E5DDD4" }}>
         <ScrollReveal className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="mb-xl grid gap-sm">
             <p
@@ -585,10 +581,25 @@ export default async function PublicHomePage() {
       </section>
 
       {/* ── PRODUCTS ────────────────────────────────────────────────── */}
-      <ProductsSection products={products} />
+      {/* Warm amber band — signals "shop" without leaving the brand palette */}
+      <div style={{ background: "#DDD0BC", borderBottom: "1px solid var(--hairline)" }}>
+        <ProductsSection products={products} />
+      </div>
 
       {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
-      <section className="border-b border-border bg-secondary">
+      {/* Full dark-ink section — creates the strongest visual break on the page */}
+      <section
+        className="border-b"
+        style={{
+          background: "#1C1714",
+          borderColor: "rgba(249,246,241,0.08)",
+          // Override CSS tokens so all child classes (text-fg, border-border etc.) invert
+          ["--fg" as string]: "#F9F6F1",
+          ["--body" as string]: "rgba(249,246,241,0.82)",
+          ["--muted-fg" as string]: "rgba(249,246,241,0.55)",
+          ["--border" as string]: "rgba(249,246,241,0.14)",
+        }}
+      >
         <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="mb-xl grid gap-sm">
             <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
@@ -650,77 +661,6 @@ export default async function PublicHomePage() {
             >
               Begin reservation
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── SALONS / LOCATIONS ──────────────────────────────────────── */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
-          <div className="mb-xl grid gap-sm lg:mb-xxl lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] lg:items-end lg:gap-xl">
-            <div>
-              <p className="mb-sm font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
-                {clientConfig.copy.salons.eyebrow}
-              </p>
-              <h2
-                className="font-display uppercase text-fg"
-                style={{
-                  fontSize: "clamp(1.75rem, 5vw, 3.25rem)",
-                  lineHeight: 1.04,
-                  letterSpacing: "0.05em",
-                  maxWidth: "12ch",
-                }}
-              >
-                {clientConfig.copy.salons.title}
-              </h2>
-            </div>
-            <p
-              className="text-body lg:max-w-[44ch]"
-              style={{ fontSize: "var(--body-md-size)", lineHeight: 1.8 }}
-            >
-              {clientConfig.copy.salons.intro}
-            </p>
-          </div>
-
-          <div className="grid gap-xs sm:grid-cols-2 lg:grid-cols-3">
-            {locations.map((location, index) => (
-              <article
-                key={location.id}
-                className="border border-border bg-card p-md sm:p-lg"
-              >
-                <p className="mb-xs font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
-                  {String(index + 1).padStart(2, "0")}
-                </p>
-                <h3
-                  className="mb-sm font-display uppercase text-fg"
-                  style={{
-                    fontSize: "var(--display-sm-size)",
-                    letterSpacing: "var(--display-sm-tracking)",
-                  }}
-                >
-                  {location.name}
-                </h3>
-                <p
-                  className="mb-md text-body"
-                  style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7 }}
-                >
-                  {location.address}
-                </p>
-                <div className="border-t border-border pt-sm">
-                  <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
-                    {clientConfig.copy.salons.appointmentLine}
-                  </p>
-                  {location.phone && (
-                    <a
-                      href={`tel:${location.phone}`}
-                      className="mt-xxs block font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg"
-                    >
-                      {location.phone}
-                    </a>
-                  )}
-                </div>
-              </article>
-            ))}
           </div>
         </div>
       </section>
