@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
     <div style={{
       minHeight: "100vh",
       width: "100%",
-      background: "#1C1714",   // ink — dark, private, backstage
+      background: "#F9F6F1",
       overflowX: "hidden",
       display: "flex",
       alignItems: "center",
@@ -44,13 +44,13 @@ export default function AdminLoginPage() {
     }}>
       <div style={{ width: "100%", maxWidth: 360, boxSizing: "border-box" }}>
 
-        {/* Brand — floats above card in cream */}
+        {/* Brand */}
         <p style={{
           fontFamily: "var(--font-display)",
           fontSize: 12,
           letterSpacing: "0.4em",
           textTransform: "uppercase",
-          color: "rgba(249,246,241,0.55)",
+          color: "rgba(28,23,20,0.45)",
           textAlign: "center",
           marginBottom: 28,
           animation: "loginCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.05s both",
@@ -58,11 +58,12 @@ export default function AdminLoginPage() {
           {clientConfig.brand.name}
         </p>
 
-        {/* Card — cream on dark, floats in */}
+        {/* Card */}
         <div style={{
-          background: "#F9F6F1",
+          background: "#FFFFFF",
+          border: "1px solid rgba(28,23,20,0.1)",
           padding: "36px 32px",
-          boxShadow: "0 32px 80px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.3)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
           animation: "loginCardIn 0.65s cubic-bezier(0.22,1,0.36,1) 0.12s both",
           boxSizing: "border-box",
         }}>
@@ -171,7 +172,7 @@ export default function AdminLoginPage() {
             fontSize: 10,
             textTransform: "uppercase",
             letterSpacing: "0.12em",
-            color: "rgba(249,246,241,0.35)",
+            color: "rgba(28,23,20,0.35)",
             textDecoration: "none",
             WebkitTapHighlightColor: "transparent",
           }}>
