@@ -5,7 +5,6 @@ import { ProductsSection, type Product } from "@/components/products-section";
 import { CelebGrid } from "@/components/celeb-grid";
 import { NavActions } from "@/components/nav-actions";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { HeroVideo } from "@/components/hero-video";
 
 type LandingLocation = {
   id: string;
@@ -221,10 +220,11 @@ export default async function PublicHomePage() {
         className="relative overflow-hidden"
         style={{ height: "clamp(560px, 72vh, 820px)" }}
       >
-        {/* Hero video — client component handles autoplay + suppresses mobile play button */}
-        <HeroVideo
-          src="https://assets.mixkit.co/videos/preview/mixkit-hairdresser-blow-drying-a-womans-hair-in-a-salon-49556-large.mp4"
-          poster={HERO_IMAGE}
+        <img
+          src={HERO_IMAGE}
+          alt="Salon interior — styling in progress"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: "center 30%" }}
         />
         {/* Dark gradient overlay */}
         <div
