@@ -122,9 +122,14 @@ export default function StaffDashboard() {
               {staffName}
             </p>
           </div>
-          <button onClick={signOut} style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)", background: "none", border: "none", cursor: "pointer" }}>
-            Sign out
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <a href="/" style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)", textDecoration: "none" }}>
+              ← Site
+            </a>
+            <button onClick={signOut} style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)", background: "none", border: "none", cursor: "pointer" }}>
+              Sign out
+            </button>
+          </div>
         </div>
       </nav>
 
