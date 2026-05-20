@@ -22,7 +22,7 @@ export function Reveal({ children, delay = 0, y = 32, className, style }: Props)
       style={style}
       initial={{ opacity: 0, y }}
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y }}
-      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
     >
       {children}
     </motion.div>
@@ -39,7 +39,7 @@ export function TextReveal({ children, delay = 0, className, style }: Omit<Props
       <motion.div
         initial={{ y: "110%" }}
         animate={inView ? { y: "0%" } : { y: "110%" }}
-        transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
       >
         {children}
       </motion.div>
@@ -68,5 +68,5 @@ export function StaggerReveal({ children, className, style }: { children: React.
 
 export const staggerItem = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] as [number, number, number, number] } },
 };

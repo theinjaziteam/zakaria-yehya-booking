@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { MagneticButton } from "@/components/magnetic-button";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const line = {
   hidden: { y: "105%" },
