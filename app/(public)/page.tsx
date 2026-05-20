@@ -307,10 +307,10 @@ export default async function PublicHomePage() {
       </section>
 
       {/* ── MARQUEE TICKER ──────────────────────────────────────────── */}
-      <div className="overflow-hidden border-y border-border bg-card py-3">
+      <div className="overflow-hidden py-3" style={{ background: "#1C1714", borderBottom: "1px solid rgba(249,246,241,0.08)" }}>
         <div
-          className="flex gap-xl whitespace-nowrap font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg"
-          style={{ animation: "marquee 14s linear infinite" }}
+          className="flex gap-xl whitespace-nowrap font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]"
+          style={{ animation: "marquee 14s linear infinite", color: "rgba(249,246,241,0.45)" }}
         >
           {[...Array(4)].map((_, i) => (
             <span key={i} className="flex shrink-0 gap-xl">
@@ -328,8 +328,15 @@ export default async function PublicHomePage() {
       </div>
 
       {/* ── PHILOSOPHY ──────────────────────────────────────────────── */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
+      <section className="border-b border-border relative overflow-hidden">
+        {/* Gradient bridge: dark ink at top fades to transparent so the section
+            background (cream) shows through — blends seamlessly with the video above */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 pointer-events-none"
+          style={{ height: 220, background: "linear-gradient(to bottom, #1C1714 0%, transparent 100%)", zIndex: 0 }}
+        />
+        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section relative" style={{ zIndex: 1 }}>
           <div className="grid gap-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-xxl lg:items-center">
             {/* Photo */}
             <div className="relative overflow-hidden" style={{ aspectRatio: "4/5" }}>

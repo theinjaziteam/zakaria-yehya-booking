@@ -167,6 +167,11 @@ async function LocationStep() {
     ];
   }
 
+  // Only one location — skip the selection step entirely
+  if (locations.length === 1) {
+    redirect(`/book/service?loc=${locations[0]!.id}`);
+  }
+
   return (
     <div>
       <SectionHead
