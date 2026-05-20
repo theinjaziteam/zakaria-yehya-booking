@@ -21,7 +21,7 @@ export default function StaffLoginPage() {
     });
     const json = await res.json();
     if (!res.ok) { setError(json.error); setLoading(false); return; }
-    router.push("/staff/dashboard");
+    window.location.href = "/staff/dashboard";
   }
 
   return (

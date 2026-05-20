@@ -57,15 +57,11 @@ export default function StaffDashboard() {
   const [tipMsg, setTipMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    const cookie = document.cookie.split(";").find(c => c.trim().startsWith("yz_staff_session="));
-    if (!cookie) { router.replace("/staff/login"); return; }
-    try {
-      const value = cookie.trim().substring(cookie.indexOf("=") + 1);
-      const data = JSON.parse(atob(value));
-      setStaffName(data.name ?? "");
-      setIsOwner(data.is_owner === true);
-    } catch { router.replace("/staff/login"); }
-  }, [router]);
+    fetch("/api/staff/me")
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => { setStaffName(data.name ?? ""); setIsOwner(data.is_owner === true); })
+      .catch(() => { window.location.href = "/staff/login"; });
+  }, []);
 
   useEffect(() => {
     if (!staffName) return;
