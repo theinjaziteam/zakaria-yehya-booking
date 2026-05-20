@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 async function getSupabase() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return null;
-  const { createServerSupabaseClient } = await import("@/lib/supabase/server");
-  return createServerSupabaseClient();
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const { createAdminSupabaseClient } = await import("@/lib/supabase/admin");
+  return createAdminSupabaseClient();
 }
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ ref: string }> }) {

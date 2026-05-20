@@ -32,19 +32,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Need Supabase to proceed
-  if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  ) {
-    return NextResponse.json(
-      { error: "Database not configured" },
-      { status: 503 },
-    );
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
   }
 
-  const { createServerSupabaseClient } = await import("@/lib/supabase/server");
-  const supabase = await createServerSupabaseClient();
+  const { createAdminSupabaseClient } = await import("@/lib/supabase/admin");
+  const supabase = createAdminSupabaseClient();
 
   // Look up the location's timezone so we can convert the local time to UTC
   const { data: location, error: locErr } = await supabase
