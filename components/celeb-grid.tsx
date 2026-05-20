@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
 type Celeb = { name: string; title: string; img: string };
 
-function CelebCard({ celeb }: { celeb: Celeb }) {
-  const [revealed, setRevealed] = useState(false);
+function CelebCard({ celeb, lit }: { celeb: Celeb; lit: boolean }) {
+  const [clicked, setClicked] = useState(false);
+  const revealed = lit || clicked;
 
   return (
     <div className="grid gap-sm">
@@ -14,7 +15,7 @@ function CelebCard({ celeb }: { celeb: Celeb }) {
         type="button"
         className="group block w-full overflow-hidden border border-border cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-fg"
         style={{ aspectRatio: "3/4" }}
-        onClick={() => setRevealed((v) => !v)}
+        onClick={() => setClicked(v => !v)}
         aria-label={revealed ? `Hide colour — ${celeb.name}` : `Reveal colour — ${celeb.name}`}
       >
         <img
@@ -22,7 +23,9 @@ function CelebCard({ celeb }: { celeb: Celeb }) {
           alt={celeb.name}
           className={[
             "h-full w-full object-cover object-top transition-all duration-700",
-            revealed ? "grayscale-0 scale-105" : "grayscale group-hover:grayscale-0 group-hover:scale-105",
+            revealed
+              ? "grayscale-0 scale-105"
+              : "grayscale group-hover:grayscale-0 group-hover:scale-105",
           ].join(" ")}
           loading="lazy"
         />
@@ -69,11 +72,34 @@ const CELEBS: Celeb[] = [
 ];
 
 export function CelebGrid() {
+  const [litUpTo, setLitUpTo] = useState(-1);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        // Light up each card one by one, 350ms apart
+        CELEBS.forEach((_, i) => {
+          setTimeout(() => setLitUpTo(prev => Math.max(prev, i)), i * 350);
+        });
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="grid grid-cols-2 gap-xs sm:gap-md lg:grid-cols-4">
+    <div ref={gridRef} className="grid grid-cols-2 gap-xs sm:gap-md lg:grid-cols-4">
       {CELEBS.map((celeb, i) => (
         <ScrollReveal key={celeb.name} delay={i * 90}>
-          <CelebCard celeb={celeb} />
+          <CelebCard celeb={celeb} lit={i <= litUpTo} />
         </ScrollReveal>
       ))}
     </div>
