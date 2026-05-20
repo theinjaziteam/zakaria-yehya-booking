@@ -31,6 +31,12 @@ export default function StaffLoginPage() {
           {clientConfig.brand.name}
         </p>
 
+        <div style={{ textAlign: "center", marginBottom: 16 }}>
+          <a href="/" style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.35)", textDecoration: "none" }}>
+            ← Back to site
+          </a>
+        </div>
+
         <div style={{ background: "#fff", border: "1px solid rgba(28,23,20,0.1)", padding: "36px 32px", boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
           <p style={{ fontFamily: "var(--font-display)", fontSize: 20, letterSpacing: "0.08em", textTransform: "uppercase", color: "#1C1714", marginBottom: 24 }}>
             Staff login
