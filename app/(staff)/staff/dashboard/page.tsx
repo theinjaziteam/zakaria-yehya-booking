@@ -75,9 +75,16 @@ export default function StaffDashboard() {
     Promise.all([
       fetch(`/api/staff/bookings?filter=${filter}`).then(r => r.json()),
       fetch("/api/staff/tips").then(r => r.json()),
-    ]).then(([b, t]) => {
+      fetch("/api/staff/penalties").then(r => r.json()),
+    ]).then(([b, t, lateIds]) => {
       setBookings(Array.isArray(b) ? b : []);
       setTips(Array.isArray(t) ? t : []);
+      // Pre-populate already-marked-late bookings
+      if (Array.isArray(lateIds)) {
+        const already: Record<string, "done"> = {};
+        lateIds.forEach((id: string) => { already[id] = "done"; });
+        setLateMarking(already);
+      }
     }).finally(() => setLoading(false));
   }, [staffName, filter]);
 

@@ -136,6 +136,18 @@ async function getBookings(
   }
 }
 
+async function getLateBookingIds(): Promise<Set<string>> {
+  try {
+    const supabase = createAdminSupabaseClient();
+    const { data } = await supabase
+      .from("penalties")
+      .select("booking_id")
+      .eq("type", "late_arrival")
+      .not("booking_id", "is", null);
+    return new Set((data ?? []).map((r: { booking_id: string }) => r.booking_id));
+  } catch { return new Set(); }
+}
+
 function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(0)}`;
 }
@@ -174,7 +186,7 @@ export default async function AdminBookingsPage({
   const locSlug = sp.loc ?? "all";
   const q = (sp.q ?? "").trim();
 
-  const locations = await getLocations();
+  const [locations, lateIds] = await Promise.all([getLocations(), getLateBookingIds()]);
   const selectedLocation =
     locSlug === "all" ? null : (locations.find((l) => l.slug === locSlug) ?? null);
 
@@ -386,12 +398,19 @@ export default async function AdminBookingsPage({
                       </span>
                     </td>
                     <td className="py-3 pr-4 max-w-[16rem]">
-                      {b.notes && (
-                        <div className="border-l-2 border-warning pl-2">
-                          <p className="font-mono text-[0.6rem] uppercase tracking-widest text-warning mb-0.5">Note</p>
-                          <p className="text-xs text-fg leading-relaxed">{b.notes}</p>
-                        </div>
-                      )}
+                      <div className="flex flex-col gap-1">
+                        {lateIds.has(b.id) && (
+                          <span className="inline-block font-mono text-[0.6rem] uppercase tracking-widest text-warning border border-warning px-1.5 py-0.5 w-fit">
+                            Late +$5
+                          </span>
+                        )}
+                        {b.notes && (
+                          <div className="border-l-2 border-warning pl-2">
+                            <p className="font-mono text-[0.6rem] uppercase tracking-widest text-warning mb-0.5">Note</p>
+                            <p className="text-xs text-fg leading-relaxed">{b.notes}</p>
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="py-3">
                       <div className="flex flex-col gap-1">
@@ -438,6 +457,11 @@ export default async function AdminBookingsPage({
                   {b.service_name} · {b.staff_name} · {b.location_name} ·{" "}
                   {formatPrice(b.service_price_cents)}
                 </p>
+                {lateIds.has(b.id) && (
+                  <span className="inline-block font-mono text-[0.6rem] uppercase tracking-widest text-warning border border-warning px-1.5 py-0.5 w-fit">
+                    Late +$5
+                  </span>
+                )}
                 {b.notes && (
                   <div className="border-l-2 border-warning pl-2 mt-1">
                     <p className="font-mono text-[0.6rem] uppercase tracking-widest text-warning mb-0.5">Note</p>
