@@ -307,10 +307,10 @@ export default async function PublicHomePage() {
       </section>
 
       {/* ── MARQUEE TICKER ──────────────────────────────────────────── */}
-      <div className="overflow-hidden py-3" style={{ background: "#1C1714", borderBottom: "1px solid rgba(249,246,241,0.08)" }}>
+      <div className="overflow-hidden border-y border-border bg-card py-3">
         <div
-          className="flex gap-xl whitespace-nowrap font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]"
-          style={{ animation: "marquee 14s linear infinite", color: "rgba(249,246,241,0.45)" }}
+          className="flex gap-xl whitespace-nowrap font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg"
+          style={{ animation: "marquee 14s linear infinite" }}
         >
           {[...Array(4)].map((_, i) => (
             <span key={i} className="flex shrink-0 gap-xl">
