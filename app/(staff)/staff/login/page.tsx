@@ -6,7 +6,6 @@ import { clientConfig } from "@/config/client";
 
 export default function StaffLoginPage() {
   const router = useRouter();
-  const [name, setName] = useState("");
   const [pin, setPin] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -18,7 +17,7 @@ export default function StaffLoginPage() {
     const res = await fetch("/api/staff/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, pin }),
+      body: JSON.stringify({ pin }),
     });
     const json = await res.json();
     if (!res.ok) { setError(json.error); setLoading(false); return; }
@@ -39,24 +38,14 @@ export default function StaffLoginPage() {
 
           <form onSubmit={handleSubmit} style={{ display: "grid", gap: 16 }}>
             <div>
-              <label style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", marginBottom: 6 }}>Your name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="e.g. Zakaria"
-                autoComplete="name"
-                style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", marginBottom: 6 }}>PIN</label>
+              <label style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", marginBottom: 6 }}>Your PIN</label>
               <input
                 type="password"
                 value={pin}
                 onChange={e => setPin(e.target.value)}
-                placeholder="Your PIN"
+                placeholder="Enter your PIN"
                 autoComplete="current-password"
+                autoFocus
                 style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }}
               />
             </div>
@@ -65,8 +54,8 @@ export default function StaffLoginPage() {
 
             <button
               type="submit"
-              disabled={loading || !name || !pin}
-              style={{ marginTop: 8, padding: "12px", background: "#1C1714", color: "#F9F6F1", border: "none", fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", cursor: "pointer", opacity: loading || !name || !pin ? 0.5 : 1 }}
+              disabled={loading || !pin}
+              style={{ marginTop: 8, padding: "12px", background: "#1C1714", color: "#F9F6F1", border: "none", fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", cursor: "pointer", opacity: loading || !pin ? 0.5 : 1 }}
             >
               {loading ? "Signing in…" : "Sign in"}
             </button>

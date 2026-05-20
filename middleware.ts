@@ -8,10 +8,12 @@ const COOKIE = "yz_admin_session";
 const RATE_LIMITS: [string, number, number][] = [
   ["/api/auth/signup",      5,  60_000],  // signup — tightest, prevents account spam
   ["/api/admin/auth",       5,  60_000],  // admin login — brute-force protection
+  ["/api/staff/auth",       5,  60_000],  // staff login — brute-force protection
   ["/api/bookings",        15,  60_000],  // create + lookup bookings
   ["/api/orders",          10,  60_000],  // create product order
   ["/api/customer",        20,  60_000],  // customer booking lookup
   ["/api/admin",           40,  60_000],  // admin ops (already cookie-guarded)
+  ["/api/staff",           30,  60_000],  // staff ops
 ];
 
 function clientIp(req: NextRequest): string {
