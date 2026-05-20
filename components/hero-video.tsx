@@ -8,15 +8,12 @@ export function HeroVideo({ videos }: { videos: string[] }) {
   const refB = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // iOS requires these attributes set directly on the element
     [refA, refB].forEach(r => {
       const v = r.current;
       if (!v) return;
       v.setAttribute("playsinline", "");
       v.setAttribute("webkit-playsinline", "");
     });
-    // Start video A — B is preloading silently in the background
-    refA.current?.play().catch(() => {});
   }, []);
 
   function handleEnded(slot: 0 | 1) {
@@ -26,40 +23,25 @@ export function HeroVideo({ videos }: { videos: string[] }) {
     setFront(slot === 0 ? 1 : 0);
   }
 
-  const base = "absolute inset-0 h-full w-full object-cover";
-
-  const styleFor = (slot: 0 | 1): React.CSSProperties => ({
-    objectPosition: "center 40%",
-    pointerEvents: "none",
-    opacity: front === slot ? 1 : 0,
-    zIndex: front === slot ? 1 : 0,
-    transition: "opacity 0.9s ease",
-  });
-
+  // Both have autoPlay — iOS won't show a play button on a playing video.
+  // No zIndex — DOM order keeps videos behind the gradient + text above them.
   return (
     <>
-      {/* Video A — autoPlay in markup so iOS starts it immediately */}
       <video
         ref={refA}
         src={videos[0]}
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
+        autoPlay muted playsInline preload="auto"
         onEnded={() => handleEnded(0)}
-        className={base}
-        style={styleFor(0)}
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ objectPosition: "center 40%", pointerEvents: "none", opacity: front === 0 ? 1 : 0, transition: "opacity 0.9s ease" }}
       />
-      {/* Video B — preloads silently, plays when A ends */}
       <video
         ref={refB}
         src={videos[1] ?? videos[0]}
-        muted
-        playsInline
-        preload="auto"
+        autoPlay muted playsInline preload="auto"
         onEnded={() => handleEnded(1)}
-        className={base}
-        style={styleFor(1)}
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ objectPosition: "center 40%", pointerEvents: "none", opacity: front === 1 ? 1 : 0, transition: "opacity 0.9s ease" }}
       />
     </>
   );
