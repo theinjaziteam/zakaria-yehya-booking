@@ -1,5 +1,4 @@
 const STEP_LABELS = [
-  "Salon",
   "Service",
   "Stylist",
   "Date",

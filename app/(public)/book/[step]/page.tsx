@@ -13,7 +13,7 @@ import type { AvailableDay, Slot } from "@/lib/booking/slots";
 // Types
 // ──────────────────────────────────────────────
 
-const STEPS = ["location", "service", "stylist", "date", "time", "confirm"] as const;
+const STEPS = ["service", "stylist", "date", "time", "confirm"] as const;
 type StepName = (typeof STEPS)[number];
 
 type SP = Record<string, string | string[] | undefined>;
@@ -274,7 +274,7 @@ async function ServiceStep({ loc }: { loc: string }) {
 
   return (
     <div>
-      <SectionHead eyebrow="Step 2 of 6" title="Choose a service." />
+      <SectionHead eyebrow="Step 1 of 5" title="Choose a service." />
 
       <div className="grid gap-xl">
         {categories.map((cat) => {
@@ -402,7 +402,7 @@ async function StylistStep({ loc, svc }: { loc: string; svc: string }) {
 
   return (
     <div>
-      <SectionHead eyebrow="Step 3 of 6" title="Choose your stylist." />
+      <SectionHead eyebrow="Step 2 of 5" title="Choose your stylist." />
 
       <div className="grid gap-xs sm:grid-cols-2 lg:grid-cols-3">
         {/* Any available option */}
@@ -560,7 +560,7 @@ async function DateStep({
 
   return (
     <div>
-      <SectionHead eyebrow="Step 4 of 6" title="Choose a date." />
+      <SectionHead eyebrow="Step 3 of 5" title="Choose a date." />
       <DatePicker
         loc={loc}
         svc={svc}
@@ -655,7 +655,7 @@ async function TimeStep({
   return (
     <div>
       <SectionHead
-        eyebrow="Step 5 of 6"
+        eyebrow="Step 4 of 5"
         title={`Available times · ${formatDisplayDate(date)}`}
       />
       <TimePicker slots={slots} loc={loc} svc={svc} staff={staff} date={date} />
@@ -750,7 +750,7 @@ async function ConfirmStep({
     <div className="grid gap-xl lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start lg:gap-xxl">
       {/* Booking summary */}
       <div>
-        <SectionHead eyebrow="Step 6 of 6" title="Confirm your reservation." />
+        <SectionHead eyebrow="Step 5 of 5" title="Confirm your reservation." />
 
         <div className="border border-border bg-card p-md sm:p-lg">
           <p className="mb-md font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
@@ -849,20 +849,15 @@ export default async function BookingStepPage({
     ? `/book/${prevStep}${backParams.size ? "?" + backParams.toString() : ""}`
     : "/";
 
-  // Guard: redirect back if required params are missing
-  if (currentStep === "service" && !loc) redirect("/book/location");
-  if (currentStep === "stylist" && (!loc || !svc)) redirect("/book/location");
-  if (currentStep === "date" && (!loc || !svc || !staff))
-    redirect("/book/location");
-  if (currentStep === "time" && (!loc || !svc || !staff || !date))
-    redirect("/book/location");
-  if (currentStep === "confirm" && (!loc || !svc || !staff || !date || !time))
-    redirect("/book/location");
+  // Guard: redirect to /book (entry point) if required params are missing
+  if (currentStep === "service" && !loc) redirect("/book");
+  if (currentStep === "stylist" && (!loc || !svc)) redirect("/book");
+  if (currentStep === "date" && (!loc || !svc || !staff)) redirect("/book");
+  if (currentStep === "time" && (!loc || !svc || !staff || !date)) redirect("/book");
+  if (currentStep === "confirm" && (!loc || !svc || !staff || !date || !time)) redirect("/book");
 
   function StepContent() {
     switch (currentStep) {
-      case "location":
-        return <LocationStep />;
       case "service":
         return <ServiceStep loc={loc!} />;
       case "stylist":

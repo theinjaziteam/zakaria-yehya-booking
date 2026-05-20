@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { clientConfig } from "@/config/client";
 import Link from "next/link";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { CancelBookingButton } from "@/components/admin/cancel-booking-button";
@@ -41,6 +42,7 @@ async function getLocations(): Promise<Location[]> {
       .from("locations")
       .select("id, name, slug")
       .eq("active", true)
+      .in("slug", clientConfig.presentation.locationOrder)
       .order("name");
     if (error) {
       console.error("admin getLocations error:", error.message);

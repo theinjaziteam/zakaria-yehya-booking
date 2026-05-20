@@ -189,6 +189,11 @@ export default async function PublicHomePage() {
     rawData.services.length > 0 ? rawData.services : DEMO_SERVICES;
 
   return (
+    <>
+    {/* Preload hero videos so they start playing as fast as possible */}
+    {/* eslint-disable-next-line @next/next/no-head-element */}
+    <link rel="preload" href="/hero-video.mp4" as="video" type="video/mp4" />
+    <link rel="preload" href="/hero-video-2.mp4" as="video" type="video/mp4" />
     <main id="top" className="bg-bg text-body">
       {/* ── NAV ─────────────────────────────────────────────────────── */}
       <nav
@@ -328,15 +333,8 @@ export default async function PublicHomePage() {
       </div>
 
       {/* ── PHILOSOPHY ──────────────────────────────────────────────── */}
-      <section className="border-b border-border relative overflow-hidden">
-        {/* Gradient bridge: dark ink at top fades to transparent so the section
-            background (cream) shows through — blends seamlessly with the video above */}
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 pointer-events-none"
-          style={{ height: 220, background: "linear-gradient(to bottom, #1C1714 0%, transparent 100%)", zIndex: 0 }}
-        />
-        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section relative" style={{ zIndex: 1 }}>
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="grid gap-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-xxl lg:items-center">
             {/* Photo */}
             <div className="relative overflow-hidden" style={{ aspectRatio: "4/5" }}>
@@ -873,5 +871,6 @@ export default async function PublicHomePage() {
       </footer>
 
     </main>
+    </>
   );
 }
