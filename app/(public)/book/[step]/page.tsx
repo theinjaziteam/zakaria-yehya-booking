@@ -250,30 +250,15 @@ async function ServiceStep({ loc }: { loc: string }) {
     }
   }
 
-  // Demo data
   if (categories.length === 0) {
-    categories = [
-      { id: "c1", name: "Cut & Style", sort_order: 1 },
-      { id: "c2", name: "Colour", sort_order: 2 },
-      { id: "c3", name: "Treatments", sort_order: 3 },
-      { id: "c4", name: "Bridal", sort_order: 4 },
-      { id: "c5", name: "Gentleman's Grooming", sort_order: 5 },
-    ];
-    services = [
-      { id: "s1", category_id: "c1", name: "Haircut & Style — Ladies", slug: "cut-ladies", duration_min: 60, price_cents: 4500, description: null, requires_consultation: false },
-      { id: "s2", category_id: "c1", name: "Haircut & Style — Men", slug: "cut-men", duration_min: 45, price_cents: 3000, description: null, requires_consultation: false },
-      { id: "s3", category_id: "c1", name: "Children's Cut", slug: "cut-children", duration_min: 30, price_cents: 2000, description: "Under 12", requires_consultation: false },
-      { id: "s4", category_id: "c1", name: "Blow-Dry & Styling", slug: "blowdry", duration_min: 45, price_cents: 3500, description: null, requires_consultation: false },
-      { id: "s5", category_id: "c2", name: "Single Process Colour", slug: "colour-single", duration_min: 120, price_cents: 9000, description: null, requires_consultation: false },
-      { id: "s6", category_id: "c2", name: "Highlights & Balayage", slug: "balayage", duration_min: 180, price_cents: 18000, description: null, requires_consultation: false },
-      { id: "s7", category_id: "c2", name: "Colour Correction", slug: "colour-correction", duration_min: 240, price_cents: 25000, description: null, requires_consultation: true },
-      { id: "s8", category_id: "c3", name: "Keratin Treatment", slug: "keratin", duration_min: 180, price_cents: 20000, description: null, requires_consultation: false },
-      { id: "s9", category_id: "c3", name: "Hair Botox", slug: "hair-botox", duration_min: 150, price_cents: 15000, description: null, requires_consultation: false },
-      { id: "s10", category_id: "c4", name: "Bridal Hair — Trial", slug: "bridal-trial", duration_min: 90, price_cents: 12000, description: null, requires_consultation: false },
-      { id: "s11", category_id: "c4", name: "Bridal Hair — Day Of", slug: "bridal-day", duration_min: 120, price_cents: 25000, description: null, requires_consultation: false },
-      { id: "s12", category_id: "c5", name: "Beard Trim & Shape", slug: "beard", duration_min: 30, price_cents: 2000, description: null, requires_consultation: false },
-      { id: "s13", category_id: "c5", name: "Traditional Hot Shave", slug: "hot-shave", duration_min: 45, price_cents: 3000, description: null, requires_consultation: false },
-    ];
+    return (
+      <div>
+        <SectionHead eyebrow="Step 1 of 5" title="Choose a service." />
+        <p className="font-mono text-xs uppercase tracking-widest text-muted-fg">
+          Unable to load services. Please try again or call us directly.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -394,14 +379,15 @@ async function StylistStep({ loc, svc }: { loc: string; svc: string }) {
     }
   }
 
-  // Demo data
   if (staffList.length === 0) {
-    staffList = [
-      { id: "demo-s1", name: "Yehia", slug: "yehia", photo_url: null, bio: "Master Stylist and co-founder. Specialist in cuts and ceremony hair.", title: "Master Stylist" },
-      { id: "demo-s2", name: "Zakaria", slug: "zakaria", photo_url: null, bio: "Senior Colorist and co-founder. Expert in balayage and colour correction.", title: "Senior Colorist" },
-      { id: "demo-s3", name: "Rania", slug: "rania", photo_url: null, bio: "Bridal Specialist. Known for her precision with occasion and ceremony hair.", title: "Bridal Specialist" },
-      { id: "demo-s4", name: "Karim", slug: "karim", photo_url: null, bio: "Junior Stylist. Thorough with cuts and finishing.", title: "Junior Stylist" },
-    ];
+    return (
+      <div>
+        <SectionHead eyebrow="Step 2 of 5" title="Choose your stylist." />
+        <p className="font-mono text-xs uppercase tracking-widest text-muted-fg">
+          No stylists available for this service. Please go back and try another.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -830,12 +816,15 @@ export default async function BookingStepPage({
     ? `/book/${prevStep}${backParams.size ? "?" + backParams.toString() : ""}`
     : "/";
 
-  // Guard: redirect to /book (entry point) if required params are missing
+  // UUID shape check — demo IDs like "s1" must never propagate
+  const isUUID = (v?: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v ?? "");
+
+  // Guard: redirect to /book (entry point) if required params are missing or invalid
   if (currentStep === "service" && !loc) redirect("/book");
-  if (currentStep === "stylist" && (!loc || !svc)) redirect("/book");
-  if (currentStep === "date" && (!loc || !svc || !staff)) redirect("/book");
-  if (currentStep === "time" && (!loc || !svc || !staff || !date)) redirect("/book");
-  if (currentStep === "confirm" && (!loc || !svc || !staff || !date || !time)) redirect("/book");
+  if (currentStep === "stylist" && (!loc || !svc || !isUUID(loc) || !isUUID(svc))) redirect("/book");
+  if (currentStep === "date" && (!loc || !svc || !staff || !isUUID(loc) || !isUUID(svc))) redirect("/book");
+  if (currentStep === "time" && (!loc || !svc || !staff || !date || !isUUID(loc) || !isUUID(svc) || (staff !== "any" && !isUUID(staff)))) redirect("/book");
+  if (currentStep === "confirm" && (!loc || !svc || !staff || !date || !time || !isUUID(loc) || !isUUID(svc) || (staff !== "any" && !isUUID(staff)))) redirect("/book");
 
   function StepContent() {
     switch (currentStep) {
