@@ -1,48 +1,58 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function HeroVideo({ videos }: { videos: string[] }) {
-  const [front, setFront] = useState<0 | 1>(0);
-  const refA = useRef<HTMLVideoElement>(null);
-  const refB = useRef<HTMLVideoElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    [refA, refB].forEach(r => {
-      const v = r.current;
-      if (!v) return;
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+
+    // Build video elements imperatively — setting muted BEFORE appendChild
+    // is the only reliable way to get iOS Safari to autoplay without a play button.
+    // React's JSX muted prop only sets the DOM property, not the HTML attribute,
+    // so iOS ignores it when making the autoplay decision at insertion time.
+    const els: HTMLVideoElement[] = videos.map((src, i) => {
+      const v = document.createElement("video");
+      v.muted = true;
+      (v as HTMLVideoElement & { defaultMuted: boolean }).defaultMuted = true;
+      v.setAttribute("muted", "");
       v.setAttribute("playsinline", "");
       v.setAttribute("webkit-playsinline", "");
+      v.setAttribute("preload", "auto");
+      v.src = src;
+      Object.assign(v.style, {
+        position: "absolute",
+        inset: "0",
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        objectPosition: "center 40%",
+        pointerEvents: "none",
+        opacity: i === 0 ? "1" : "0",
+        transition: "opacity 0.9s ease",
+      });
+      wrap.appendChild(v);
+      return v;
     });
+
+    function show(idx: number) {
+      els.forEach((v, i) => { v.style.opacity = i === idx ? "1" : "0"; });
+      const v = els[idx]!;
+      v.currentTime = 0;
+      v.play().catch(() => {});
+    }
+
+    els.forEach((v, i) => {
+      v.addEventListener("ended", () => show((i + 1) % els.length));
+    });
+
+    els[0]!.play().catch(() => {});
+
+    return () => { els.forEach(v => { v.pause(); wrap.removeChild(v); }); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function handleEnded(slot: 0 | 1) {
-    const nextRef = slot === 0 ? refB : refA;
-    const v = nextRef.current;
-    if (v) { v.currentTime = 0; v.play().catch(() => {}); }
-    setFront(slot === 0 ? 1 : 0);
-  }
-
-  // Both have autoPlay — iOS won't show a play button on a playing video.
-  // No zIndex — DOM order keeps videos behind the gradient + text above them.
-  return (
-    <>
-      <video
-        ref={refA}
-        src={videos[0]}
-        autoPlay muted playsInline preload="auto"
-        onEnded={() => handleEnded(0)}
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ objectPosition: "center 40%", pointerEvents: "none", opacity: front === 0 ? 1 : 0, transition: "opacity 0.9s ease" }}
-      />
-      <video
-        ref={refB}
-        src={videos[1] ?? videos[0]}
-        autoPlay muted playsInline preload="auto"
-        onEnded={() => handleEnded(1)}
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ objectPosition: "center 40%", pointerEvents: "none", opacity: front === 1 ? 1 : 0, transition: "opacity 0.9s ease" }}
-      />
-    </>
-  );
+  return <div ref={wrapRef} className="absolute inset-0" />;
 }
