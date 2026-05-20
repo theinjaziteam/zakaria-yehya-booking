@@ -62,10 +62,10 @@ export default function AdminLayout({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={[
-                    "shrink-0 px-3 py-1.5 font-mono text-xs uppercase tracking-widest transition-colors",
-                    active ? "bg-card text-fg" : "text-muted-fg hover:text-fg",
-                  ].join(" ")}
+                  className="shrink-0 px-3 py-1.5 font-mono text-xs uppercase tracking-widest transition-opacity"
+                  style={active
+                    ? { background: "var(--ink)", color: "var(--canvas)" }
+                    : { color: "var(--muted)" }}
                 >
                   {item.label}
                 </Link>
