@@ -147,9 +147,7 @@ const DEMO_SERVICES = [
 ];
 
 const DEMO_LOCATIONS = [
-  { id: "l1", slug: "verdun", name: "Verdun", address: "Rashid Karameh Street, Shad Building, Verdun, Beirut", phone: "+961 1 XXX XXX", timezone: "Asia/Beirut" },
-  { id: "l2", slug: "achrafieh", name: "Achrafieh", address: "Rue Sursock, Achrafieh, Beirut", phone: "+961 1 XXX XXX", timezone: "Asia/Beirut" },
-  { id: "l3", slug: "kaslik", name: "Kaslik", address: "Main Road, Kaslik, Jounieh", phone: "+961 9 XXX XXX", timezone: "Asia/Beirut" },
+  { id: "l1", slug: "verdun", name: "Verdun", address: "Rashid Karameh Street, Shad Building, Verdun, Beirut", phone: "+961 1 780 710", timezone: "Asia/Beirut" },
 ];
 
 const DEMO_PRODUCTS: Product[] = [
@@ -318,7 +316,7 @@ export default async function PublicHomePage() {
             <span key={i} className="flex shrink-0 gap-xl">
               <span>Est. 1998</span>
               <span className="text-border">·</span>
-              <span>Verdun · Achrafieh · Kaslik</span>
+              <span>Verdun, Beirut</span>
               <span className="text-border">·</span>
               <span>By appointment only</span>
               <span className="text-border">·</span>
