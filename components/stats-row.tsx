@@ -2,7 +2,7 @@
 
 import { Counter } from "@/components/counter";
 import { StaggerReveal, staggerItem } from "@/components/reveal";
-import { motion } from "framer-motion";
+import * as motion from "framer-motion/client";
 
 const stats = [
   { value: 8,    suffix: "",    label: "Stylists" },

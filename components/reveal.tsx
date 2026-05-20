@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import * as motion from "framer-motion/client";
+import { useInView } from "framer-motion";
 import { useRef } from "react";
 
 type Props = {

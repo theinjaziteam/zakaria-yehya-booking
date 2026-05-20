@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import * as motion from "framer-motion/client";
 import { MagneticButton } from "@/components/magnetic-button";
 
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];

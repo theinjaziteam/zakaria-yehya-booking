@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import * as motion from "framer-motion/client";
 import { StaggerReveal, staggerItem } from "@/components/reveal";
 
 type Step = { title: string; body: string };
