@@ -165,9 +165,9 @@ export default function MyBookingsPage() {
           >
             {customer ? `${customer.name.split(" ")[0]}'s bookings.` : "Your bookings."}
           </h1>
-          {customer && (
-            <p className="text-body" style={{ fontSize: "var(--body-sm-size)" }}>
-              {customer.phone ? displayPhone(customer.phone) : ""}
+          {customer?.phone && (
+            <p className="text-body whitespace-nowrap" style={{ fontSize: "var(--body-sm-size)" }}>
+              {displayPhone(customer.phone)}
             </p>
           )}
         </div>
@@ -318,8 +318,8 @@ export default function MyBookingsPage() {
           <p className={labelBase}>
             {clientConfig.brand.name} · Est. 1998 · <a href="tel:011780710" className="hover:opacity-70">01 780 710</a>
           </p>
-          <Link href="/" className={`${labelBase} hover:opacity-70`}>
-            Home →
+          <Link href="/book" className={`${labelBase} hover:opacity-70`}>
+            Reserve →
           </Link>
         </div>
       </footer>

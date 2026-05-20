@@ -348,7 +348,7 @@ export default async function PublicHomePage() {
 
       {/* ── PHILOSOPHY ──────────────────────────────────────────────── */}
       <section className="border-b border-border">
-        <ScrollReveal className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
+        <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
           <div className="grid gap-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-xxl lg:items-center">
             {/* Photo */}
             <div className="relative overflow-hidden" style={{ aspectRatio: "4/5" }}>
@@ -416,7 +416,7 @@ export default async function PublicHomePage() {
               </div>
             </div>
           </div>
-        </ScrollReveal>
+        </div>
       </section>
 
       {/* ── FULL-BLEED CRAFT BAND ───────────────────────────────────── */}

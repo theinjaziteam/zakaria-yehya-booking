@@ -21,10 +21,11 @@ export function NavActions() {
           </Link>
           <button
             onClick={() => signOut()}
-            className="btn-pill hidden sm:inline-flex h-8 items-center px-2 font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg transition-opacity hover:opacity-70 select-none"
+            className="btn-pill inline-flex h-8 items-center px-2 font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg transition-opacity hover:opacity-70 select-none"
             title={`Signed in as ${user.email}`}
           >
-            {user.email?.split("@")[0]} · sign out
+            <span className="sm:hidden">Out</span>
+            <span className="hidden sm:inline">{user.email?.split("@")[0]} · sign out</span>
           </button>
         </>
       )}

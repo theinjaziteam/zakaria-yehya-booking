@@ -83,9 +83,9 @@ export function CelebGrid() {
       ([entry]) => {
         if (!entry.isIntersecting) return;
         observer.disconnect();
-        // Light up each card one by one, 350ms apart
+        // Light up each card one by one, 180ms apart
         CELEBS.forEach((_, i) => {
-          setTimeout(() => setLitUpTo(prev => Math.max(prev, i)), i * 350);
+          setTimeout(() => setLitUpTo(prev => Math.max(prev, i)), i * 180);
         });
       },
       { threshold: 0.25 },
