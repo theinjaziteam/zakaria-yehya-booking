@@ -7,6 +7,7 @@ import { clientConfig } from "@/config/client";
 const NAV = [
   { href: "/admin/bookings", label: "Bookings" },
   { href: "/admin/orders",   label: "Orders" },
+  { href: "/admin/revenue",  label: "Revenue" },
   { href: "/admin/staff",    label: "Staff" },
 ];
 
