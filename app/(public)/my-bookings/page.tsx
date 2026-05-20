@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { clientConfig } from "@/config/client";
 import { formatDisplayDatetime } from "@/lib/utils/time";
@@ -67,21 +67,32 @@ export default function MyBookingsPage() {
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
   const [refInput, setRefInput] = useState("");
+  const prevEmailRef = useRef<string | null>(null);
 
   // Auto-load when user session is available (from sign-in at checkout or nav sign-in)
   useEffect(() => {
     if (authLoading) return;
 
-    const sessionEmail = user?.email;
+    const sessionEmail = user?.email ?? null;
+
+    // Sign-out detected: was authenticated, now not — reset to blank slate
+    if (prevEmailRef.current && !sessionEmail) {
+      prevEmailRef.current = null;
+      setBookings([]);
+      setCustomer(null);
+      setFetched(true);
+      return;
+    }
+
+    prevEmailRef.current = sessionEmail;
 
     if (sessionEmail) {
-      // Signed-in user — fetch by session email
       fetchBookings(sessionEmail);
       setCustomer((prev) => prev ?? { name: sessionEmail.split("@")[0], email: sessionEmail, phone: "" });
       return;
     }
 
-    // Fall back to localStorage for users who booked without creating an account
+    // No session on first load — fall back to localStorage for guest users
     const raw = localStorage.getItem("yz_customer");
     if (raw) {
       try {
@@ -96,7 +107,7 @@ export default function MyBookingsPage() {
         setFetched(true);
       }
     } else {
-      setFetched(true); // no session, no localStorage → show sign-in prompt
+      setFetched(true);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading, user?.email]);
