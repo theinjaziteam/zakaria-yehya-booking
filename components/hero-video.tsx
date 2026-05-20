@@ -1,32 +1,66 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export function HeroVideo({ videos }: { videos: string[] }) {
-  const [idx, setIdx] = useState(0);
-  const ref = useRef<HTMLVideoElement>(null);
+  const [front, setFront] = useState<0 | 1>(0);
+  const refA = useRef<HTMLVideoElement>(null);
+  const refB = useRef<HTMLVideoElement>(null);
 
-  // Set iOS-specific attributes that React doesn't output lowercase
   useEffect(() => {
-    const v = ref.current;
-    if (!v) return;
-    v.setAttribute("playsinline", "");
-    v.setAttribute("webkit-playsinline", "");
-  }, [idx]); // re-run on each remount (key change)
+    // iOS requires these attributes set directly on the element
+    [refA, refB].forEach(r => {
+      const v = r.current;
+      if (!v) return;
+      v.setAttribute("playsinline", "");
+      v.setAttribute("webkit-playsinline", "");
+    });
+    // Start video A — B is preloading silently in the background
+    refA.current?.play().catch(() => {});
+  }, []);
 
-  // key={idx} forces a full remount → autoPlay fires reliably on every video
+  function handleEnded(slot: 0 | 1) {
+    const nextRef = slot === 0 ? refB : refA;
+    const v = nextRef.current;
+    if (v) { v.currentTime = 0; v.play().catch(() => {}); }
+    setFront(slot === 0 ? 1 : 0);
+  }
+
+  const base = "absolute inset-0 h-full w-full object-cover";
+
+  const styleFor = (slot: 0 | 1): React.CSSProperties => ({
+    objectPosition: "center 40%",
+    pointerEvents: "none",
+    opacity: front === slot ? 1 : 0,
+    zIndex: front === slot ? 1 : 0,
+    transition: "opacity 0.9s ease",
+  });
+
   return (
-    <video
-      key={idx}
-      ref={ref}
-      src={videos[idx]}
-      autoPlay
-      muted
-      playsInline
-      preload="auto"
-      onEnded={() => setIdx(i => (i + 1) % videos.length)}
-      className="absolute inset-0 h-full w-full object-cover"
-      style={{ objectPosition: "center 40%", pointerEvents: "none" }}
-    />
+    <>
+      {/* Video A — autoPlay in markup so iOS starts it immediately */}
+      <video
+        ref={refA}
+        src={videos[0]}
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        onEnded={() => handleEnded(0)}
+        className={base}
+        style={styleFor(0)}
+      />
+      {/* Video B — preloads silently, plays when A ends */}
+      <video
+        ref={refB}
+        src={videos[1] ?? videos[0]}
+        muted
+        playsInline
+        preload="auto"
+        onEnded={() => handleEnded(1)}
+        className={base}
+        style={styleFor(1)}
+      />
+    </>
   );
 }
