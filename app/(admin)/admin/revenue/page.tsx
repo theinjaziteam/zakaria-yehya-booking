@@ -36,18 +36,30 @@ export default async function RevenuePage({
 
   const supabase = createAdminSupabaseClient();
 
-  // ── All confirmed bookings with service price ────────────────
+  // ── All active bookings with service price ───────────────────
   const { data: bookingsRaw } = await supabase
     .from("bookings")
     .select("id, reference_code, customer_name, customer_phone, starts_at, status, staff_id, services(name, price_cents)")
     .in("status", ["confirmed", "completed"])
     .order("starts_at", { ascending: false });
 
-  // ── All product orders ────────────────────────────────────────
+  // ── Late arrival penalties ────────────────────────────────────
+  const { data: penaltiesRaw } = await supabase
+    .from("penalties")
+    .select("booking_id, amount_cents")
+    .eq("type", "late_arrival")
+    .not("booking_id", "is", null);
+
+  const penaltyMap = new Map<string, number>();
+  for (const p of (penaltiesRaw ?? []) as { booking_id: string; amount_cents: number }[]) {
+    penaltyMap.set(p.booking_id, (penaltyMap.get(p.booking_id) ?? 0) + p.amount_cents);
+  }
+
+  // ── All product orders (count pending + confirmed + completed) ─
   const { data: ordersRaw } = await supabase
     .from("product_orders")
     .select("id, total_cents, created_at, status")
-    .in("status", ["pending", "confirmed", "completed"])
+    .neq("status", "cancelled")
     .order("created_at", { ascending: false });
 
   // ── Staff list ───────────────────────────────────────────────
@@ -81,7 +93,7 @@ export default async function RevenuePage({
       TZ, "yyyy-MM"
     );
     const bucket = monthMap.get(month) ?? { month, booking_revenue: 0, order_revenue: 0, booking_count: 0 };
-    bucket.booking_revenue += b.price_cents;
+    bucket.booking_revenue += b.price_cents + (penaltyMap.get(b.id) ?? 0);
     bucket.booking_count += 1;
     monthMap.set(month, bucket);
   }
@@ -100,12 +112,12 @@ export default async function RevenuePage({
   }
   for (const b of bookings) {
     const row = staffStats.get(b.staff_id);
-    if (row) { row.booking_count += 1; row.revenue_cents += b.price_cents; }
+    if (row) { row.booking_count += 1; row.revenue_cents += b.price_cents + (penaltyMap.get(b.id) ?? 0); }
   }
   const staffList: StaffRow[] = Array.from(staffStats.values()).sort((a, b) => b.revenue_cents - a.revenue_cents);
 
   // ── Grand totals ─────────────────────────────────────────────
-  const totalBookingRevenue = bookings.reduce((s, b) => s + b.price_cents, 0);
+  const totalBookingRevenue = bookings.reduce((s, b) => s + b.price_cents + (penaltyMap.get(b.id) ?? 0), 0);
   const totalOrderRevenue = (ordersRaw ?? []).reduce((s, o) => s + Number(o.total_cents ?? 0), 0);
   const grandTotal = totalBookingRevenue + totalOrderRevenue;
 
@@ -251,7 +263,10 @@ export default async function RevenuePage({
                         <p className="text-xs text-muted-fg">{b.customer_phone}</p>
                       </td>
                       <td className="px-4 py-3 text-fg">{b.service_name}</td>
-                      <td className="px-4 py-3 font-mono text-sm text-fg">{fmt(b.price_cents)}</td>
+                      <td className="px-4 py-3 font-mono text-sm text-fg">
+                        {fmt(b.price_cents + (penaltyMap.get(b.id) ?? 0))}
+                        {penaltyMap.get(b.id) ? <span className="ml-1 text-xs text-warning">(+{fmt(penaltyMap.get(b.id)!)} late)</span> : null}
+                      </td>
                       <td className="px-4 py-3 font-mono text-xs uppercase tracking-widest text-muted-fg">{b.status}</td>
                     </tr>
                   ))}

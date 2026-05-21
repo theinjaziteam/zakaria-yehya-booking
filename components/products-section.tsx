@@ -71,8 +71,10 @@ function ProductCard({ product }: { product: Product }) {
         )}
         <button
           onClick={handleAdd}
-          className="mt-xs w-full border border-fg py-2 font-mono text-[0.7rem] uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas"
-          style={added ? { background: "var(--fg)", color: "var(--canvas)" } : {}}
+          className="mt-xs w-full py-2 font-mono text-[0.7rem] uppercase tracking-widest transition-opacity hover:opacity-85"
+          style={added
+            ? { background: "#3E6E34", color: "#F9F6F1" }
+            : { background: "#1C1714", color: "#F9F6F1" }}
         >
           {added ? "Added ✓" : "Add to cart"}
         </button>
@@ -128,8 +130,8 @@ export function ProductsSection({ products }: { products: Product[] }) {
             </p>
             <Link
               href="/checkout"
-              className="inline-flex h-11 items-center justify-center border border-fg px-8 font-mono text-sm uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas"
-              style={{ borderRadius: "var(--radius-pill)" }}
+              className="inline-flex h-11 items-center justify-center px-8 font-mono text-sm uppercase tracking-widest transition-opacity hover:opacity-85"
+              style={{ borderRadius: "var(--radius-pill)", background: "#1C1714", color: "#F9F6F1" }}
             >
               Checkout →
             </Link>

@@ -335,7 +335,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         image_url: product.image_url,
       }];
     });
-    setDrawerOpen(true);
+    // Don't open drawer — checkout flow is via the dedicated /checkout page
   }, []);
 
   const updateQty = useCallback((id: string, qty: number) => {

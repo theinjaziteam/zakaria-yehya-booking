@@ -136,16 +136,21 @@ async function getBookings(
   }
 }
 
-async function getLateBookingIds(): Promise<Set<string>> {
+// Returns Map<booking_id, total_penalty_cents>
+async function getLateBookingPenalties(): Promise<Map<string, number>> {
   try {
     const supabase = createAdminSupabaseClient();
     const { data } = await supabase
       .from("penalties")
-      .select("booking_id")
+      .select("booking_id, amount_cents")
       .eq("type", "late_arrival")
       .not("booking_id", "is", null);
-    return new Set((data ?? []).map((r: { booking_id: string }) => r.booking_id));
-  } catch { return new Set(); }
+    const map = new Map<string, number>();
+    for (const r of (data ?? []) as { booking_id: string; amount_cents: number }[]) {
+      map.set(r.booking_id, (map.get(r.booking_id) ?? 0) + r.amount_cents);
+    }
+    return map;
+  } catch { return new Map(); }
 }
 
 function formatPrice(cents: number) {
@@ -186,7 +191,7 @@ export default async function AdminBookingsPage({
   const locSlug = sp.loc ?? "all";
   const q = (sp.q ?? "").trim();
 
-  const [locations, lateIds] = await Promise.all([getLocations(), getLateBookingIds()]);
+  const [locations, lateIds] = await Promise.all([getLocations(), getLateBookingPenalties()]);
   const selectedLocation =
     locSlug === "all" ? null : (locations.find((l) => l.slug === locSlug) ?? null);
 
@@ -376,7 +381,12 @@ export default async function AdminBookingsPage({
                     <td className="py-3.5 pr-4 text-base text-fg">{b.staff_name}</td>
                     <td className="py-3.5 pr-4 text-base text-muted-fg">{b.location_name}</td>
                     <td className="py-3.5 pr-4 font-mono text-base text-fg">
-                      {formatPrice(b.service_price_cents)}
+                      {(() => {
+                        const penalty = lateIds.get(b.id) ?? 0;
+                        return penalty > 0
+                          ? <><span>{formatPrice(b.service_price_cents + penalty)}</span><span className="ml-1 text-xs text-warning">(+{formatPrice(penalty)})</span></>
+                          : formatPrice(b.service_price_cents);
+                      })()}
                     </td>
                     <td className="py-3.5 pr-4">
                       <span
@@ -439,7 +449,10 @@ export default async function AdminBookingsPage({
                   {b.service_name}
                 </p>
                 <p className="text-xs text-muted-fg leading-snug">
-                  {b.staff_name} · {formatPrice(b.service_price_cents)}
+                  {b.staff_name} · {(() => {
+                    const penalty = lateIds.get(b.id) ?? 0;
+                    return penalty > 0 ? `${formatPrice(b.service_price_cents + penalty)} (+${formatPrice(penalty)} late)` : formatPrice(b.service_price_cents);
+                  })()}
                 </p>
                 {/* Row 4: ref + badges */}
                 <div className="flex flex-wrap items-center gap-2 mt-2">
