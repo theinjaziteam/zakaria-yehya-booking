@@ -31,6 +31,18 @@ type Booking = {
   staff_title: string | null;
 };
 
+type ProductOrder = {
+  id: string;
+  reference_code: string | null;
+  customer_name: string;
+  items: { product_name: string; quantity: number; unit_price_cents: number }[];
+  total_cents: number;
+  status: string;
+  pickup_date: string | null;
+  pickup_time: string | null;
+  created_at: string;
+};
+
 type SavedCustomer = {
   name: string;
   email: string;
@@ -64,6 +76,7 @@ export default function MyBookingsPage() {
   const { user, loading: authLoading } = useAuth();
   const [customer, setCustomer] = useState<SavedCustomer | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [orders, setOrders] = useState<ProductOrder[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
   const [refInput, setRefInput] = useState("");
@@ -79,6 +92,7 @@ export default function MyBookingsPage() {
     if (prevEmailRef.current && !sessionEmail) {
       prevEmailRef.current = null;
       setBookings([]);
+      setOrders([]);
       setCustomer(null);
       setFetched(true);
       return;
@@ -115,13 +129,12 @@ export default function MyBookingsPage() {
   async function fetchBookings(email: string) {
     setLoading(true);
     try {
-      const res = await fetch(
-        `/api/customer/bookings?email=${encodeURIComponent(email)}`,
-      );
-      if (res.ok) {
-        const data = (await res.json()) as Booking[];
-        setBookings(data);
-      }
+      const [bookingRes, orderRes] = await Promise.all([
+        fetch(`/api/customer/bookings?email=${encodeURIComponent(email)}`),
+        fetch(`/api/customer/orders?email=${encodeURIComponent(email)}`),
+      ]);
+      if (bookingRes.ok) setBookings((await bookingRes.json()) as Booking[]);
+      if (orderRes.ok) setOrders((await orderRes.json()) as ProductOrder[]);
     } catch {
       /* ignore */
     } finally {
@@ -224,7 +237,7 @@ export default function MyBookingsPage() {
           <>
             <div className="mb-lg flex items-center justify-between">
               <p className={labelBase}>
-                {bookings.length} booking{bookings.length !== 1 ? "s" : ""} found
+                {bookings.length} booking{bookings.length !== 1 ? "s" : ""}{orders.length > 0 ? ` · ${orders.length} order${orders.length !== 1 ? "s" : ""}` : ""}
               </p>
               <button
                 onClick={() => {
@@ -260,6 +273,17 @@ export default function MyBookingsPage() {
               </div>
             ) : (
               <div className="grid gap-xl">
+                {/* Product orders — above bookings */}
+                {orders.length > 0 && (
+                  <section>
+                    <p className={`${labelBase} mb-md border-b border-border pb-xs`}>
+                      Product orders ({orders.length})
+                    </p>
+                    <div className="grid gap-sm">
+                      {orders.map(o => <OrderCard key={o.id} o={o} />)}
+                    </div>
+                  </section>
+                )}
                 {upcoming.length > 0 && (
                   <section>
                     <p className={`${labelBase} mb-md border-b border-border pb-xs`}>
@@ -337,6 +361,61 @@ export default function MyBookingsPage() {
         </div>
       </footer>
     </main>
+  );
+}
+
+const ORDER_STATUS_COLOR: Record<string, string> = {
+  pending:   "var(--warning)",
+  confirmed: "var(--fg)",
+  completed: "var(--success)",
+  cancelled: "var(--muted-fg)",
+};
+
+function OrderCard({ o }: { o: ProductOrder }) {
+  const cardLabel = "font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg";
+
+  function fmtPickup(date: string | null, time: string | null) {
+    if (!date) return "—";
+    try {
+      const d = new Date(date + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+      return time ? `${d} · ${time.slice(0, 5)}` : d;
+    } catch { return date; }
+  }
+
+  return (
+    <article className={`border border-border bg-card p-md sm:p-lg grid gap-md ${o.status === "cancelled" ? "opacity-60" : ""}`}>
+      <div className="flex items-start justify-between gap-sm">
+        <div>
+          <p className="font-display uppercase text-fg" style={{ fontSize: "var(--title-md-size)", letterSpacing: "var(--title-md-tracking)" }}>
+            Pickup · {fmtPickup(o.pickup_date, o.pickup_time)}
+          </p>
+          <p className={cardLabel}>Verdun salon · product order</p>
+        </div>
+        <span className="shrink-0 font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)]" style={{ color: ORDER_STATUS_COLOR[o.status] ?? "var(--fg)" }}>
+          {o.status}
+        </span>
+      </div>
+
+      <div className="grid gap-xxs border-t border-border pt-sm sm:grid-cols-3">
+        <div>
+          <p className={cardLabel}>Items</p>
+          {o.items.map((item, i) => (
+            <p key={i} className="text-fg" style={{ fontSize: "var(--body-sm-size)" }}>
+              {item.quantity}× {item.product_name}
+            </p>
+          ))}
+          <p className="text-muted-fg" style={{ fontSize: "var(--caption-size)" }}>
+            Total: {clientConfig.business.currencySymbol}{(o.total_cents / 100).toFixed(0)}
+          </p>
+        </div>
+        <div>
+          <p className={cardLabel}>Reference</p>
+          <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-accent">
+            {o.reference_code ?? "—"}
+          </p>
+        </div>
+      </div>
+    </article>
   );
 }
 
