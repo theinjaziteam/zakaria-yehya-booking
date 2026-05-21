@@ -1,60 +1,95 @@
 "use client";
 
-import { Counter } from "@/components/counter";
-import { StaggerReveal, staggerItem } from "@/components/reveal";
-import * as motion from "framer-motion/client";
+import { useState, useEffect } from "react";
+import { span as MotionSpan } from "framer-motion/client";
+import { AnimatePresence } from "framer-motion";
 
-const stats = [
-  { value: 8,    suffix: "",    label: "Stylists" },
-  { value: 1998, suffix: "",    label: "Est." },
-  { value: 5000, suffix: "+",   label: "Clients served" },
+const WORD_SETS = [
+  ["CRAFT",    "RITUAL",   "LEGACY"],
+  ["SHARP",    "PRECISE",  "BOLD"],
+  ["ICONIC",   "TIMELESS", "VERDUN"],
 ];
 
-export function StatsRow() {
+const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+function AnimatedWord({ word, colIndex }: { word: string; colIndex: number }) {
   return (
-    <StaggerReveal
+    <AnimatePresence mode="wait">
+      <MotionSpan
+        key={word}
+        style={{ display: "inline-flex", overflow: "hidden" }}
+        aria-label={word}
+      >
+        {word.split("").map((char, i) => (
+          <MotionSpan
+            key={`${word}-${i}`}
+            style={{ display: "inline-block" }}
+            initial={{ y: "115%", opacity: 0 }}
+            animate={{ y: "0%", opacity: 1 }}
+            exit={{ y: "-115%", opacity: 0 }}
+            transition={{
+              duration: 0.52,
+              delay: colIndex * 0.08 + i * 0.038,
+              ease,
+            }}
+          >
+            {char === " " ? " " : char}
+          </MotionSpan>
+        ))}
+      </MotionSpan>
+    </AnimatePresence>
+  );
+}
+
+export function StatsRow() {
+  const [setIdx, setSetIdx] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setSetIdx(i => (i + 1) % WORD_SETS.length);
+    }, 2600);
+    return () => clearInterval(id);
+  }, []);
+
+  const words = WORD_SETS[setIdx]!;
+
+  return (
+    <div
       style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
         borderBottom: "1px solid var(--hairline)",
         background: "#F9F6F1",
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
       }}
     >
-      {stats.map((s, i) => (
-        <motion.div
-          key={s.label}
-          variants={staggerItem}
+      {words.map((word, i) => (
+        <div
+          key={i}
           style={{
-            padding: "2rem 1.5rem",
-            borderRight: i < stats.length - 1 ? "1px solid var(--hairline)" : undefined,
-            textAlign: "center",
+            padding: "1.75rem 1.5rem",
+            borderRight: i < words.length - 1 ? "1px solid var(--hairline)" : undefined,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
           }}
         >
           <p
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(2rem, 5vw, 3.5rem)",
-              letterSpacing: "0.02em",
+              fontSize: "clamp(1.25rem, 3.5vw, 2.25rem)",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
               color: "#1C1714",
               lineHeight: 1,
-              marginBottom: "0.4rem",
+              margin: 0,
+              whiteSpace: "nowrap",
             }}
           >
-            <Counter to={s.value} suffix={s.suffix} />
+            <AnimatedWord word={word} colIndex={i} />
           </p>
-          <p
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.6875rem",
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              color: "rgba(28,23,20,0.45)",
-            }}
-          >
-            {s.label}
-          </p>
-        </motion.div>
+        </div>
       ))}
-    </StaggerReveal>
+    </div>
   );
 }
