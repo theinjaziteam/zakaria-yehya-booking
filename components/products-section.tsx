@@ -24,59 +24,78 @@ function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
 
-  function handleAdd(e: React.MouseEvent) {
-    e.preventDefault();
+  function handleAdd() {
     addItem(product);
     setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
+    setTimeout(() => setAdded(false), 1800);
   }
 
   return (
-    <article className="group">
-      {/* Portrait image — 3:4 */}
-      <div className="relative overflow-hidden" style={{ aspectRatio: "3/4" }}>
+    <article
+      style={{
+        background: "#FFFFFF",
+        border: "1px solid rgba(28,23,20,0.10)",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* Image — edge to edge, 3:4 */}
+      <div style={{ position: "relative", aspectRatio: "3/4", overflow: "hidden", flexShrink: 0 }}>
         {product.image_url ? (
           <img
             src={product.image_url}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.6s ease" }}
+            className="group-hover:scale-105"
           />
         ) : (
-          <div className="h-full w-full bg-secondary flex items-center justify-center">
-            <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-fg">—</span>
+          <div style={{ width: "100%", height: "100%", background: "#F2EDE6", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(28,23,20,0.3)" }}>—</span>
           </div>
         )}
       </div>
 
-      {/* Label + Add button */}
-      <div className="mt-sm grid gap-xs">
-        <div className="flex items-baseline justify-between gap-sm">
-          <h3
-            className="font-display uppercase text-fg"
-            style={{ fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)", lineHeight: 1.2 }}
-          >
+      {/* Content */}
+      <div style={{ padding: "16px 16px 20px", display: "flex", flexDirection: "column", gap: 10, flex: 1 }}>
+        {/* Name + price */}
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)", textTransform: "uppercase", color: "#1C1714", lineHeight: 1.2, margin: 0 }}>
             {product.name}
           </h3>
-          <p
-            className="shrink-0 font-mono text-muted-fg"
-            style={{ fontSize: "var(--caption-size)", letterSpacing: "0.06em" }}
-          >
+          <p style={{ fontFamily: "var(--font-mono)", fontSize: "var(--caption-size)", letterSpacing: "0.06em", color: "rgba(28,23,20,0.55)", flexShrink: 0 }}>
             {fmt(product.price_cents)}
           </p>
         </div>
+
+        {/* Description */}
         {product.description && (
-          <p className="text-muted-fg" style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.55 }}>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "var(--body-sm-size)", lineHeight: 1.6, color: "rgba(28,23,20,0.55)", margin: 0 }}>
             {product.description}
           </p>
         )}
+
+        {/* Spacer pushes button to bottom */}
+        <div style={{ flex: 1 }} />
+
+        {/* Add to cart — outlined, accent color, clearly different from the checkout CTA */}
         <button
           onClick={handleAdd}
-          className="mt-xs w-full py-2 font-mono text-[0.7rem] uppercase tracking-widest transition-opacity hover:opacity-85"
-          style={added
-            ? { background: "#3E6E34", color: "#F9F6F1" }
-            : { background: "#1C1714", color: "#F9F6F1" }}
+          style={{
+            marginTop: 4,
+            padding: "9px 0",
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.7rem",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            border: added ? "1px solid #3E6E34" : "1px solid rgba(28,23,20,0.35)",
+            background: added ? "#3E6E34" : "transparent",
+            color: added ? "#F9F6F1" : "#1C1714",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            width: "100%",
+          }}
         >
-          {added ? "Added ✓" : "Add to cart"}
+          {added ? "Added ✓" : "+ Add to cart"}
         </button>
       </div>
     </article>
@@ -90,25 +109,24 @@ export function ProductsSection({ products }: { products: Product[] }) {
 
   return (
     <section id="shop" className="border-b border-border">
-      <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
-
+      <div
+        className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section"
+        style={{ background: "#DDD0BC" }}
+      >
         {/* Header */}
         <div className="mb-xl grid gap-sm lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div className="grid gap-sm">
-            <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
+            <p style={{ fontFamily: "var(--font-mono)", fontSize: "var(--caption-size)", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)" }}>
               The shelf
             </p>
             <h2
-              className="font-display uppercase text-fg"
-              style={{ fontSize: "clamp(1.75rem, 5vw, 3.25rem)", lineHeight: 1.04, letterSpacing: "0.05em", maxWidth: "14ch" }}
+              className="font-display uppercase"
+              style={{ fontSize: "clamp(1.75rem, 5vw, 3.25rem)", lineHeight: 1.04, letterSpacing: "0.05em", maxWidth: "14ch", color: "#1C1714" }}
             >
               What we carry.
             </h2>
           </div>
-          <p
-            className="text-muted-fg lg:text-right lg:max-w-[34ch]"
-            style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7 }}
-          >
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "var(--body-sm-size)", lineHeight: 1.7, color: "rgba(28,23,20,0.6)", maxWidth: "34ch" }}>
             Add products to your cart and choose a pickup time at the salon.
           </p>
         </div>
@@ -122,16 +140,40 @@ export function ProductsSection({ products }: { products: Product[] }) {
           ))}
         </div>
 
-        {/* Checkout CTA — only visible when cart has items */}
+        {/* Checkout CTA — only when cart has items. Visually distinct: dark fill, pill, separated by space */}
         {itemCount > 0 && (
-          <div className="mt-xl flex items-center justify-between gap-md border-t border-fg pt-md">
-            <p className="font-mono text-sm uppercase tracking-widest text-fg">
+          <div
+            style={{
+              marginTop: "3rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "1.5rem",
+              borderTop: "1px solid rgba(28,23,20,0.2)",
+              paddingTop: "1.5rem",
+            }}
+          >
+            <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.6)" }}>
               {itemCount} {itemCount === 1 ? "item" : "items"} · {fmt(totalCents)}
             </p>
             <Link
               href="/checkout"
-              className="inline-flex h-11 items-center justify-center px-8 font-mono text-sm uppercase tracking-widest transition-opacity hover:opacity-85"
-              style={{ borderRadius: "var(--radius-pill)", background: "#1C1714", color: "#F9F6F1" }}
+              style={{
+                display: "inline-flex",
+                height: 44,
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0 2rem",
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                borderRadius: 9999,
+                background: "#1C1714",
+                color: "#F9F6F1",
+                textDecoration: "none",
+                transition: "opacity 0.2s",
+              }}
             >
               Checkout →
             </Link>
