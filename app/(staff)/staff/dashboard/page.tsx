@@ -46,6 +46,7 @@ export default function StaffDashboard() {
   const router = useRouter();
   const [staffName, setStaffName] = useState("");
   const [isOwner, setIsOwner] = useState(false);
+  const [authLoaded, setAuthLoaded] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tips, setTips] = useState<Tip[]>([]);
   const [filter, setFilter] = useState<"today" | "upcoming" | "all">("upcoming");
@@ -67,7 +68,7 @@ export default function StaffDashboard() {
   useEffect(() => {
     fetch("/api/staff/me")
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(data => { setStaffName(data.name ?? ""); setIsOwner(data.is_owner === true); })
+      .then(data => { setStaffName(data.name ?? ""); setIsOwner(data.is_owner === true); setAuthLoaded(true); })
       .catch(() => { window.location.href = "/staff/login"; });
   }, []);
 
@@ -190,9 +191,9 @@ export default function StaffDashboard() {
       </nav>
 
       <div style={{ maxWidth: 768, margin: "0 auto", padding: "2rem 1rem" }}>
-        {/* Tabs */}
+        {/* Tabs — only render once we know isOwner, prevents tips flashing for owners */}
         <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--hairline)", marginBottom: 24 }}>
-          {(["bookings", ...(!isOwner ? ["tips"] : [])] as ("bookings" | "tips")[]).map(t => (
+          {authLoaded && (["bookings", ...(!isOwner ? ["tips"] : [])] as ("bookings" | "tips")[]).map(t => (
             <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 24px", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", border: "none", borderBottom: tab === t ? "2px solid #1C1714" : "2px solid transparent", background: "transparent", color: tab === t ? "#1C1714" : "rgba(28,23,20,0.45)", cursor: "pointer" }}>
               {t}
             </button>
@@ -243,8 +244,9 @@ export default function StaffDashboard() {
                             </button>
                             <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "rgba(28,23,20,0.45)", letterSpacing: "0.06em", marginTop: 2 }}>{b.customer_phone}</p>
                             {hasTippedBefore && (
-                              <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#865F10", marginTop: 3 }}>
-                                💰 Tipped before
+                              <p style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#865F10", marginTop: 3 }}>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v2m0 8v2M9 12h6"/></svg>
+                                Tipped before
                               </p>
                             )}
                           </div>

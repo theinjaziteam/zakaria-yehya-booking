@@ -224,38 +224,27 @@ export default async function AdminBookingsPage({
       )}
 
       {/* Page header */}
-      <div className="mb-8 border-b border-border pb-6">
-        <div className="flex items-start justify-between gap-4">
+      <div className="mb-5 border-b border-border pb-4">
+        <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="mb-1 font-mono text-sm uppercase tracking-widest text-muted-fg">
-              Admin · Bookings
-            </p>
-            <h1 className="font-display text-4xl uppercase tracking-wide text-fg">
+            <h1 className="font-display text-2xl sm:text-4xl uppercase tracking-wide text-fg">
               {selectedLocation ? selectedLocation.name : "All Salons"}
             </h1>
+            <div className="mt-1 flex flex-wrap gap-3">
+              <span className="font-mono text-xs uppercase tracking-widest text-muted-fg">{bookings.length} total</span>
+              <span className="font-mono text-xs uppercase tracking-widest text-muted-fg">{confirmed} confirmed</span>
+              {cancelled > 0 && <span className="font-mono text-xs uppercase tracking-widest text-muted-fg">{cancelled} cancelled</span>}
+            </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 shrink-0">
             <NewBookingForm locations={locations} />
             <RefreshButton />
           </div>
         </div>
-        <div className="mt-3 flex flex-wrap gap-6">
-          <span className="font-mono text-sm uppercase tracking-widest text-fg">
-            {bookings.length} total
-          </span>
-          <span className="font-mono text-sm uppercase tracking-widest text-fg">
-            {confirmed} confirmed
-          </span>
-          {cancelled > 0 && (
-            <span className="font-mono text-sm uppercase tracking-widest text-muted-fg">
-              {cancelled} cancelled
-            </span>
-          )}
-        </div>
       </div>
 
       {/* Filters */}
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         {/* Branch tabs */}
         <div className="flex border border-border">
           <Link
@@ -305,7 +294,7 @@ export default async function AdminBookingsPage({
       </div>
 
       {/* Search */}
-      <form method="GET" action="/admin/bookings" className="mb-6 flex gap-3">
+      <form method="GET" action="/admin/bookings" className="mb-4 flex gap-2">
         <input type="hidden" name="loc" value={locSlug} />
         <input type="hidden" name="view" value={view} />
         <input
@@ -428,51 +417,53 @@ export default async function AdminBookingsPage({
             </table>
           </div>
 
-          {/* Mobile cards — sizes unchanged */}
-          <div className="grid gap-3 md:hidden">
+          {/* Mobile cards */}
+          <div className="grid gap-2 md:hidden">
             {bookings.map((b) => (
-              <div key={b.id} className="grid gap-3 border border-border bg-card p-4">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-mono text-base font-medium text-fg">
-                      {view === "today" ? safeFormatTime(b.starts_at) : safeFormatDt(b.starts_at)}
-                    </p>
-                    <Link
-                      href={`/booking/${b.reference_code}`}
-                      target="_blank"
-                      className="font-mono text-xs uppercase tracking-widest text-accent"
-                    >
-                      {b.reference_code}
-                    </Link>
-                  </div>
-                  <span
-                    className="font-mono text-xs uppercase tracking-widest"
-                    style={STATUS_STYLE[b.status] ?? { color: "var(--fg)" }}
-                  >
+              <div key={b.id} className="border border-border bg-card p-3" style={{ opacity: b.status === "cancelled" ? 0.6 : 1 }}>
+                {/* Row 1: time + status */}
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <p className="font-mono text-sm font-medium text-fg leading-tight">
+                    {view === "today" ? safeFormatTime(b.starts_at) : safeFormatDt(b.starts_at)}
+                  </p>
+                  <span className="font-mono text-xs uppercase tracking-widest shrink-0" style={STATUS_STYLE[b.status] ?? { color: "var(--fg)" }}>
                     {b.status.replace("_", " ")}
                   </span>
                 </div>
-                <ClientHistoryButton name={b.customer_name} phone={b.customer_phone} />
-                <p className="text-sm text-muted-fg">
-                  {b.service_name} · {b.staff_name} · {b.location_name} ·{" "}
-                  {formatPrice(b.service_price_cents)}
+                {/* Row 2: client */}
+                <div className="mb-1.5">
+                  <ClientHistoryButton name={b.customer_name} phone={b.customer_phone} />
+                </div>
+                {/* Row 3: service + stylist */}
+                <p className="text-xs text-muted-fg leading-snug mb-1">
+                  {b.service_name}
                 </p>
-                {lateIds.has(b.id) && (
-                  <span className="inline-block font-mono text-xs uppercase tracking-widest text-warning border border-warning px-1.5 py-0.5 w-fit">
-                    Late +$5
-                  </span>
-                )}
+                <p className="text-xs text-muted-fg leading-snug">
+                  {b.staff_name} · {formatPrice(b.service_price_cents)}
+                </p>
+                {/* Row 4: ref + badges */}
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <Link href={`/booking/${b.reference_code}`} target="_blank" className="font-mono text-[0.65rem] uppercase tracking-widest text-accent">
+                    {b.reference_code}
+                  </Link>
+                  {lateIds.has(b.id) && (
+                    <span className="font-mono text-[0.65rem] uppercase tracking-widest text-warning border border-warning px-1.5 py-0.5">
+                      Late +$5
+                    </span>
+                  )}
+                </div>
+                {/* Notes */}
                 {b.notes && (
-                  <div className="border-l-2 border-warning pl-2 mt-1">
-                    <p className="font-mono text-xs uppercase tracking-widest text-warning mb-0.5">Note</p>
+                  <div className="border-l-2 border-warning pl-2 mt-2">
                     <p className="text-xs text-fg leading-relaxed">{b.notes}</p>
                   </div>
                 )}
-                {b.status === "confirmed" && (
-                  <CancelBookingButton refCode={b.reference_code} />
-                )}
-                {b.status === "cancelled" && (
-                  <DeleteBookingButton refCode={b.reference_code} />
+                {/* Actions */}
+                {(b.status === "confirmed" || b.status === "cancelled") && (
+                  <div className="mt-2">
+                    {b.status === "confirmed" && <CancelBookingButton refCode={b.reference_code} />}
+                    {b.status === "cancelled" && <DeleteBookingButton refCode={b.reference_code} />}
+                  </div>
                 )}
               </div>
             ))}
