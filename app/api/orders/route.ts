@@ -4,7 +4,9 @@ import { z } from "zod";
 const orderSchema = z.object({
   customer_name: z.string().min(2),
   customer_phone: z.string().min(6),
-  customer_email: z.string().email(),
+  customer_email: z.string().email().optional().nullable(),
+  pickup_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  pickup_time: z.string().regex(/^\d{2}:\d{2}$/),
   items: z.array(
     z.object({
       product_id: z.string().uuid(),
@@ -38,32 +40,32 @@ export async function POST(req: NextRequest) {
     0,
   );
 
-  if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  ) {
-    return NextResponse.json(
-      { error: "Database not configured" },
-      { status: 503 },
-    );
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
   }
 
-  const { createServerSupabaseClient } = await import("@/lib/supabase/server");
-  const supabase = await createServerSupabaseClient();
+  const { createAdminSupabaseClient } = await import("@/lib/supabase/admin");
+  const supabase = createAdminSupabaseClient();
 
-  const { error } = await supabase.from("product_orders").insert({
-    customer_name: payload.customer_name,
-    customer_phone: payload.customer_phone,
-    customer_email: payload.customer_email,
-    items: payload.items,
-    total_cents,
-    notes: payload.notes ?? null,
-  });
+  const { data, error } = await supabase
+    .from("product_orders")
+    .insert({
+      customer_name: payload.customer_name,
+      customer_phone: payload.customer_phone,
+      customer_email: payload.customer_email ?? null,
+      pickup_date: payload.pickup_date,
+      pickup_time: payload.pickup_time,
+      items: payload.items,
+      total_cents,
+      notes: payload.notes ?? null,
+    })
+    .select("reference_code")
+    .single();
 
   if (error) {
     console.error("product_orders insert error:", error);
     return NextResponse.json({ error: "Order failed. Please try again." }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true }, { status: 201 });
+  return NextResponse.json({ ok: true, reference_code: data.reference_code }, { status: 201 });
 }

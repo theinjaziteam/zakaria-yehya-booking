@@ -2,17 +2,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function FulfillOrderButton({ orderId }: { orderId: string }) {
+export function CancelOrderButton({ orderId }: { orderId: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  async function handleFulfill() {
+  async function handle() {
+    if (!confirm("Cancel this order?")) return;
     setLoading(true);
     try {
       await fetch(`/api/admin/orders/${orderId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "completed" }),
+        body: JSON.stringify({ status: "cancelled" }),
       });
       router.refresh();
     } finally {
@@ -22,11 +23,11 @@ export function FulfillOrderButton({ orderId }: { orderId: string }) {
 
   return (
     <button
-      onClick={handleFulfill}
+      onClick={handle}
       disabled={loading}
-      className="shrink-0 font-mono text-xs uppercase tracking-widest px-3 py-1.5 border border-border text-muted-fg transition-colors hover:border-fg hover:text-fg disabled:opacity-50"
+      className="shrink-0 font-mono text-xs uppercase tracking-widest px-3 py-1.5 border border-border text-muted-fg transition-colors hover:border-warning hover:text-warning disabled:opacity-50"
     >
-      {loading ? "…" : "Fulfill"}
+      {loading ? "…" : "Cancel"}
     </button>
   );
 }
