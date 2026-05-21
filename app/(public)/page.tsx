@@ -337,8 +337,8 @@ export default async function PublicHomePage() {
                     className="text-body"
                     style={{
                       fontSize: "var(--body-md-size)",
-                      lineHeight: 1.8,
-                      maxWidth: "42ch",
+                      lineHeight: 1.85,
+                      maxWidth: "54ch",
                     }}
                   >
                     {p}
@@ -451,8 +451,8 @@ export default async function PublicHomePage() {
               </h2>
             </div>
             <p
-              className="text-body lg:max-w-[44ch]"
-              style={{ fontSize: "var(--body-md-size)", lineHeight: 1.8 }}
+              className="text-body lg:max-w-[56ch]"
+              style={{ fontSize: "var(--body-md-size)", lineHeight: 1.85 }}
             >
               {clientConfig.copy.services.intro}
             </p>
@@ -664,7 +664,7 @@ export default async function PublicHomePage() {
                   </h3>
                   <p
                     className="text-body"
-                    style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7, maxWidth: "56ch" }}
+                    style={{ fontSize: "var(--body-md-size)", lineHeight: 1.8, maxWidth: "60ch" }}
                   >
                     {item.answer}
                   </p>
@@ -711,7 +711,7 @@ export default async function PublicHomePage() {
                 </TextReveal>
               </div>
               <Reveal delay={0.35}>
-                <p style={{ fontSize: "var(--body-md-size)", lineHeight: 1.8, maxWidth: "40ch", color: "rgba(249,246,241,0.65)" }}>
+                <p style={{ fontSize: "var(--body-md-size)", lineHeight: 1.85, maxWidth: "48ch", color: "rgba(249,246,241,0.78)" }}>
                   Walk-ins are welcomed when the schedule allows. A reservation keeps the hour, the stylist, and the service in order before you arrive — and is always the wiser approach.
                 </p>
               </Reveal>
