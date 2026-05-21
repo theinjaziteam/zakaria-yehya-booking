@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { formatInTimeZone } from "date-fns-tz";
 import { FulfillOrderButton } from "@/components/admin/fulfill-order-button";
 import { CancelOrderButton } from "@/components/admin/cancel-order-button";
+import { DeleteOrderButton } from "@/components/admin/delete-order-button";
 import { LogSaleForm } from "@/components/admin/log-sale-form";
 
 const TZ = "Asia/Beirut";
@@ -160,6 +161,9 @@ export default async function AdminOrdersPage() {
                         )}
                         {order.status !== "cancelled" && (
                           <CancelOrderButton orderId={order.id} />
+                        )}
+                        {order.status === "cancelled" && (
+                          <DeleteOrderButton orderId={order.id} />
                         )}
                       </div>
                     </td>

@@ -273,6 +273,18 @@ export default function MyBookingsPage() {
               </div>
             ) : (
               <div className="grid gap-xl">
+                {/* Product orders — first */}
+                {orders.length > 0 && (
+                  <section>
+                    <p className={`${labelBase} mb-md border-b border-border pb-xs`}>
+                      Product orders ({orders.length})
+                    </p>
+                    <div className="grid gap-sm">
+                      {orders.map(o => <OrderCard key={o.id} o={o} />)}
+                    </div>
+                  </section>
+                )}
+                {/* Upcoming bookings */}
                 {upcoming.length > 0 && (
                   <section>
                     <p className={`${labelBase} mb-md border-b border-border pb-xs`}>
@@ -285,6 +297,7 @@ export default function MyBookingsPage() {
                     </div>
                   </section>
                 )}
+                {/* Past bookings — last */}
                 {past.length > 0 && (
                   <section>
                     <p className={`${labelBase} mb-md border-b border-border pb-xs`}>
@@ -294,17 +307,6 @@ export default function MyBookingsPage() {
                       {past.map((b) => (
                         <BookingCard key={b.booking_id} b={b} showRebook={b.status !== "cancelled"} />
                       ))}
-                    </div>
-                  </section>
-                )}
-                {/* Product orders — below bookings */}
-                {orders.length > 0 && (
-                  <section>
-                    <p className={`${labelBase} mb-md border-b border-border pb-xs`}>
-                      Product orders ({orders.length})
-                    </p>
-                    <div className="grid gap-sm">
-                      {orders.map(o => <OrderCard key={o.id} o={o} />)}
                     </div>
                   </section>
                 )}

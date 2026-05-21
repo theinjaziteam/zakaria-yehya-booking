@@ -24,3 +24,19 @@ export async function PATCH(
 
   return NextResponse.json({ ok: true });
 }
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const supabase = createAdminSupabaseClient();
+  const { error } = await supabase
+    .from("product_orders")
+    .delete()
+    .eq("id", id)
+    .eq("status", "cancelled"); // safety: only delete cancelled
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
+}
