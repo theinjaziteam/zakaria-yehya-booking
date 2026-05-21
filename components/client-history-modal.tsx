@@ -34,12 +34,14 @@ function fmtDate(ts: string) {
   try { return formatInTimeZone(new Date(ts.replace(" ", "T")), TZ, "EEE d MMM yyyy · HH:mm"); } catch { return ts; }
 }
 
-const label = "font-mono text-[10px] uppercase tracking-widest text-muted-fg";
+const label = "font-mono text-[12px] uppercase tracking-widest text-muted-fg";
+const INITIAL_SHOW = 5;
 
 export function ClientHistoryModal({ customerName, customerPhone, onClose }: Props) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [penalties, setPenalties] = useState<Penalty[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     fetch(`/api/admin/client/${encodeURIComponent(customerPhone)}`)
@@ -63,14 +65,14 @@ export function ClientHistoryModal({ customerName, customerPhone, onClose }: Pro
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <div>
-            <p style={{ fontFamily: "var(--font-display)", fontSize: 20, letterSpacing: "0.08em", textTransform: "uppercase", color: "#1C1714" }}>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: 22, letterSpacing: "0.08em", textTransform: "uppercase", color: "#1C1714" }}>
               {customerName}
             </p>
-            <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)", marginTop: 2 }}>
+            <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)", marginTop: 2 }}>
               {customerPhone}
             </p>
           </div>
-          <button onClick={onClose} style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.4)", background: "none", border: "none", cursor: "pointer" }}>
+          <button onClick={onClose} style={{ fontFamily: "var(--font-mono)", fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.4)", background: "none", border: "none", cursor: "pointer" }}>
             ✕ Close
           </button>
         </div>
@@ -101,11 +103,11 @@ export function ClientHistoryModal({ customerName, customerPhone, onClose }: Pro
                   {penalties.map(p => (
                     <div key={p.id} style={{ background: "#fff", border: "1px solid #C4871F", padding: "10px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div>
-                        <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#C4871F" }}>
+                        <p style={{ fontFamily: "var(--font-mono)", fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase", color: "#C4871F" }}>
                           {p.type === "late_arrival" ? "Late arrival" : "Same-day cancel"}
                         </p>
-                        {p.note && <p style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "rgba(28,23,20,0.6)", marginTop: 2 }}>{p.note}</p>}
-                        <p style={{ fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(28,23,20,0.4)", marginTop: 2 }}>
+                        {p.note && <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "rgba(28,23,20,0.6)", marginTop: 2 }}>{p.note}</p>}
+                        <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(28,23,20,0.4)", marginTop: 2 }}>
                           {fmtDate(p.created_at)}{p.staff ? ` · ${p.staff.name}` : ""}
                         </p>
                       </div>
@@ -118,26 +120,42 @@ export function ClientHistoryModal({ customerName, customerPhone, onClose }: Pro
 
             {/* Booking history */}
             <div>
-              <p className={label} style={{ marginBottom: 8 }}>Booking history</p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <p className={label}>Booking history ({bookings.length})</p>
+                {bookings.length > INITIAL_SHOW && (
+                  <button
+                    onClick={() => setShowAll(v => !v)}
+                    style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: "#865F10", background: "none", border: "none", cursor: "pointer" }}
+                  >
+                    {showAll ? "Show less ↑" : `View all ${bookings.length} ↓`}
+                  </button>
+                )}
+              </div>
               {bookings.length === 0 ? (
                 <p className={label}>No bookings found.</p>
               ) : (
-                <div style={{ display: "grid", gap: 6 }}>
-                  {bookings.map(b => (
-                    <div key={b.id} style={{ background: "#fff", border: "1px solid var(--hairline)", padding: "10px 12px", opacity: b.status === "cancelled" ? 0.5 : 1 }}>
+                <div
+                  style={{
+                    display: "grid", gap: 6,
+                    maxHeight: showAll ? "60vh" : "none",
+                    overflowY: showAll ? "auto" : "visible",
+                  }}
+                >
+                  {(showAll ? bookings : bookings.slice(0, INITIAL_SHOW)).map(b => (
+                    <div key={b.id} style={{ background: "#fff", border: "1px solid var(--hairline)", padding: "12px 14px", opacity: b.status === "cancelled" ? 0.5 : 1 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                         <div>
-                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "#1C1714" }}>{fmtDate(b.starts_at)}</p>
-                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)", marginTop: 2 }}>
+                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "#1C1714" }}>{fmtDate(b.starts_at)}</p>
+                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", marginTop: 2 }}>
                             {b.services?.name ?? "—"} · {b.staff?.name ?? "—"}
                           </p>
                         </div>
                         <div style={{ textAlign: "right" }}>
-                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: b.status === "confirmed" ? "#1C1714" : "rgba(28,23,20,0.45)" }}>
+                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: b.status === "confirmed" ? "#1C1714" : "rgba(28,23,20,0.45)" }}>
                             {b.status}
                           </p>
                           {b.services?.price_cents ? (
-                            <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "rgba(28,23,20,0.55)", marginTop: 2 }}>
+                            <p style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "rgba(28,23,20,0.55)", marginTop: 2 }}>
                               {fmt(b.services.price_cents)}
                             </p>
                           ) : null}
@@ -145,6 +163,14 @@ export function ClientHistoryModal({ customerName, customerPhone, onClose }: Pro
                       </div>
                     </div>
                   ))}
+                  {!showAll && bookings.length > INITIAL_SHOW && (
+                    <button
+                      onClick={() => setShowAll(true)}
+                      style={{ padding: "10px", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "#865F10", background: "transparent", border: "1px solid var(--hairline)", cursor: "pointer" }}
+                    >
+                      View {bookings.length - INITIAL_SHOW} more bookings ↓
+                    </button>
+                  )}
                 </div>
               )}
             </div>

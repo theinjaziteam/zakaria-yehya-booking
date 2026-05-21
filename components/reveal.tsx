@@ -23,7 +23,7 @@ export function Reveal({ children, delay = 0, y = 32, className, style }: Props)
       style={style}
       initial={{ opacity: 0, y }}
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y }}
-      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
     >
       {children}
     </motion.div>
@@ -40,7 +40,7 @@ export function TextReveal({ children, delay = 0, className, style }: Omit<Props
       <motion.div
         initial={{ y: "110%" }}
         animate={inView ? { y: "0%" } : { y: "110%" }}
-        transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+        transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
       >
         {children}
       </motion.div>
@@ -60,7 +60,7 @@ export function StaggerReveal({ children, className, style }: { children: React.
       style={style}
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
-      variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
+      variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
     >
       {children}
     </motion.div>
@@ -71,5 +71,5 @@ export function StaggerReveal({ children, className, style }: { children: React.
 import type { Variants } from "framer-motion";
 export const staggerItem: Variants = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
 };

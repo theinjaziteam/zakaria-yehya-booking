@@ -6,7 +6,7 @@ const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const line = {
   hidden: { y: "105%" },
-  show: (d: number) => ({ y: "0%", transition: { duration: 1, delay: d, ease } }),
+  show: (d: number) => ({ y: "0%", transition: { duration: 0.7, delay: d, ease } }),
 };
 
 type Props = {

@@ -14,6 +14,14 @@ export function NavActions() {
 
   return (
     <div className="flex items-center gap-2 shrink-0">
+      {/* Primary CTA — desktop only */}
+      <Link
+        href="/book"
+        className="hidden lg:inline-flex h-8 items-center justify-center px-5 font-mono text-[0.7rem] uppercase tracking-widest text-canvas transition-opacity hover:opacity-85 select-none"
+        style={{ borderRadius: "9999px", background: "var(--ink)" }}
+      >
+        Reserve
+      </Link>
       {!loading && (
         <Link
           href={user ? "/my-bookings" : "/auth?from=/my-bookings"}

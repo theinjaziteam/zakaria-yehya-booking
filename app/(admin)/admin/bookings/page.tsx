@@ -216,10 +216,10 @@ export default async function AdminBookingsPage({
       {/* DB connection error banner */}
       {dbError && (
         <div className="mb-6 border border-warning bg-card px-4 py-3">
-          <p className="font-mono text-xs uppercase tracking-widest text-warning">
+          <p className="font-mono text-sm uppercase tracking-widest text-warning">
             Database error — check SUPABASE_SERVICE_ROLE_KEY and run migrations.
           </p>
-          <p className="mt-1 font-mono text-xs text-muted-fg">{dbError}</p>
+          <p className="mt-1 font-mono text-sm text-muted-fg">{dbError}</p>
         </div>
       )}
 
@@ -227,10 +227,10 @@ export default async function AdminBookingsPage({
       <div className="mb-8 border-b border-border pb-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-muted-fg">
+            <p className="mb-1 font-mono text-sm uppercase tracking-widest text-muted-fg">
               Admin · Bookings
             </p>
-            <h1 className="font-display text-3xl uppercase tracking-wide text-fg">
+            <h1 className="font-display text-4xl uppercase tracking-wide text-fg">
               {selectedLocation ? selectedLocation.name : "All Salons"}
             </h1>
           </div>
@@ -240,14 +240,14 @@ export default async function AdminBookingsPage({
           </div>
         </div>
         <div className="mt-3 flex flex-wrap gap-6">
-          <span className="font-mono text-xs uppercase tracking-widest text-fg">
+          <span className="font-mono text-sm uppercase tracking-widest text-fg">
             {bookings.length} total
           </span>
-          <span className="font-mono text-xs uppercase tracking-widest text-fg">
+          <span className="font-mono text-sm uppercase tracking-widest text-fg">
             {confirmed} confirmed
           </span>
           {cancelled > 0 && (
-            <span className="font-mono text-xs uppercase tracking-widest text-muted-fg">
+            <span className="font-mono text-sm uppercase tracking-widest text-muted-fg">
               {cancelled} cancelled
             </span>
           )}
@@ -261,7 +261,7 @@ export default async function AdminBookingsPage({
           <Link
             href={branchHref("all")}
             style={locSlug === "all" ? activeStyle : {}}
-            className={`px-5 py-2 font-mono text-xs uppercase tracking-widest transition-colors ${
+            className={`px-5 py-2.5 font-mono text-sm uppercase tracking-widest transition-colors ${
               locSlug === "all" ? "" : "text-muted-fg hover:text-fg"
             }`}
           >
@@ -272,7 +272,7 @@ export default async function AdminBookingsPage({
               key={loc.id}
               href={branchHref(loc.slug)}
               style={locSlug === loc.slug ? activeStyle : {}}
-              className={`border-l border-border px-5 py-2 font-mono text-xs uppercase tracking-widest transition-colors ${
+              className={`border-l border-border px-5 py-2.5 font-mono text-sm uppercase tracking-widest transition-colors ${
                 locSlug === loc.slug ? "" : "text-muted-fg hover:text-fg"
               }`}
             >
@@ -286,7 +286,7 @@ export default async function AdminBookingsPage({
           <Link
             href={viewHref("today")}
             style={view === "today" ? activeStyle : {}}
-            className={`px-5 py-2 font-mono text-xs uppercase tracking-widest transition-colors ${
+            className={`px-5 py-2.5 font-mono text-sm uppercase tracking-widest transition-colors ${
               view === "today" ? "" : "text-muted-fg hover:text-fg"
             }`}
           >
@@ -295,7 +295,7 @@ export default async function AdminBookingsPage({
           <Link
             href={viewHref("all")}
             style={view === "all" ? activeStyle : {}}
-            className={`border-l border-border px-5 py-2 font-mono text-xs uppercase tracking-widest transition-colors ${
+            className={`border-l border-border px-5 py-2.5 font-mono text-sm uppercase tracking-widest transition-colors ${
               view === "all" ? "" : "text-muted-fg hover:text-fg"
             }`}
           >
@@ -313,18 +313,18 @@ export default async function AdminBookingsPage({
           name="q"
           defaultValue={q}
           placeholder="Search ref, client, stylist, service…"
-          className="flex-1 border border-border bg-transparent px-4 py-2 font-mono text-xs uppercase tracking-widest text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none"
+          className="flex-1 border border-border bg-transparent px-4 py-2.5 font-mono text-sm uppercase tracking-widest text-fg placeholder:text-muted-fg focus:border-fg focus:outline-none"
         />
         <button
           type="submit"
-          className="shrink-0 border border-border px-5 py-2 font-mono text-xs uppercase tracking-widest text-muted-fg transition-colors hover:border-fg hover:text-fg"
+          className="shrink-0 border border-border px-5 py-2.5 font-mono text-sm uppercase tracking-widest text-muted-fg transition-colors hover:border-fg hover:text-fg"
         >
           Search
         </button>
         {q && (
           <a
             href={`/admin/bookings?loc=${locSlug}&view=${view}`}
-            className="shrink-0 border border-border px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted-fg transition-colors hover:border-fg hover:text-fg"
+            className="shrink-0 border border-border px-4 py-2.5 font-mono text-sm uppercase tracking-widest text-muted-fg transition-colors hover:border-fg hover:text-fg"
           >
             Clear
           </a>
@@ -334,10 +334,10 @@ export default async function AdminBookingsPage({
       {/* Bookings list */}
       {bookings.length === 0 ? (
         <div className="border border-border bg-card p-12 text-center">
-          <p className="font-display text-xl uppercase tracking-wide text-fg">
+          <p className="font-display text-2xl uppercase tracking-wide text-fg">
             {view === "today" ? "No appointments today." : "No bookings yet."}
           </p>
-          <p className="mt-2 text-sm text-muted-fg">
+          <p className="mt-2 text-base text-muted-fg">
             {view === "today"
               ? "Today's bookings will appear here."
               : "Bookings will appear here once made."}
@@ -347,14 +347,14 @@ export default async function AdminBookingsPage({
         <>
           {/* Desktop table */}
           <div className="hidden overflow-x-auto md:block">
-            <table className="w-full border-collapse text-sm">
+            <table className="w-full border-collapse text-base">
               <thead>
                 <tr className="border-b border-border">
                   {["Time", "Ref", "Client", "Service", "Stylist", "Salon", "Value", "Status", "Notes", ""].map(
                     (h) => (
                       <th
                         key={h}
-                        className="pb-2 pr-4 text-left font-mono text-xs uppercase tracking-widest text-muted-fg"
+                        className="pb-3 pr-4 text-left font-mono text-sm uppercase tracking-widest text-muted-fg"
                       >
                         {h}
                       </th>
@@ -368,51 +368,51 @@ export default async function AdminBookingsPage({
                     key={b.id}
                     className={i < bookings.length - 1 ? "border-b border-border" : ""}
                   >
-                    <td className="py-3 pr-4 font-mono text-sm text-fg whitespace-nowrap">
+                    <td className="py-3.5 pr-4 font-mono text-base text-fg whitespace-nowrap">
                       {view === "today" ? safeFormatTime(b.starts_at) : safeFormatDt(b.starts_at)}
                     </td>
-                    <td className="py-3 pr-4">
+                    <td className="py-3.5 pr-4">
                       <Link
                         href={`/booking/${b.reference_code}`}
                         target="_blank"
-                        className="font-mono text-xs uppercase tracking-widest text-accent hover:opacity-70"
+                        className="font-mono text-sm uppercase tracking-widest text-accent hover:opacity-70"
                       >
                         {b.reference_code}
                       </Link>
                     </td>
-                    <td className="py-3 pr-4">
+                    <td className="py-3.5 pr-4">
                       <ClientHistoryButton name={b.customer_name} phone={b.customer_phone} />
                     </td>
-                    <td className="py-3 pr-4 text-fg">{b.service_name}</td>
-                    <td className="py-3 pr-4 text-fg">{b.staff_name}</td>
-                    <td className="py-3 pr-4 text-muted-fg">{b.location_name}</td>
-                    <td className="py-3 pr-4 font-mono text-sm text-fg">
+                    <td className="py-3.5 pr-4 text-base text-fg">{b.service_name}</td>
+                    <td className="py-3.5 pr-4 text-base text-fg">{b.staff_name}</td>
+                    <td className="py-3.5 pr-4 text-base text-muted-fg">{b.location_name}</td>
+                    <td className="py-3.5 pr-4 font-mono text-base text-fg">
                       {formatPrice(b.service_price_cents)}
                     </td>
-                    <td className="py-3 pr-4">
+                    <td className="py-3.5 pr-4">
                       <span
-                        className="font-mono text-xs uppercase tracking-widest"
+                        className="font-mono text-sm uppercase tracking-widest"
                         style={STATUS_STYLE[b.status] ?? { color: "var(--fg)" }}
                       >
                         {b.status.replace("_", " ")}
                       </span>
                     </td>
-                    <td className="py-3 pr-4 max-w-[16rem]">
-                      <div className="flex flex-col gap-1">
+                    <td className="py-3.5 pr-4 max-w-[16rem]">
+                      <div className="flex flex-col gap-1.5">
                         {lateIds.has(b.id) && (
-                          <span className="inline-block font-mono text-[0.6rem] uppercase tracking-widest text-warning border border-warning px-1.5 py-0.5 w-fit">
+                          <span className="inline-block font-mono text-xs uppercase tracking-widest text-warning border border-warning px-2 py-0.5 w-fit">
                             Late +$5
                           </span>
                         )}
                         {b.notes && (
                           <div className="border-l-2 border-warning pl-2">
-                            <p className="font-mono text-[0.6rem] uppercase tracking-widest text-warning mb-0.5">Note</p>
-                            <p className="text-xs text-fg leading-relaxed">{b.notes}</p>
+                            <p className="font-mono text-xs uppercase tracking-widest text-warning mb-0.5">Note</p>
+                            <p className="text-sm text-fg leading-relaxed">{b.notes}</p>
                           </div>
                         )}
                       </div>
                     </td>
-                    <td className="py-3">
+                    <td className="py-3.5">
                       <div className="flex flex-col gap-1">
                         {b.status === "confirmed" && (
                           <CancelBookingButton refCode={b.reference_code} />
@@ -428,7 +428,7 @@ export default async function AdminBookingsPage({
             </table>
           </div>
 
-          {/* Mobile cards */}
+          {/* Mobile cards — sizes unchanged */}
           <div className="grid gap-3 md:hidden">
             {bookings.map((b) => (
               <div key={b.id} className="grid gap-3 border border-border bg-card p-4">
@@ -458,13 +458,13 @@ export default async function AdminBookingsPage({
                   {formatPrice(b.service_price_cents)}
                 </p>
                 {lateIds.has(b.id) && (
-                  <span className="inline-block font-mono text-[0.6rem] uppercase tracking-widest text-warning border border-warning px-1.5 py-0.5 w-fit">
+                  <span className="inline-block font-mono text-xs uppercase tracking-widest text-warning border border-warning px-1.5 py-0.5 w-fit">
                     Late +$5
                   </span>
                 )}
                 {b.notes && (
                   <div className="border-l-2 border-warning pl-2 mt-1">
-                    <p className="font-mono text-[0.6rem] uppercase tracking-widest text-warning mb-0.5">Note</p>
+                    <p className="font-mono text-xs uppercase tracking-widest text-warning mb-0.5">Note</p>
                     <p className="text-xs text-fg leading-relaxed">{b.notes}</p>
                   </div>
                 )}
