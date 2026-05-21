@@ -40,7 +40,7 @@ export default async function RevenuePage({
   const { data: bookingsRaw } = await supabase
     .from("bookings")
     .select("id, reference_code, customer_name, customer_phone, starts_at, status, staff_id, services(name, price_cents)")
-    .in("status", ["confirmed", "completed"])
+    .eq("status", "completed")
     .order("starts_at", { ascending: false });
 
   // ── Late arrival penalties ────────────────────────────────────
