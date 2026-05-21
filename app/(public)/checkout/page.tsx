@@ -40,15 +40,16 @@ export default function CheckoutPage() {
   const [pickupTime, setPickupTime] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (user?.email) setEmail(user.email);
   }, [user?.email]);
 
-  // Redirect if cart is empty
+  // Redirect if cart is empty — but not after a successful submit (cart cleared on success)
   useEffect(() => {
-    if (items.length === 0) router.replace("/");
-  }, [items.length, router]);
+    if (items.length === 0 && !submitted) router.replace("/");
+  }, [items.length, router, submitted]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -82,6 +83,7 @@ export default function CheckoutPage() {
         return;
       }
 
+      setSubmitted(true);
       clearCart();
       router.push(`/order-confirmation?ref=${json.reference_code}&date=${pickupDate}&time=${pickupTime}&name=${encodeURIComponent(name.trim())}`);
     } catch {
@@ -90,7 +92,7 @@ export default function CheckoutPage() {
     }
   }
 
-  if (items.length === 0) return null;
+  if (items.length === 0 && !submitted) return null;
 
   const inp = "w-full border border-border bg-bg px-3 py-2.5 font-mono text-sm text-fg focus:border-fg focus:outline-none";
   const lbl = "block font-mono text-xs uppercase tracking-widest text-muted-fg mb-1.5";

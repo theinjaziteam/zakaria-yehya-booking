@@ -303,25 +303,35 @@ export default function StaffDashboard() {
               <p className={label} style={{ marginBottom: 14 }}>Add tip</p>
               <div style={{ display: "grid", gap: 14 }}>
 
-                {/* Quick-select from today's bookings */}
-                {todayBookings.length > 0 && (
-                  <div>
-                    <p className={label} style={{ marginBottom: 6 }}>From today's appointments</p>
-                    <select
-                      onChange={e => selectTipBooking(e.target.value)}
-                      value={tipBookingId ?? ""}
-                      style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 14, color: "#1C1714", outline: "none", cursor: "pointer" }}
-                    >
-                      <option value="">Select a client…</option>
-                      {todayBookings.map(b => (
-                        <option key={b.id} value={b.id}>
-                          {b.customer_name} — {fmtTime(b.starts_at)}
-                          {b.services?.name ? ` · ${b.services.name}` : ""}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+                {/* Client name — datalist gives typeahead from today's bookings, free typing allowed */}
+                <div>
+                  <p className={label} style={{ marginBottom: 4 }}>Client name</p>
+                  <input
+                    list="tip-clients-list"
+                    type="text"
+                    value={tipCustomer}
+                    onChange={e => {
+                      setTipCustomer(e.target.value);
+                      // Auto-link booking_id if name matches a today booking exactly
+                      const match = todayBookings.find(b => b.customer_name.toLowerCase() === e.target.value.toLowerCase());
+                      setTipBookingId(match?.id ?? null);
+                    }}
+                    placeholder="Type or pick from today's appointments…"
+                    style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }}
+                  />
+                  <datalist id="tip-clients-list">
+                    {todayBookings.map(b => (
+                      <option key={b.id} value={b.customer_name}>
+                        {fmtTime(b.starts_at)}{b.services?.name ? ` · ${b.services.name}` : ""}
+                      </option>
+                    ))}
+                  </datalist>
+                  {tipBookingId && (
+                    <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#865F10", marginTop: 4 }}>
+                      Linked to today's appointment
+                    </p>
+                  )}
+                </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
@@ -332,10 +342,6 @@ export default function StaffDashboard() {
                     <p className={label} style={{ marginBottom: 4 }}>Date</p>
                     <input type="date" value={tipDate} onChange={e => setTipDate(e.target.value)} style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-mono)", fontSize: 13, color: "#1C1714", outline: "none", boxSizing: "border-box" }} />
                   </div>
-                </div>
-                <div>
-                  <p className={label} style={{ marginBottom: 4 }}>Client name</p>
-                  <input type="text" value={tipCustomer} onChange={e => setTipCustomer(e.target.value)} placeholder="Or type a name…" style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }} />
                 </div>
                 <div>
                   <p className={label} style={{ marginBottom: 4 }}>Note (optional)</p>
