@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useCart } from "@/components/cart-provider";
 
@@ -20,22 +19,14 @@ export function clearPendingProducts() {
 function fmt(cents: number) { return `$${(cents / 100).toFixed(0)}`; }
 
 function ProductCard({ product }: { product: Product }) {
-  const { addItem } = useCart();
-  const [added, setAdded] = useState(false);
-
-  function handleAdd() {
-    addItem(product);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1800);
-  }
+  const { items, addItem, updateQty, removeItem } = useCart();
+  const cartItem = items.find(i => i.product_id === product.id);
+  const qty = cartItem?.quantity ?? 0;
 
   return (
     <article style={{ display: "flex", flexDirection: "column" }}>
       {/* Image */}
-      <div
-        className="group"
-        style={{ aspectRatio: "3/4", overflow: "hidden", marginBottom: "1rem" }}
-      >
+      <div className="group" style={{ aspectRatio: "3/4", overflow: "hidden", marginBottom: "0.875rem" }}>
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -47,59 +38,83 @@ function ProductCard({ product }: { product: Product }) {
             className="group-hover:scale-[1.04]"
           />
         ) : (
-          <div style={{ width: "100%", height: "100%", background: "rgba(249,246,241,0.06)" }} />
+          <div style={{ width: "100%", height: "100%", background: "rgba(28,23,20,0.06)" }} />
         )}
       </div>
 
       {/* Name + price */}
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
         <h3 style={{
           fontFamily: "var(--font-display)", fontSize: "var(--title-sm-size)",
           letterSpacing: "var(--title-sm-tracking)", textTransform: "uppercase",
-          color: "#F9F6F1", lineHeight: 1.2, margin: 0,
+          color: "var(--fg)", lineHeight: 1.2, margin: 0,
         }}>
           {product.name}
         </h3>
-        <p style={{
-          fontFamily: "var(--font-mono)", fontSize: "var(--caption-size)",
-          letterSpacing: "0.08em", color: "rgba(249,246,241,0.45)", flexShrink: 0,
-        }}>
+        <p style={{ fontFamily: "var(--font-mono)", fontSize: "var(--caption-size)", letterSpacing: "0.08em", color: "var(--muted-fg)", flexShrink: 0 }}>
           {fmt(product.price_cents)}
         </p>
       </div>
 
-      {/* Description */}
       {product.description && (
-        <p style={{
-          fontFamily: "var(--font-body)", fontSize: "var(--body-sm-size)",
-          lineHeight: 1.55, color: "rgba(249,246,241,0.45)", margin: "0 0 14px",
-        }}>
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "var(--body-sm-size)", lineHeight: 1.55, color: "var(--muted-fg)", margin: "0 0 12px" }}>
           {product.description}
         </p>
       )}
 
-      {/* Add to cart */}
-      <button
-        onClick={handleAdd}
-        style={{
-          marginTop: "auto",
-          padding: "9px 0",
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.7rem",
-          letterSpacing: "0.14em",
-          textTransform: "uppercase",
-          border: added
-            ? "1px solid #3E6E34"
-            : "1px solid rgba(249,246,241,0.22)",
-          background: added ? "#3E6E34" : "transparent",
-          color: added ? "#F9F6F1" : "rgba(249,246,241,0.65)",
-          cursor: "pointer",
-          transition: "all 0.2s ease",
-          width: "100%",
-        }}
-      >
-        {added ? "Added ✓" : "+ Add to cart"}
-      </button>
+      {/* Hairline + action — the style you liked */}
+      <div style={{ marginTop: "auto", borderTop: "1px solid var(--border)", paddingTop: 8 }}>
+        {qty === 0 ? (
+          <button
+            onClick={() => addItem(product)}
+            style={{
+              width: "100%", background: "transparent", border: "none",
+              fontFamily: "var(--font-mono)", fontSize: "0.7rem", letterSpacing: "0.14em",
+              textTransform: "uppercase", color: "var(--muted-fg)", cursor: "pointer",
+              textAlign: "left", padding: "2px 0", transition: "color 0.15s",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.color = "var(--fg)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "var(--muted-fg)")}
+          >
+            + Add to cart
+          </button>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            {/* Qty controls */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <button
+                onClick={() => qty > 1 ? updateQty(product.id, qty - 1) : removeItem(product.id)}
+                style={{ background: "none", border: "none", fontFamily: "var(--font-mono)", fontSize: "1rem", color: "var(--muted-fg)", cursor: "pointer", padding: "2px 4px", lineHeight: 1 }}
+              >
+                −
+              </button>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8rem", color: "var(--fg)", minWidth: "1ch", textAlign: "center" }}>
+                {qty}
+              </span>
+              <button
+                onClick={() => addItem(product)}
+                style={{ background: "none", border: "none", fontFamily: "var(--font-mono)", fontSize: "1rem", color: "var(--muted-fg)", cursor: "pointer", padding: "2px 4px", lineHeight: 1 }}
+              >
+                +
+              </button>
+            </div>
+            {/* Remove */}
+            <button
+              onClick={() => removeItem(product.id)}
+              style={{
+                background: "none", border: "none", fontFamily: "var(--font-mono)",
+                fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase",
+                color: "var(--muted-fg)", cursor: "pointer", padding: 0,
+                transition: "color 0.15s",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--warning)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--muted-fg)")}
+            >
+              Remove
+            </button>
+          </div>
+        )}
+      </div>
     </article>
   );
 }
@@ -110,38 +125,20 @@ export function ProductsSection({ products }: { products: Product[] }) {
   if (products.length === 0) return null;
 
   return (
-    <section
-      id="shop"
-      style={{
-        background: "#1C1714",
-        borderBottom: "1px solid rgba(249,246,241,0.08)",
-      }}
-    >
+    <section id="shop" className="border-b border-border" style={{ background: "var(--surface-soft)" }}>
       <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section">
 
         {/* Header */}
         <div className="mb-xl grid gap-sm lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div className="grid gap-sm">
-            <p style={{
-              fontFamily: "var(--font-mono)", fontSize: "var(--caption-size)",
-              letterSpacing: "0.12em", textTransform: "uppercase",
-              color: "rgba(249,246,241,0.45)",
-            }}>
+            <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
               The shelf
             </p>
-            <h2 style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(1.75rem, 5vw, 3.25rem)",
-              lineHeight: 1.04, letterSpacing: "0.05em", textTransform: "uppercase",
-              color: "#F9F6F1", maxWidth: "14ch", margin: 0,
-            }}>
+            <h2 className="font-display uppercase text-fg" style={{ fontSize: "clamp(1.75rem, 5vw, 3.25rem)", lineHeight: 1.04, letterSpacing: "0.05em", maxWidth: "14ch" }}>
               What we carry.
             </h2>
           </div>
-          <p style={{
-            fontFamily: "var(--font-body)", fontSize: "var(--body-sm-size)",
-            lineHeight: 1.7, color: "rgba(249,246,241,0.45)", maxWidth: "34ch",
-          }}>
+          <p className="text-muted-fg lg:text-right lg:max-w-[34ch]" style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7 }}>
             Add products to your cart and arrange a pickup at the salon.
           </p>
         </div>
@@ -157,25 +154,15 @@ export function ProductsSection({ products }: { products: Product[] }) {
 
         {/* Checkout CTA */}
         {itemCount > 0 && (
-          <div style={{
-            marginTop: "3rem",
-            display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1.5rem",
-            borderTop: "1px solid rgba(249,246,241,0.12)", paddingTop: "1.5rem",
-          }}>
-            <p style={{
-              fontFamily: "var(--font-mono)", fontSize: "0.8125rem",
-              letterSpacing: "0.12em", textTransform: "uppercase",
-              color: "rgba(249,246,241,0.45)",
-            }}>
+          <div className="mt-xl flex items-center justify-between gap-md border-t border-border pt-md">
+            <p className="font-mono text-sm uppercase tracking-widest text-muted-fg">
               {itemCount} {itemCount === 1 ? "item" : "items"} · {fmt(totalCents)}
             </p>
-            <Link href="/checkout" style={{
-              display: "inline-flex", height: 44, alignItems: "center", justifyContent: "center",
-              padding: "0 2rem", fontFamily: "var(--font-mono)", fontSize: "0.75rem",
-              letterSpacing: "0.15em", textTransform: "uppercase", borderRadius: 9999,
-              background: "#F9F6F1", color: "#1C1714",
-              textDecoration: "none", transition: "opacity 0.2s",
-            }}>
+            <Link
+              href="/checkout"
+              className="inline-flex h-11 items-center justify-center px-8 font-mono text-sm uppercase tracking-widest transition-opacity hover:opacity-85"
+              style={{ borderRadius: "var(--radius-pill)", background: "var(--ink)", color: "var(--canvas)" }}
+            >
               Checkout →
             </Link>
           </div>
