@@ -111,7 +111,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
     <section id="shop" className="border-b border-border">
       <div
         className="mx-auto max-w-7xl px-md py-xl sm:px-xl sm:py-xxl lg:py-section"
-        style={{ background: "#DDD0BC" }}
+        style={{ background: "#C4B5A0" }}
       >
         {/* Header */}
         <div className="mb-xl grid gap-sm lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
