@@ -45,41 +45,57 @@ export default function AdminLayout({
         className="sticky top-0 z-50 border-b border-border bg-bg/95"
         style={{ backdropFilter: "blur(8px)" }}
       >
-        {/* Top row: brand + sign out */}
-        <div className="mx-auto flex h-11 max-w-7xl items-center justify-between px-4 sm:px-6">
-          <Link
-            href="/"
-            className="font-display text-sm uppercase tracking-widest text-fg shrink-0 transition-opacity hover:opacity-70"
-          >
-            {clientConfig.brand.shortName}
-            <span className="hidden sm:inline"> Admin</span>
+        {/* ── Desktop: single row ───────────────────────────────────── */}
+        <div className="hidden md:flex mx-auto h-14 max-w-7xl items-center justify-between gap-4 px-6">
+          <Link href="/" className="font-display text-sm uppercase tracking-widest text-fg shrink-0 transition-opacity hover:opacity-70">
+            {clientConfig.brand.shortName} Admin
           </Link>
-          <button
-            onClick={handleSignOut}
-            className="shrink-0 flex items-center gap-1.5 text-muted-fg transition-opacity hover:opacity-70"
-            title="Sign out"
-          >
+          <div className="flex items-center gap-1">
+            {NAV.map((item) => {
+              const active = pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="px-4 py-1.5 font-mono text-xs uppercase tracking-widest transition-colors"
+                  style={active ? { background: "var(--ink)", color: "var(--canvas)" } : { color: "var(--muted)" }}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+          <button onClick={handleSignOut} className="shrink-0 flex items-center gap-1.5 text-muted-fg transition-opacity hover:opacity-70" title="Sign out">
             <DoorExitIcon />
-            <span className="hidden sm:inline font-mono text-xs uppercase tracking-widest">Sign out</span>
+            <span className="font-mono text-xs uppercase tracking-widest">Sign out</span>
           </button>
         </div>
-        {/* Bottom row: nav tabs — full width, scrollable on mobile */}
-        <div className="flex overflow-x-auto border-t border-border scrollbar-none">
-          {NAV.map((item) => {
-            const active = pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="shrink-0 flex-1 min-w-[4.5rem] py-2 text-center font-mono text-xs uppercase tracking-widest transition-colors"
-                style={active
-                  ? { background: "var(--ink)", color: "var(--canvas)" }
-                  : { color: "var(--muted)" }}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+
+        {/* ── Mobile: brand+signout row + full-width tabs row ───────── */}
+        <div className="md:hidden">
+          <div className="flex h-11 items-center justify-between px-4">
+            <Link href="/" className="font-display text-sm uppercase tracking-widest text-fg shrink-0 transition-opacity hover:opacity-70">
+              {clientConfig.brand.shortName}
+            </Link>
+            <button onClick={handleSignOut} className="shrink-0 flex items-center gap-1.5 text-muted-fg" title="Sign out">
+              <DoorExitIcon />
+            </button>
+          </div>
+          <div className="flex overflow-x-auto border-t border-border">
+            {NAV.map((item) => {
+              const active = pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="shrink-0 flex-1 min-w-[4.5rem] py-2 text-center font-mono text-xs uppercase tracking-widest"
+                  style={active ? { background: "var(--ink)", color: "var(--canvas)" } : { color: "var(--muted)" }}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </nav>
 

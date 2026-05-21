@@ -9,14 +9,6 @@ type Location = { id: string; name: string };
 
 type Props = { locations: Location[] };
 
-const COUNTRY_CODES = [
-  { code: "+961", label: "LB" },
-  { code: "+966", label: "SA" },
-  { code: "+971", label: "AE" },
-  { code: "+1",   label: "US" },
-  { code: "+44",  label: "GB" },
-];
-
 export function NewBookingForm({ locations }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -24,7 +16,7 @@ export function NewBookingForm({ locations }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const [locationId, setLocationId] = useState(locations[0]?.id ?? "");
+  const [locationId] = useState(locations[0]?.id ?? "");
   const [services, setServices] = useState<Service[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [serviceId, setServiceId] = useState("");
@@ -32,27 +24,30 @@ export function NewBookingForm({ locations }: Props) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
-  const [countryCode, setCountryCode] = useState("+961");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [notes, setNotes] = useState("");
 
-  async function loadOptions(locId: string) {
-    setLocationId(locId);
-    setServiceId("");
-    setStaffId("");
-    const [svcRes, staffRes] = await Promise.all([
-      fetch(`/api/admin/options?type=services`).then(r => r.json()),
-      fetch(`/api/admin/options?type=staff&loc=${locId}`).then(r => r.json()),
-    ]);
-    setServices(svcRes ?? []);
-    setStaff(staffRes ?? []);
+  async function openForm() {
+    setOpen(true);
+    if (!services.length) {
+      const [svcRes, staffRes] = await Promise.all([
+        fetch(`/api/admin/options?type=services`).then(r => r.json()),
+        fetch(`/api/admin/options?type=staff&loc=${locationId}`).then(r => r.json()),
+      ]);
+      setServices(Array.isArray(svcRes) ? svcRes : []);
+      setStaff(Array.isArray(staffRes) ? staffRes : []);
+    }
+  }
+
+  function close() {
+    setOpen(false);
+    setError(null);
+    setSuccess(null);
+    setName(""); setServiceId(""); setStaffId(""); setDate(""); setTime("");
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!locationId || !serviceId || !staffId || !date || !time || !name || !phone) {
-      setError("Please fill all required fields.");
+    if (!serviceId || !staffId || !date || !time || !name.trim()) {
+      setError("Name, service, stylist, date and time are required.");
       return;
     }
     setLoading(true);
@@ -67,10 +62,10 @@ export function NewBookingForm({ locations }: Props) {
           staff_id: staffId,
           date,
           time,
-          customer_name: name,
-          customer_phone: `${countryCode}${phone.replace(/^0+/, "")}`,
-          customer_email: email || null,
-          notes: notes || null,
+          customer_name: name.trim(),
+          customer_phone: "00000000",
+          customer_email: null,
+          notes: null,
         }),
       });
       const json = await res.json();
@@ -79,108 +74,100 @@ export function NewBookingForm({ locations }: Props) {
           ? "That slot is already taken — choose another time."
           : (json.error ?? "Booking failed."));
       } else {
-        setSuccess(`Booking created — ref ${json.reference_code}`);
-        setName(""); setPhone(""); setEmail(""); setNotes("");
-        setDate(""); setTime(""); setServiceId(""); setStaffId("");
+        setSuccess(`Created — ref ${json.reference_code}`);
         router.refresh();
-        setTimeout(() => { setSuccess(null); setOpen(false); }, 3000);
+        setTimeout(close, 2500);
       }
     } catch {
-      setError("Network error. Please try again.");
+      setError("Network error.");
     } finally {
       setLoading(false);
     }
   }
 
-  const label = "font-mono text-xs uppercase tracking-widest text-muted-fg mb-1 block";
-  const input = "w-full border border-border bg-bg px-3 py-2 font-mono text-sm text-fg focus:border-fg focus:outline-none";
+  const lbl = "block font-mono text-xs uppercase tracking-widest text-muted-fg mb-1";
+  const inp = "w-full border border-border bg-bg px-3 py-2.5 font-mono text-sm text-fg focus:border-fg focus:outline-none";
 
   return (
     <>
       <button
-        onClick={() => { setOpen(true); if (!services.length) loadOptions(locationId); }}
-        className="shrink-0 border border-fg px-4 py-2 font-mono text-xs uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas"
+        onClick={openForm}
+        className="shrink-0 border border-fg px-3 py-1.5 font-mono text-xs uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas"
       >
-        + New booking
+        + New
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4 pt-16">
-          <div className="w-full max-w-lg border border-border bg-bg p-6">
-            <div className="mb-5 flex items-center justify-between">
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60"
+          onClick={close}
+        >
+          <div
+            className="w-full sm:max-w-md border border-border bg-bg p-5 sm:p-6"
+            style={{ maxHeight: "95dvh", overflowY: "auto" }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="mb-4 flex items-center justify-between">
               <p className="font-display text-lg uppercase tracking-wide text-fg">New booking</p>
-              <button onClick={() => setOpen(false)} className="font-mono text-xs uppercase tracking-widest text-muted-fg hover:opacity-70">✕ Close</button>
+              <button onClick={close} className="font-mono text-xs uppercase tracking-widest text-muted-fg hover:opacity-70">✕</button>
             </div>
 
             <form onSubmit={handleSubmit} className="grid gap-4">
-              {/* Location */}
+              {/* Client name */}
               <div>
-                <label className={label}>Salon *</label>
-                <select value={locationId} onChange={e => loadOptions(e.target.value)} className={input}>
-                  {locations.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+                <label className={lbl}>Client name *</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="Full name"
+                  autoFocus
+                  className={inp}
+                />
+              </div>
+
+              {/* Service */}
+              <div>
+                <label className={lbl}>Service *</label>
+                <select value={serviceId} onChange={e => setServiceId(e.target.value)} className={inp}>
+                  <option value="">Select service…</option>
+                  {services.map(s => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
                 </select>
               </div>
 
-              {/* Service + Staff */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={label}>Service *</label>
-                  <select value={serviceId} onChange={e => setServiceId(e.target.value)} className={input}>
-                    <option value="">Select…</option>
-                    {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className={label}>Stylist *</label>
-                  <select value={staffId} onChange={e => setStaffId(e.target.value)} className={input}>
-                    <option value="">Select…</option>
-                    {staff.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                  </select>
-                </div>
+              {/* Stylist */}
+              <div>
+                <label className={lbl}>Stylist *</label>
+                <select value={staffId} onChange={e => setStaffId(e.target.value)} className={inp}>
+                  <option value="">Select stylist…</option>
+                  {staff.map(s => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
               </div>
 
-              {/* Date + Time */}
+              {/* Date + Time side by side */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={label}>Date *</label>
-                  <input type="date" value={date} onChange={e => setDate(e.target.value)} className={input} />
+                  <label className={lbl}>Date *</label>
+                  <input type="date" value={date} onChange={e => setDate(e.target.value)} className={inp} />
                 </div>
                 <div>
-                  <label className={label}>Time *</label>
-                  <input type="time" value={time} onChange={e => setTime(e.target.value)} className={input} />
+                  <label className={lbl}>Time *</label>
+                  <input type="time" value={time} onChange={e => setTime(e.target.value)} className={inp} />
                 </div>
-              </div>
-
-              {/* Customer */}
-              <div>
-                <label className={label}>Client name *</label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Full name" className={input} />
-              </div>
-              <div>
-                <label className={label}>Phone *</label>
-                <div className="flex gap-2">
-                  <select value={countryCode} onChange={e => setCountryCode(e.target.value)} className="border border-border bg-bg px-2 py-2 font-mono text-sm text-fg focus:outline-none">
-                    {COUNTRY_CODES.map(c => <option key={c.code} value={c.code}>{c.label} {c.code}</option>)}
-                  </select>
-                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="76 123 456" className={`${input} flex-1`} />
-                </div>
-              </div>
-              <div>
-                <label className={label}>Email <span className="normal-case text-muted-fg">(optional)</span></label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="client@email.com" className={input} />
-              </div>
-              <div>
-                <label className={label}>Notes <span className="normal-case text-muted-fg">(optional)</span></label>
-                <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} maxLength={200} placeholder="Any details…" className={`${input} resize-none`} />
               </div>
 
               {error && <p className="font-mono text-xs uppercase tracking-widest text-warning">{error}</p>}
-              {success && <p className="font-mono text-xs uppercase tracking-widest text-success">{success}</p>}
+              {success && <p className="font-mono text-xs uppercase tracking-widest" style={{ color: "var(--success)" }}>{success}</p>}
 
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-1 border border-fg px-6 py-2 font-mono text-xs uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas disabled:opacity-50"
+                className="border border-fg px-6 py-2.5 font-mono text-xs uppercase tracking-widest text-fg transition-colors hover:bg-fg hover:text-canvas disabled:opacity-50"
               >
                 {loading ? "Creating…" : "Confirm booking"}
               </button>
