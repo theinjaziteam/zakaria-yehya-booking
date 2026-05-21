@@ -549,7 +549,7 @@ export default async function PublicHomePage() {
 
       {/* ── PRODUCTS ────────────────────────────────────────────────── */}
       {/* Warm amber band — signals "shop" without leaving the brand palette */}
-      <div style={{ background: "#C4B5A0", borderBottom: "1px solid var(--hairline)" }}>
+      <div>
         <ProductsSection products={products} />
       </div>
 
