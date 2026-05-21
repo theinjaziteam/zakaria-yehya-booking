@@ -9,7 +9,6 @@ import { HeroVideo } from "@/components/hero-video";
 import { HeroContent } from "@/components/hero-content";
 import { StatsRow } from "@/components/stats-row";
 import { Reveal, TextReveal } from "@/components/reveal";
-import { MagneticButton } from "@/components/magnetic-button";
 import { HowItWorksSteps } from "@/components/how-it-works-steps";
 import { ParallaxImage } from "@/components/parallax-image";
 
@@ -610,7 +609,7 @@ export default async function PublicHomePage() {
           ]} />
 
           <Reveal delay={0.2} className="mt-xl">
-            <MagneticButton href="/book" style={{
+            <a href="/book" style={{
               display: "inline-flex", height: "2.75rem", alignItems: "center", justifyContent: "center",
               border: "1px solid #F9F6F1", padding: "0 2rem",
               fontFamily: "var(--font-mono)", fontSize: "var(--button-size)", textTransform: "uppercase",
@@ -618,7 +617,7 @@ export default async function PublicHomePage() {
               textDecoration: "none", transition: "opacity 0.2s",
             }}>
               Begin reservation
-            </MagneticButton>
+            </a>
           </Reveal>
         </div>
       </section>
@@ -719,7 +718,7 @@ export default async function PublicHomePage() {
             </div>
 
             <Reveal delay={0.5}>
-              <MagneticButton
+              <a
                 href="/book"
                 style={{
                   display: "inline-flex", height: "3rem", alignItems: "center", justifyContent: "center",
@@ -730,7 +729,7 @@ export default async function PublicHomePage() {
                 }}
               >
                 Reserve your chair
-              </MagneticButton>
+              </a>
             </Reveal>
           </div>
 

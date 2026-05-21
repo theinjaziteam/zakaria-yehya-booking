@@ -1,7 +1,6 @@
 "use client";
 
 import * as motion from "framer-motion/client";
-import { MagneticButton } from "@/components/magnetic-button";
 
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -76,7 +75,7 @@ export function HeroContent({ eyebrow, title, body, ctaLabel }: Props) {
       {/* CTAs */}
       <div style={{ overflow: "hidden" }}>
         <motion.div custom={0.7} variants={line} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "1.25rem" }}>
-          <MagneticButton
+          <a
             href="/book"
             className="inline-flex h-14 items-center justify-center px-10 font-mono uppercase tracking-widest transition-opacity hover:opacity-85"
             style={{
@@ -90,7 +89,7 @@ export function HeroContent({ eyebrow, title, body, ctaLabel }: Props) {
             }}
           >
             {ctaLabel}
-          </MagneticButton>
+          </a>
           <a
             href="#services"
             className="font-mono uppercase transition-opacity hover:opacity-100"
