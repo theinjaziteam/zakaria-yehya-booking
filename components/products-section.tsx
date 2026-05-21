@@ -33,8 +33,8 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <article
       style={{
-        background: "#FFFFFF",
-        border: "1px solid rgba(28,23,20,0.10)",
+        background: "#FAF7F3",
+        border: "1px solid rgba(28,23,20,0.08)",
         display: "flex",
         flexDirection: "column",
       }}
@@ -59,7 +59,7 @@ function ProductCard({ product }: { product: Product }) {
       <div style={{ padding: "16px 16px 20px", display: "flex", flexDirection: "column", gap: 10, flex: 1 }}>
         {/* Name + price */}
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-          <h3 style={{ fontFamily: "var(--font-display)", fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)", textTransform: "uppercase", color: "#1C1714", lineHeight: 1.2, margin: 0 }}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontSize: "var(--title-sm-size)", letterSpacing: "var(--title-sm-tracking)", textTransform: "uppercase", color: "#3D3530", lineHeight: 1.2, margin: 0 }}>
             {product.name}
           </h3>
           <p style={{ fontFamily: "var(--font-mono)", fontSize: "var(--caption-size)", letterSpacing: "0.06em", color: "rgba(28,23,20,0.55)", flexShrink: 0 }}>
@@ -87,9 +87,9 @@ function ProductCard({ product }: { product: Product }) {
             fontSize: "0.7rem",
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            border: added ? "1px solid #3E6E34" : "1px solid rgba(28,23,20,0.35)",
+            border: added ? "1px solid #3E6E34" : "1px solid rgba(61,53,48,0.30)",
             background: added ? "#3E6E34" : "transparent",
-            color: added ? "#F9F6F1" : "#1C1714",
+            color: added ? "#F9F6F1" : "#3D3530",
             cursor: "pointer",
             transition: "all 0.2s ease",
             width: "100%",
@@ -121,7 +121,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
             </p>
             <h2
               className="font-display uppercase"
-              style={{ fontSize: "clamp(1.75rem, 5vw, 3.25rem)", lineHeight: 1.04, letterSpacing: "0.05em", maxWidth: "14ch", color: "#1C1714" }}
+              style={{ fontSize: "clamp(1.75rem, 5vw, 3.25rem)", lineHeight: 1.04, letterSpacing: "0.05em", maxWidth: "14ch", color: "#3D3530" }}
             >
               What we carry.
             </h2>
