@@ -181,22 +181,24 @@ export default function StaffDashboard() {
       )}
       {/* Nav */}
       <nav style={{ borderBottom: "1px solid var(--hairline)", background: "#F9F6F1", position: "sticky", top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: 768, margin: "0 auto", padding: "0 1rem", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div>
-            <p style={{ fontFamily: "var(--font-display)", fontSize: 15, letterSpacing: "0.3em", textTransform: "uppercase", color: "#1C1714" }}>
-              {clientConfig.brand.shortName}
-            </p>
-            <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)" }}>
-              {staffName}
-            </p>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 1rem", height: 56, display: "flex", alignItems: "center", gap: "2rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <div>
+              <p style={{ fontFamily: "var(--font-display)", fontSize: 15, letterSpacing: "0.3em", textTransform: "uppercase", color: "#1C1714" }}>
+                {clientConfig.brand.shortName}
+              </p>
+              <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)" }}>
+                {staffName}
+              </p>
+            </div>
+            <button onClick={signOut} style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", background: "none", border: "none", cursor: "pointer", padding: "0.5rem 1rem", borderLeft: "1px solid rgba(28,23,20,0.15)" }}>
+              Sign out
+            </button>
           </div>
-          <button onClick={signOut} style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", background: "none", border: "none", cursor: "pointer" }}>
-            Sign out
-          </button>
         </div>
       </nav>
 
-      <div style={{ maxWidth: 768, margin: "0 auto", padding: "2rem 1rem" }}>
+      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "2rem 1rem" }}>
         {/* Tabs — only render once we know isOwner, prevents tips flashing for owners */}
         <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--hairline)", marginBottom: 24 }}>
           {authLoaded && (() => {
@@ -224,7 +226,7 @@ export default function StaffDashboard() {
             {loading ? <p className={label}>Loading…</p> : bookings.length === 0 ? (
               <p className={label}>No bookings for this period.</p>
             ) : (
-              <div style={{ display: "grid", gap: 12 }}>
+              <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))" }}>
                 {bookings.map(b => {
                   const hasTippedBefore = tippedPhones.has(b.customer_name);
                   return (
@@ -299,7 +301,7 @@ export default function StaffDashboard() {
         {tab === "tips" && (
           <>
             {/* Summary */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 24 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 24 }}>
               {[{ label: "Today's tips", value: fmt(todayTips) }, { label: "All-time tips", value: fmt(totalTips) }].map(s => (
                 <div key={s.label} style={{ background: "#fff", border: "1px solid var(--hairline)", padding: 16 }}>
                   <p className={label} style={{ marginBottom: 4 }}>{s.label}</p>
