@@ -17,6 +17,14 @@ const TZ = clientConfig.business.defaultTimezone;
 export function TimePicker({ slots, svc, staff, date }: Props) {
   const router = useRouter();
 
+  // DEBUG
+  return (
+    <div className="border border-blue-500 bg-blue-50 p-md">
+      <p className="font-bold text-blue-900">DEBUG: TimePicker</p>
+      <p className="text-sm text-blue-800">slots: {JSON.stringify(slots)}</p>
+    </div>
+  );
+
   if (slots === null) {
     return (
       <div className="border border-border bg-card p-md">
