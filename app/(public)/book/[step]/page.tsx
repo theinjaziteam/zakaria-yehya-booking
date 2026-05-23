@@ -588,6 +588,7 @@ async function TimeStep({
       if (error) { console.error("get_available_slots:", error.message); slots = []; }
       else if (data) slots = data as Slot[];
       else slots = [];
+      */
     } catch (e) {
       console.error("get_available_slots threw:", e);
       slots = [];
