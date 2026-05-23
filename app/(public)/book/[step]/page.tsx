@@ -816,7 +816,7 @@ export default async function BookingStepPage({
   const stepIndex = STEPS.indexOf(currentStep);
 
   // Single location — Verdun UUID is fixed, never read from URL
-  const LOC = "d264fa27-56af-44a3-adc6-98f97d5a910e";
+  const LOC = "adccf684-03bf-43f6-bd41-36e4cd6db8c4";
 
   const svc = str(sp, "svc");
   const staff = str(sp, "staff");
