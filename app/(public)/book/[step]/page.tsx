@@ -572,13 +572,6 @@ async function TimeStep({
   const supabase = await getSupabase();
   if (supabase && staff !== "any") {
     try {
-      // TEMPORARY: Return dummy slots
-      slots = [
-        { starts_at: new Date().toISOString(), available: true },
-        { starts_at: new Date(Date.now() + 15*60000).toISOString(), available: true },
-        { starts_at: new Date(Date.now() + 30*60000).toISOString(), available: true },
-      ];
-      /*
       const { data, error } = await (await supabase).rpc("get_available_slots", {
         p_staff_id: staff,
         p_service_id: svc,
@@ -588,7 +581,6 @@ async function TimeStep({
       if (error) { console.error("get_available_slots:", error.message); slots = []; }
       else if (data) slots = data as Slot[];
       else slots = [];
-      */
     } catch (e) {
       console.error("get_available_slots threw:", e);
       slots = [];
