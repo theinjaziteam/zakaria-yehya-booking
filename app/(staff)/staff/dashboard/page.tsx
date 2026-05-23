@@ -199,11 +199,15 @@ export default function StaffDashboard() {
       <div style={{ maxWidth: 768, margin: "0 auto", padding: "2rem 1rem" }}>
         {/* Tabs — only render once we know isOwner, prevents tips flashing for owners */}
         <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--hairline)", marginBottom: 24 }}>
-          {authLoaded && (["bookings", ...(!isOwner && !NO_TIPS_STAFF.has(staffId) ? ["tips"] : [])] as ("bookings" | "tips")[]).map(t => (
-            <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 24px", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", border: "none", borderBottom: tab === t ? "2px solid #1C1714" : "2px solid transparent", background: "transparent", color: tab === t ? "#1C1714" : "rgba(28,23,20,0.45)", cursor: "pointer" }}>
-              {t}
-            </button>
-          ))}
+          {authLoaded && (() => {
+            const tabs: ("bookings" | "tips")[] = ["bookings"];
+            if (!isOwner && !NO_TIPS_STAFF.has(staffId)) tabs.push("tips");
+            return tabs.map(t => (
+              <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 24px", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", border: "none", borderBottom: tab === t ? "2px solid #1C1714" : "2px solid transparent", background: "transparent", color: tab === t ? "#1C1714" : "rgba(28,23,20,0.45)", cursor: "pointer" }}>
+                {t}
+              </button>
+            ));
+          })()}
         </div>
 
         {/* ── BOOKINGS TAB ── */}
