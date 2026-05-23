@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
+const NO_TIPS_STAFF = new Set([
+  "e21354fe-3181-4a7d-9ba1-6c48b53a1835", // Zakaria Haddad
+  "16e1eef0-aa64-4bb6-8f22-baae23efbbb9", // Yehya Khoury
+]);
+
 function getStaffId(req: NextRequest): string | null {
   const cookie = req.cookies.get("yz_staff_session")?.value;
   if (!cookie) return null;
@@ -24,6 +29,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const staffId = getStaffId(req);
   if (!staffId) return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+  if (NO_TIPS_STAFF.has(staffId)) return NextResponse.json({ error: "Tips not supported for this staff member." }, { status: 403 });
   const { customer_name, amount_cents, note, tip_date, booking_id } = await req.json();
   if (!amount_cents || amount_cents <= 0) return NextResponse.json({ error: "Amount required." }, { status: 400 });
   const supabase = createAdminSupabaseClient();

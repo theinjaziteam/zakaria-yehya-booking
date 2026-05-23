@@ -42,8 +42,14 @@ const label = "font-mono text-[12px] uppercase tracking-widest text-muted-fg";
 
 function today() { return new Date().toISOString().slice(0, 10); }
 
+const NO_TIPS_STAFF = new Set([
+  "e21354fe-3181-4a7d-9ba1-6c48b53a1835", // Zakaria Haddad
+  "16e1eef0-aa64-4bb6-8f22-baae23efbbb9", // Yehya Khoury
+]);
+
 export default function StaffDashboard() {
   const router = useRouter();
+  const [staffId, setStaffId] = useState("");
   const [staffName, setStaffName] = useState("");
   const [isOwner, setIsOwner] = useState(false);
   const [authLoaded, setAuthLoaded] = useState(false);
@@ -68,7 +74,7 @@ export default function StaffDashboard() {
   useEffect(() => {
     fetch("/api/staff/me")
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(data => { setStaffName(data.name ?? ""); setIsOwner(data.is_owner === true); setAuthLoaded(true); })
+      .then(data => { setStaffId(data.id ?? ""); setStaffName(data.name ?? ""); setIsOwner(data.is_owner === true); setAuthLoaded(true); })
       .catch(() => { window.location.href = "/staff/login"; });
   }, []);
 
@@ -193,7 +199,7 @@ export default function StaffDashboard() {
       <div style={{ maxWidth: 768, margin: "0 auto", padding: "2rem 1rem" }}>
         {/* Tabs — only render once we know isOwner, prevents tips flashing for owners */}
         <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--hairline)", marginBottom: 24 }}>
-          {authLoaded && (["bookings", ...(!isOwner ? ["tips"] : [])] as ("bookings" | "tips")[]).map(t => (
+          {authLoaded && (["bookings", ...(!isOwner && !NO_TIPS_STAFF.has(staffId) ? ["tips"] : [])] as ("bookings" | "tips")[]).map(t => (
             <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 24px", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", border: "none", borderBottom: tab === t ? "2px solid #1C1714" : "2px solid transparent", background: "transparent", color: tab === t ? "#1C1714" : "rgba(28,23,20,0.45)", cursor: "pointer" }}>
               {t}
             </button>
