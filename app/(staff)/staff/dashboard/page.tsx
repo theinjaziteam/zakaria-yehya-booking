@@ -186,7 +186,7 @@ export default function StaffDashboard() {
       )}
       {/* Nav */}
       <nav style={{ borderBottom: "1px solid var(--hairline)", background: "#F9F6F1", position: "sticky", top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 1rem", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 1rem", height: 56, display: "flex", alignItems: "center", width: "100%" }}>
           <div>
             <p style={{ fontFamily: "var(--font-display)", fontSize: 15, letterSpacing: "0.3em", textTransform: "uppercase", color: "#1C1714" }}>
               {clientConfig.brand.shortName}
@@ -195,7 +195,7 @@ export default function StaffDashboard() {
               {staffName}
             </p>
           </div>
-          <button onClick={signOut} style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", background: "none", border: "none", cursor: "pointer", padding: "0.5rem 0" }}>
+          <button onClick={signOut} style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", background: "none", border: "none", cursor: "pointer", padding: "0.5rem 0" }}>
             Sign out
           </button>
         </div>
