@@ -164,7 +164,12 @@ export default function StaffDashboard() {
 
   async function signOut() {
     await fetch("/api/staff/auth", { method: "DELETE" });
-    router.replace("/staff/login");
+    setStaffId("");
+    setStaffName("");
+    setIsOwner(false);
+    setAuthLoaded(false);
+    setTab("bookings");
+    router.push("/staff/login");
   }
 
   const totalTips = tips.reduce((s, t) => s + t.amount_cents, 0);
@@ -181,20 +186,18 @@ export default function StaffDashboard() {
       )}
       {/* Nav */}
       <nav style={{ borderBottom: "1px solid var(--hairline)", background: "#F9F6F1", position: "sticky", top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 1rem", height: 56, display: "flex", alignItems: "center", gap: "2rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <div>
-              <p style={{ fontFamily: "var(--font-display)", fontSize: 15, letterSpacing: "0.3em", textTransform: "uppercase", color: "#1C1714" }}>
-                {clientConfig.brand.shortName}
-              </p>
-              <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)" }}>
-                {staffName}
-              </p>
-            </div>
-            <button onClick={signOut} style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", background: "none", border: "none", cursor: "pointer", padding: "0.5rem 1rem", borderLeft: "1px solid rgba(28,23,20,0.15)" }}>
-              Sign out
-            </button>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 1rem", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: 15, letterSpacing: "0.3em", textTransform: "uppercase", color: "#1C1714" }}>
+              {clientConfig.brand.shortName}
+            </p>
+            <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)" }}>
+              {staffName}
+            </p>
           </div>
+          <button onClick={signOut} style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", background: "none", border: "none", cursor: "pointer", padding: "0.5rem 0" }}>
+            Sign out
+          </button>
         </div>
       </nav>
 
