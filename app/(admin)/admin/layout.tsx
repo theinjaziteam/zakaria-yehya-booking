@@ -9,6 +9,9 @@ const NAV = [
   { href: "/admin/orders",   label: "Orders" },
   { href: "/admin/revenue",  label: "Revenue" },
   { href: "/admin/staff",    label: "Staff" },
+  { href: "/admin/services", label: "Services" },
+  { href: "/admin/hours",    label: "Hours" },
+  { href: "/admin/time-off", label: "Time Off" },
 ];
 
 function DoorExitIcon() {

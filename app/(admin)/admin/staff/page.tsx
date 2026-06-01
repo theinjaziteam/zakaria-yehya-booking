@@ -1,12 +1,13 @@
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { StaffPinReset } from "@/components/admin/staff-pin-reset";
 
-type StaffMember = { id: string; name: string; title: string | null; bio: string | null; active: boolean; sort_order: number; locations: string[]; services: string[]; };
+type StaffMember = { id: string; name: string; title: string | null; bio: string | null; active: boolean; sort_order: number; pin_hash: string | null; locations: string[]; services: string[]; };
 
 async function getStaff(): Promise<StaffMember[]> {
   try {
     const supabase = createAdminSupabaseClient();
     const [staffRes, staffLocRes, staffSvcRes, locRes, svcRes] = await Promise.all([
-      supabase.from("staff").select("id, name, title, bio, active, sort_order").order("sort_order"),
+      supabase.from("staff").select("id, name, title, bio, active, sort_order, pin_hash").order("sort_order"),
       supabase.from("staff_locations").select("staff_id, location_id"),
       supabase.from("staff_services").select("staff_id, service_id"),
       supabase.from("locations").select("id, name"),
@@ -14,7 +15,7 @@ async function getStaff(): Promise<StaffMember[]> {
     ]);
     const locs = Object.fromEntries((locRes.data ?? []).map((l: {id:string;name:string}) => [l.id, l.name]));
     const svcs = Object.fromEntries((svcRes.data ?? []).map((s: {id:string;name:string}) => [s.id, s.name]));
-    return (staffRes.data ?? []).map((s: {id:string;name:string;title:string|null;bio:string|null;active:boolean;sort_order:number}) => ({
+    return (staffRes.data ?? []).map((s: {id:string;name:string;title:string|null;bio:string|null;active:boolean;sort_order:number;pin_hash:string|null}) => ({
       ...s,
       locations: (staffLocRes.data ?? []).filter((r: {staff_id:string}) => r.staff_id === s.id).map((r: {location_id:string}) => locs[r.location_id] ?? r.location_id),
       services: (staffSvcRes.data ?? []).filter((r: {staff_id:string}) => r.staff_id === s.id).map((r: {service_id:string}) => svcs[r.service_id] ?? r.service_id),
@@ -60,6 +61,14 @@ export default async function AdminStaffPage() {
                 </div>
               </div>
             )}
+            <div className="border-t border-border pt-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-mono text-xs uppercase tracking-widest text-muted-fg">
+                  PIN {s.pin_hash ? "· set" : "· not set"}
+                </p>
+                <StaffPinReset staffId={s.id} />
+              </div>
+            </div>
           </div>
         ))}
       </div>
