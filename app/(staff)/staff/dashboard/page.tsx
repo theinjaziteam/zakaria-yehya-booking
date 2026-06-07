@@ -191,11 +191,11 @@ export default function StaffDashboard() {
             <p style={{ fontFamily: "var(--font-display)", fontSize: 15, letterSpacing: "0.3em", textTransform: "uppercase", color: "#1C1714" }}>
               {clientConfig.brand.shortName}
             </p>
-            <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)" }}>
+            <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.72)" }}>
               {staffName}
             </p>
           </div>
-          <button onClick={signOut} style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", background: "none", border: "none", cursor: "pointer", padding: "0.5rem 0" }}>
+          <button onClick={signOut} style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.72)", background: "none", border: "none", cursor: "pointer", padding: "0.5rem 0" }}>
             Sign out
           </button>
         </div>
@@ -208,7 +208,7 @@ export default function StaffDashboard() {
             const tabs: ("bookings" | "tips")[] = ["bookings"];
             if (!isOwner && !NO_TIPS_STAFF.has(staffId)) tabs.push("tips");
             return tabs.map(t => (
-              <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 24px", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", border: "none", borderBottom: tab === t ? "2px solid #1C1714" : "2px solid transparent", background: "transparent", color: tab === t ? "#1C1714" : "rgba(28,23,20,0.45)", cursor: "pointer" }}>
+              <button key={t} onClick={() => setTab(t)} style={{ padding: "10px 24px", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", border: "none", borderBottom: tab === t ? "2px solid #1C1714" : "2px solid transparent", background: "transparent", color: tab === t ? "#1C1714" : "rgba(28,23,20,0.72)", cursor: "pointer" }}>
                 {t}
               </button>
             ));
@@ -220,7 +220,7 @@ export default function StaffDashboard() {
           <>
             <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
               {(["today", "upcoming", "all"] as const).map(f => (
-                <button key={f} onClick={() => setFilter(f)} style={{ padding: "7px 18px", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", border: "1px solid", borderColor: filter === f ? "#1C1714" : "var(--hairline)", background: filter === f ? "#1C1714" : "transparent", color: filter === f ? "#F9F6F1" : "rgba(28,23,20,0.55)", cursor: "pointer" }}>
+                <button key={f} onClick={() => setFilter(f)} style={{ padding: "7px 18px", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", border: "1px solid", borderColor: filter === f ? "#1C1714" : "var(--hairline)", background: filter === f ? "#1C1714" : "transparent", color: filter === f ? "#F9F6F1" : "rgba(28,23,20,0.78)", cursor: "pointer" }}>
                   {f}
                 </button>
               ))}
@@ -239,7 +239,7 @@ export default function StaffDashboard() {
                           <p style={{ fontFamily: "var(--font-display)", fontSize: 20, letterSpacing: "0.05em", textTransform: "uppercase", color: "#1C1714" }}>
                             {fmtTime(b.starts_at)} — {fmtDate(b.starts_at)}
                           </p>
-                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", marginTop: 3 }}>
+                          <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(28,23,20,0.72)", marginTop: 3 }}>
                             {b.services?.name ?? "—"} · {b.locations?.name ?? "—"}
                           </p>
                         </div>
@@ -253,11 +253,11 @@ export default function StaffDashboard() {
                             <p className={label}>Client</p>
                             <button
                               onClick={() => setSelectedClient({ name: b.customer_name, phone: b.customer_phone })}
-                              style={{ fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", background: "none", border: "none", cursor: "pointer", padding: 0, textDecoration: "underline", textDecorationColor: "rgba(28,23,20,0.25)" }}
+                              style={{ fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", background: "none", border: "none", cursor: "pointer", padding: 0, textDecoration: "underline", textDecorationColor: "rgba(28,23,20,0.38)" }}
                             >
                               {b.customer_name}
                             </button>
-                            <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "rgba(28,23,20,0.45)", letterSpacing: "0.06em", marginTop: 2 }}>{b.customer_phone}</p>
+                            <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "rgba(28,23,20,0.72)", letterSpacing: "0.06em", marginTop: 2 }}>{b.customer_phone}</p>
                             {hasTippedBefore && (
                               <p style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#865F10", marginTop: 3 }}>
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v2m0 8v2M9 12h6"/></svg>
@@ -280,7 +280,7 @@ export default function StaffDashboard() {
                               fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase",
                               padding: "6px 12px", border: "1px solid",
                               borderColor: lateMarking[b.id] === "done" ? "rgba(28,23,20,0.2)" : "#C4871F",
-                              color: lateMarking[b.id] === "done" ? "rgba(28,23,20,0.35)" : "#C4871F",
+                              color: lateMarking[b.id] === "done" ? "rgba(28,23,20,0.62)" : "#C4871F",
                               background: "none", cursor: lateMarking[b.id] === "done" ? "default" : "pointer",
                               opacity: lateMarking[b.id] === "saving" ? 0.5 : 1,
                             }}
@@ -290,7 +290,7 @@ export default function StaffDashboard() {
                         )}
                       </div>
                       {b.notes && (
-                        <p style={{ marginTop: 10, fontFamily: "var(--font-body)", fontSize: 13, color: "rgba(28,23,20,0.6)", borderLeft: "2px solid #C4871F", paddingLeft: 10 }}>{b.notes}</p>
+                        <p style={{ marginTop: 10, fontFamily: "var(--font-body)", fontSize: 13, color: "rgba(28,23,20,0.80)", borderLeft: "2px solid #C4871F", paddingLeft: 10 }}>{b.notes}</p>
                       )}
                     </div>
                   );
@@ -332,7 +332,7 @@ export default function StaffDashboard() {
                       setTipBookingId(match?.id ?? null);
                     }}
                     placeholder="Type or pick from today's appointments…"
-                    style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }}
+                    style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.38)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }}
                   />
                   <datalist id="tip-clients-list">
                     {todayBookings.map(b => (
@@ -351,16 +351,16 @@ export default function StaffDashboard() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
                     <p className={label} style={{ marginBottom: 4 }}>Amount ($) *</p>
-                    <input type="number" step="0.5" min="0" value={tipAmount} onChange={e => setTipAmount(e.target.value)} placeholder="0.00" style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-mono)", fontSize: 16, color: "#1C1714", outline: "none", boxSizing: "border-box" }} />
+                    <input type="number" step="0.5" min="0" value={tipAmount} onChange={e => setTipAmount(e.target.value)} placeholder="0.00" style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.38)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-mono)", fontSize: 16, color: "#1C1714", outline: "none", boxSizing: "border-box" }} />
                   </div>
                   <div>
                     <p className={label} style={{ marginBottom: 4 }}>Date</p>
-                    <input type="date" value={tipDate} onChange={e => setTipDate(e.target.value)} style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-mono)", fontSize: 13, color: "#1C1714", outline: "none", boxSizing: "border-box" }} />
+                    <input type="date" value={tipDate} onChange={e => setTipDate(e.target.value)} style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.38)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-mono)", fontSize: 13, color: "#1C1714", outline: "none", boxSizing: "border-box" }} />
                   </div>
                 </div>
                 <div>
                   <p className={label} style={{ marginBottom: 4 }}>Note (optional)</p>
-                  <input type="text" value={tipNote} onChange={e => setTipNote(e.target.value)} placeholder="Any note…" style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }} />
+                  <input type="text" value={tipNote} onChange={e => setTipNote(e.target.value)} placeholder="Any note…" style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.38)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }} />
                 </div>
                 {tipMsg && (
                   <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: tipMsg.startsWith("Error") ? "#C4871F" : "#3E6E34" }}>
@@ -380,11 +380,11 @@ export default function StaffDashboard() {
                   <div key={t.id} style={{ background: "#fff", border: "1px solid var(--hairline)", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
                     <div>
                       <p style={{ fontFamily: "var(--font-mono)", fontSize: 17, color: "#1C1714" }}>{fmt(t.amount_cents)}</p>
-                      <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", marginTop: 2 }}>
+                      <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(28,23,20,0.72)", marginTop: 2 }}>
                         {t.tip_date}{t.customer_name ? ` · ${t.customer_name}` : ""}{t.note ? ` · ${t.note}` : ""}
                       </p>
                     </div>
-                    <button onClick={() => deleteTip(t.id)} style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(28,23,20,0.35)", background: "none", border: "none", cursor: "pointer" }}>
+                    <button onClick={() => deleteTip(t.id)} style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(28,23,20,0.62)", background: "none", border: "none", cursor: "pointer" }}>
                       remove
                     </button>
                   </div>

@@ -43,7 +43,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-bg text-body">
+    <div className="min-h-screen bg-bg text-body" data-scope="admin">
       <nav
         className="sticky top-0 z-50 border-b border-border bg-bg/95"
         style={{ backdropFilter: "blur(8px)" }}

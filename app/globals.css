@@ -73,6 +73,13 @@ body {
   font-weight: 600;
 }
 
+/* Admin / staff scope — raise muted colours so labels are legible */
+[data-scope="admin"] {
+  --muted: #3D3530;
+  --muted-fg: #3D3530;
+  --border: #C8BDB5;
+}
+
 ::selection {
   background: color-mix(in srgb, var(--accent) 22%, transparent);
   color: var(--fg);

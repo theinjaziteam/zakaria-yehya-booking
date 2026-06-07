@@ -27,18 +27,18 @@ export default function StaffLoginPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#F9F6F1", display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
       <div style={{ width: "100%", maxWidth: 360 }}>
-        <p style={{ fontFamily: "var(--font-display)", fontSize: 12, letterSpacing: "0.4em", textTransform: "uppercase", color: "rgba(28,23,20,0.45)", textAlign: "center", marginBottom: 28 }}>
+        <p style={{ fontFamily: "var(--font-display)", fontSize: 12, letterSpacing: "0.4em", textTransform: "uppercase", color: "rgba(28,23,20,0.72)", textAlign: "center", marginBottom: 28 }}>
           {clientConfig.brand.name}
         </p>
 
-        <div style={{ background: "#fff", border: "1px solid rgba(28,23,20,0.1)", padding: "36px 32px", boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
+        <div style={{ background: "#fff", border: "1px solid rgba(28,23,20,0.18)", padding: "36px 32px", boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
           <p style={{ fontFamily: "var(--font-display)", fontSize: 20, letterSpacing: "0.08em", textTransform: "uppercase", color: "#1C1714", marginBottom: 24 }}>
             Staff login
           </p>
 
           <form onSubmit={handleSubmit} style={{ display: "grid", gap: 16 }}>
             <div>
-              <label style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.5)", marginBottom: 6 }}>Your PIN</label>
+              <label style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(28,23,20,0.72)", marginBottom: 6 }}>Your PIN</label>
               <input
                 type="password"
                 value={pin}
@@ -46,7 +46,7 @@ export default function StaffLoginPage() {
                 placeholder="Enter your PIN"
                 autoComplete="current-password"
                 autoFocus
-                style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.25)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }}
+                style={{ width: "100%", borderBottom: "1px solid rgba(28,23,20,0.38)", background: "transparent", padding: "8px 0", fontFamily: "var(--font-body)", fontSize: 15, color: "#1C1714", outline: "none", boxSizing: "border-box" }}
               />
             </div>
 
@@ -64,7 +64,7 @@ export default function StaffLoginPage() {
 
         {/* Back link — below card, matching admin login style */}
         <p style={{ textAlign: "center", marginTop: 20 }}>
-          <a href="/" style={{ fontFamily: "var(--font-mono)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(28,23,20,0.35)", textDecoration: "none" }}>
+          <a href="/" style={{ fontFamily: "var(--font-mono)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(28,23,20,0.62)", textDecoration: "none" }}>
             ← Back to site
           </a>
         </p>
