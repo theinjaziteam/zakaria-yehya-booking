@@ -9,7 +9,7 @@ import "./globals.css";
 
 const brandDisplay = Saira_Condensed({
   variable: "--font-brand-display",
-  weight: ["400"],
+  weight: ["400", "600"],
   subsets: ["latin"],
 });
 

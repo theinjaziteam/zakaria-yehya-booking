@@ -65,7 +65,7 @@ export function HeroContent({ eyebrow, title, body, ctaLabel }: Props) {
             fontSize: "clamp(0.9375rem, 1.5vw, 1.125rem)",
             lineHeight: 1.78,
             maxWidth: "44ch",
-            color: "rgba(249,246,241,0.80)",
+            color: "rgba(249,246,241,0.90)",
           }}
         >
           {body}
@@ -84,7 +84,6 @@ export function HeroContent({ eyebrow, title, body, ctaLabel }: Props) {
               color: "#1C1714",
               fontSize: "1rem",
               letterSpacing: "0.15em",
-              fontWeight: 600,
               textDecoration: "none",
             }}
           >

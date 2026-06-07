@@ -297,7 +297,7 @@ async function ServiceStep({ loc }: { loc: string }) {
                   <Link
                     key={svc.id}
                     href={`/book/stylist?svc=${svc.id}`}
-                    className={`group flex items-center justify-between gap-md py-md transition-opacity hover:opacity-70 ${
+                    className={`group flex items-center justify-between gap-md py-md transition-colors hover:bg-secondary -mx-md px-md sm:-mx-xl sm:px-xl ${
                       i < catServices.length - 1 ? "border-b border-border" : ""
                     }`}
                   >
@@ -327,19 +327,27 @@ async function ServiceStep({ loc }: { loc: string }) {
                         </p>
                       )}
                     </div>
-                    <div className="shrink-0 text-right">
-                      <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg">
-                        {formatDur(svc.duration_min)}
-                      </p>
-                      <p
-                        className="font-mono text-fg"
-                        style={{
-                          fontSize: "var(--title-sm-size)",
-                          letterSpacing: "var(--title-sm-tracking)",
-                        }}
+                    <div className="flex shrink-0 items-center gap-sm text-right">
+                      <div>
+                        <p className="hidden font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg sm:block">
+                          {formatDur(svc.duration_min)}
+                        </p>
+                        <p
+                          className="font-mono text-fg"
+                          style={{
+                            fontSize: "var(--title-sm-size)",
+                            letterSpacing: "var(--title-sm-tracking)",
+                          }}
+                        >
+                          {formatPrice(svc.price_cents)}
+                        </p>
+                      </div>
+                      <span
+                        className="font-mono text-muted-fg transition-transform group-hover:translate-x-1"
+                        aria-hidden
                       >
-                        {formatPrice(svc.price_cents)}
-                      </p>
+                        →
+                      </span>
                     </div>
                   </Link>
                 ))}

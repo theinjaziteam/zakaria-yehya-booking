@@ -62,9 +62,15 @@ body {
   color: var(--body);
   font-family: var(--font-body), serif;
   font-size: 1rem;
-  line-height: 1.65;
+  font-weight: 500;
+  line-height: 1.78;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Display font always renders at semibold — Saira Condensed 600 */
+.font-display {
+  font-weight: 600;
 }
 
 ::selection {
@@ -112,8 +118,8 @@ button,
 
 /* ── Page entrance — every <main> fades in on navigation ────────────── */
 @keyframes pageFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 main {

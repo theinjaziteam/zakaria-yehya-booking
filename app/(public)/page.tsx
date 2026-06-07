@@ -46,14 +46,12 @@ type LandingData = {
 };
 
 // Curated Unsplash images — luxury salon / editorial hair photography
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=2400&q=85&auto=format&fit=crop";
 const INTERIOR_IMAGE =
-  "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1800&q=85&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1800&q=90&auto=format&fit=crop";
 const CRAFT_IMAGE =
-  "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=1800&q=85&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=1800&q=90&auto=format&fit=crop";
 const CTA_IMAGE =
-  "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1400&q=85&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1400&q=90&auto=format&fit=crop";
 
 function formatPrice(priceCents: number) {
   const amount = priceCents / 100;
@@ -227,7 +225,7 @@ export default async function PublicHomePage() {
       {/* ── HERO — full-bleed video band ────────────────────────────── */}
       <section
         className="relative overflow-hidden"
-        style={{ height: "clamp(560px, 72vh, 820px)", background: "#1C1714" }}
+        style={{ height: "calc(100svh - 3.5rem)", minHeight: "560px", background: "#1C1714" }}
       >
         <HeroVideo videos={["/hero-video.mp4", "/hero-video-2.mp4"]} />
         {/* Dark gradient overlay */}
@@ -278,13 +276,13 @@ export default async function PublicHomePage() {
           {[...Array(4)].map((_, i) => (
             <span key={i} className="flex shrink-0 gap-xl">
               <span>Est. 1998</span>
-              <span className="text-border">·</span>
+              <span aria-hidden>·</span>
               <span>Verdun, Beirut</span>
-              <span className="text-border">·</span>
+              <span aria-hidden>·</span>
               <span>By appointment only</span>
-              <span className="text-border">·</span>
+              <span aria-hidden>·</span>
               <span>Celebrity Hairstylists — Beirut</span>
-              <span className="text-border">·</span>
+              <span aria-hidden>·</span>
             </span>
           ))}
         </div>
@@ -302,8 +300,8 @@ export default async function PublicHomePage() {
               <div className="relative overflow-hidden" style={{ aspectRatio: "4/5" }}>
                 <img
                   src={INTERIOR_IMAGE}
-                  alt="Inside the salon — mirrors, chairs, quiet craft"
-                  className="absolute inset-0 h-full w-full object-cover"
+                  alt="A client in the chair — the quiet ceremony of the appointment"
+                  className="absolute inset-0 h-full w-full object-cover object-top"
                 />
               </div>
             </Reveal>
@@ -509,8 +507,8 @@ export default async function PublicHomePage() {
                         </div>
 
                         <div className="flex shrink-0 items-center gap-md">
-                          <div className="hidden text-right sm:block">
-                            <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg">
+                          <div className="shrink-0 text-right">
+                            <p className="hidden font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-muted-fg sm:block">
                               {formatDuration(service.duration_min)}
                             </p>
                             <p
@@ -522,7 +520,8 @@ export default async function PublicHomePage() {
                           </div>
                           <Link
                             href={`/book`}
-                            className="shrink-0 inline-flex h-9 items-center justify-center border border-border px-4 font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-fg transition-colors hover:border-fg"
+                            className="btn-pill shrink-0 inline-flex h-9 items-center justify-center border border-border px-4 font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-fg hover:border-fg hover:bg-fg hover:text-canvas"
+                            style={{ borderRadius: "var(--radius-pill)" }}
                           >
                             Book
                           </Link>
@@ -607,13 +606,16 @@ export default async function PublicHomePage() {
           ]} />
 
           <Reveal delay={0.2} className="mt-xl">
-            <a href="/book" style={{
-              display: "inline-flex", height: "2.75rem", alignItems: "center", justifyContent: "center",
-              border: "1px solid #F9F6F1", padding: "0 2rem",
-              fontFamily: "var(--font-mono)", fontSize: "var(--button-size)", textTransform: "uppercase",
-              letterSpacing: "var(--button-tracking)", color: "#F9F6F1", borderRadius: "var(--radius-pill)",
-              textDecoration: "none", transition: "opacity 0.2s",
-            }}>
+            <a
+              href="/book"
+              className="inline-flex h-11 items-center justify-center px-8 font-mono uppercase tracking-[var(--button-tracking)] text-[length:var(--button-size)] transition-all hover:opacity-80 active:scale-[0.97] active:opacity-60"
+              style={{
+                border: "1px solid #F9F6F1",
+                color: "#F9F6F1",
+                borderRadius: "var(--radius-pill)",
+                textDecoration: "none",
+              }}
+            >
               Begin reservation
             </a>
           </Reveal>
@@ -718,12 +720,12 @@ export default async function PublicHomePage() {
             <Reveal delay={0.5}>
               <a
                 href="/book"
+                className="btn-pill inline-flex h-12 items-center justify-center px-8 font-mono uppercase tracking-[var(--button-tracking)] text-[length:var(--button-size)] hover:opacity-85"
                 style={{
-                  display: "inline-flex", height: "3rem", alignItems: "center", justifyContent: "center",
-                  padding: "0 2rem", fontFamily: "var(--font-mono)", textTransform: "uppercase",
-                  borderRadius: "var(--radius-pill)", background: "#F9F6F1", color: "#1C1714",
-                  fontSize: "var(--button-size)", letterSpacing: "var(--button-tracking)",
-                  textDecoration: "none", transition: "opacity 0.2s",
+                  borderRadius: "var(--radius-pill)",
+                  background: "#F9F6F1",
+                  color: "#1C1714",
+                  textDecoration: "none",
                 }}
               >
                 Reserve your chair
@@ -756,7 +758,7 @@ export default async function PublicHomePage() {
               </p>
             </div>
 
-            <div className="grid gap-md sm:grid-cols-2">
+            <div className="grid gap-md sm:grid-cols-3">
               <div className="grid gap-xxs content-start">
                 <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg mb-xs">
                   Contact
@@ -795,13 +797,33 @@ export default async function PublicHomePage() {
                   Salons
                 </p>
                 {locations.map((loc) => (
-                  <p
-                    key={loc.id}
-                    className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg"
-                  >
-                    {loc.name}
-                  </p>
+                  <div key={loc.id}>
+                    <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg">
+                      {loc.name}
+                    </p>
+                    <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
+                      {loc.address}
+                    </p>
+                  </div>
                 ))}
+              </div>
+
+              <div className="grid gap-xxs content-start">
+                <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg mb-xs">
+                  Visit
+                </p>
+                <Link href="/book" className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70">
+                  Reserve
+                </Link>
+                <a href="/#services" className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70">
+                  Services
+                </a>
+                <a href="/#shop" className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70">
+                  Shop
+                </a>
+                <Link href="/my-bookings" className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70">
+                  My bookings
+                </Link>
               </div>
             </div>
           </div>

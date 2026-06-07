@@ -19,6 +19,7 @@ export function Stepper({ currentIndex }: { currentIndex: number }) {
                 <span
                   className="flex h-5 w-5 shrink-0 items-center justify-center border font-mono text-[10px] uppercase tracking-wide"
                   style={{
+                    borderRadius: "9999px",
                     borderColor: done || active ? "var(--fg)" : "var(--hairline)",
                     color: done || active ? "var(--fg)" : "var(--muted)",
                     background: done ? "var(--fg)" : "transparent",

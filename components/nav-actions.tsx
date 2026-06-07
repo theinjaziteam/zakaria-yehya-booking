@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth-provider";
+import { useCart } from "@/components/cart-provider";
 
 // Shared pill class — btn-pill in globals.css handles :active fill on mobile
 const pill =
@@ -10,10 +10,25 @@ const pill =
 
 export function NavActions() {
   const { user, loading, signOut } = useAuth();
-  const pathname = usePathname();
+  const { itemCount } = useCart();
 
   return (
     <div className="flex items-center gap-2 shrink-0">
+      {itemCount > 0 && (
+        <Link
+          href="/checkout"
+          className={pill}
+          style={{ borderRadius: "9999px" }}
+          aria-label={`Cart — ${itemCount} item${itemCount !== 1 ? "s" : ""}`}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="mr-1">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span>{itemCount}</span>
+        </Link>
+      )}
       {!loading && (
         <Link
           href={user ? "/my-bookings" : "/auth?from=/my-bookings"}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useCart } from "@/components/cart-provider";
+import { clientConfig } from "@/config/client";
 
 export type Product = {
   id: string;
@@ -16,7 +17,7 @@ export function clearPendingProducts() {
   try { localStorage.removeItem("yz_pending_products"); } catch { /* ignore */ }
 }
 
-function fmt(cents: number) { return `$${(cents / 100).toFixed(0)}`; }
+function fmt(cents: number) { return `${clientConfig.business.currencySymbol}${(cents / 100).toFixed(0)}`; }
 
 function ProductCard({ product }: { product: Product }) {
   const { items, addItem, updateQty, removeItem } = useCart();
