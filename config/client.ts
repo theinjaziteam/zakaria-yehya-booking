@@ -161,9 +161,8 @@ export const clientConfig = {
       eyebrow: "The house · Est. 1998",
       title: "Two brothers. One standard.",
       paragraphs: [
-        "Yehia and Zakaria opened their first salon in Verdun in 1998, at a time when Beirut was reclaiming its place as the region's most style-conscious city. Their reputation built itself through the work — not through advertising.",
-        "Over twenty-five years, the salon became the address behind some of the Arab world's most photographed hairstyles. The clients are discerning. The techniques are innovative. The result, always, is hair that holds its line well beyond the appointment.",
-        "The standard is the same at every address: nothing hurried, nothing overstated. Elegance that carries through the day — from the salon chair into whatever occasion the evening demands.",
+        "Yehia and Zakaria opened their first salon in Verdun in 1998 — and built their name purely through the work, not advertising. Twenty-five years on, the address is known for some of the Arab world's most photographed hairstyles.",
+        "Nothing hurried, nothing overstated: hair that holds its line well beyond the appointment, and carries through the day into whatever the evening demands.",
       ],
     },
     services: {
@@ -223,7 +222,7 @@ export const clientConfig = {
       ],
     },
     footerNote:
-      "A Lebanese house of hair since 1998. Three addresses across Beirut and Jounieh. One standard of service.",
+      "A Lebanese house of hair since 1998. One address in Verdun, Beirut. One standard of service.",
   },
   theme: {
     tokensFile: "/design/colors_and_type.css",

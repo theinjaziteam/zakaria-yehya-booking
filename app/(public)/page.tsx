@@ -11,6 +11,7 @@ import { StatsRow } from "@/components/stats-row";
 import { Reveal, TextReveal } from "@/components/reveal";
 import { HowItWorksSteps } from "@/components/how-it-works-steps";
 import { ParallaxImage } from "@/components/parallax-image";
+import { FaqAccordion } from "@/components/faq-accordion";
 
 type LandingLocation = {
   id: string;
@@ -157,7 +158,7 @@ const DEMO_PRODUCTS: Product[] = [
   { id: "p1", name: "Argan Oil Elixir", description: "Deep-conditioning Moroccan argan oil treatment. Repairs, strengthens, and adds luminous shine.", price_cents: 4500, image_url: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800&q=80&auto=format&fit=crop" },
   { id: "p2", name: "Scalp Revival Serum", description: "Purifying serum that balances and nourishes the scalp. Strengthens roots from the source.", price_cents: 3800, image_url: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800&q=80&auto=format&fit=crop" },
   { id: "p3", name: "Colour-Lock Conditioner", description: "Colour-preserving conditioner that seals the cuticle and extends the life of your colour treatment.", price_cents: 3200, image_url: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&q=80&auto=format&fit=crop" },
-  { id: "p4", name: "Styling Clay", description: "Medium-hold, matte-finish clay. Buildable texture with a clean, natural-looking result.", price_cents: 2800, image_url: "https://images.unsplash.com/photo-1590156562745-5d51c4e69e41?w=800&q=80&auto=format&fit=crop" },
+  { id: "p4", name: "Styling Clay", description: "Medium-hold, matte-finish clay. Buildable texture with a clean, natural-looking result.", price_cents: 2800, image_url: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&q=80&auto=format&fit=crop" },
 ];
 
 async function getProducts(): Promise<Product[]> {
@@ -349,7 +350,7 @@ export default async function PublicHomePage() {
                 {[
                   { value: "1998", label: "Founded" },
                   { value: "25+", label: "Years in Beirut" },
-                  { value: "3", label: "Addresses" },
+                  { value: "1", label: "Address" },
                 ].map((stat) => (
                   <div key={stat.label} className="grid gap-xxs">
                     <p
@@ -643,35 +644,7 @@ export default async function PublicHomePage() {
               </h2>
             </div>
 
-            <div className="grid gap-0">
-              {clientConfig.copy.faq.items.map((item, i) => (
-                <article
-                  key={item.question}
-                  className={`grid gap-xs py-md ${
-                    i < clientConfig.copy.faq.items.length - 1
-                      ? "border-b border-border"
-                      : ""
-                  }`}
-                >
-                  <h3
-                    className="font-display uppercase text-fg"
-                    style={{
-                      fontSize: "var(--title-md-size)",
-                      letterSpacing: "var(--title-md-tracking)",
-                    }}
-                  >
-                    {item.question}
-                  </h3>
-                  <p
-                    className="text-body"
-                    style={{ fontSize: "var(--body-md-size)", lineHeight: 1.8, maxWidth: "60ch" }}
-                  >
-                    {item.answer}
-                  </p>
-                </article>
-              ))}
-              <div className="border-t border-border" />
-            </div>
+            <FaqAccordion items={clientConfig.copy.faq.items} />
           </div>
         </div>
       </section>
@@ -740,9 +713,9 @@ export default async function PublicHomePage() {
       <footer className="bg-bg">
         <div className="mx-auto max-w-7xl px-md py-xl sm:px-xl">
           <div className="grid gap-xl lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-xxl">
-            <div className="grid gap-sm">
+            <div className="grid gap-sm min-w-0">
               <p
-                className="font-display uppercase text-fg"
+                className="font-display uppercase text-fg break-words"
                 style={{
                   fontSize: "var(--wordmark-size)",
                   letterSpacing: "var(--wordmark-tracking)",
@@ -751,21 +724,21 @@ export default async function PublicHomePage() {
                 {clientConfig.brand.name}
               </p>
               <p
-                className="text-muted-fg"
+                className="text-muted-fg break-words"
                 style={{ fontSize: "var(--body-sm-size)", lineHeight: 1.7, maxWidth: "44ch" }}
               >
                 {clientConfig.copy.footerNote}
               </p>
             </div>
 
-            <div className="grid gap-md sm:grid-cols-3">
-              <div className="grid gap-xxs content-start">
+            <div className="grid gap-md sm:grid-cols-3 min-w-0">
+              <div className="grid gap-xxs content-start min-w-0">
                 <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg mb-xs">
                   Contact
                 </p>
                 <a
                   href={`mailto:${clientConfig.contact.email}`}
-                  className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70"
+                  className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg transition-opacity hover:opacity-70 break-all"
                 >
                   {clientConfig.contact.email}
                 </a>
@@ -792,23 +765,23 @@ export default async function PublicHomePage() {
                 </a>
               </div>
 
-              <div className="grid gap-xxs content-start">
+              <div className="grid gap-xxs content-start min-w-0">
                 <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg mb-xs">
-                  Salons
+                  Salon
                 </p>
                 {locations.map((loc) => (
-                  <div key={loc.id}>
-                    <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg">
+                  <div key={loc.id} className="min-w-0">
+                    <p className="font-mono text-[length:var(--nav-size)] uppercase tracking-[var(--nav-tracking)] text-fg break-words">
                       {loc.name}
                     </p>
-                    <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg">
+                    <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg break-words">
                       {loc.address}
                     </p>
                   </div>
                 ))}
               </div>
 
-              <div className="grid gap-xxs content-start">
+              <div className="grid gap-xxs content-start min-w-0">
                 <p className="font-mono text-[length:var(--caption-size)] uppercase tracking-[var(--caption-tracking)] text-muted-fg mb-xs">
                   Visit
                 </p>

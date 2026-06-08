@@ -1,8 +1,6 @@
 insert into public.locations (slug, name, address, phone, lat, lng, timezone, active)
 values
-  ('achrafieh', 'Achrafieh', 'Rue Sursock area, Achrafieh, Beirut', '+961 1 111 111', 33.893800, 35.519600, 'Asia/Beirut', true),
-  ('verdun', 'Verdun', 'Main commercial strip, Verdun, Beirut', '+961 1 222 222', 33.882500, 35.486200, 'Asia/Beirut', true),
-  ('kaslik', 'Kaslik', 'Kaslik, Jounieh', '+961 9 333 333', 33.980800, 35.617500, 'Asia/Beirut', true)
+  ('verdun', 'Verdun', 'Main commercial strip, Verdun, Beirut', '+961 1 222 222', 33.882500, 35.486200, 'Asia/Beirut', true)
 on conflict (slug) do update
 set
   name = excluded.name,
@@ -96,22 +94,13 @@ insert into public.staff_locations (staff_id, location_id)
 select s.id, l.id
 from (
   values
-    ('zakaria-haddad', 'achrafieh'),
     ('zakaria-haddad', 'verdun'),
-    ('yehya-khoury', 'achrafieh'),
     ('yehya-khoury', 'verdun'),
-    ('yehya-khoury', 'kaslik'),
-    ('mira-daher', 'achrafieh'),
     ('mira-daher', 'verdun'),
     ('lea-sayegh', 'verdun'),
-    ('lea-sayegh', 'kaslik'),
-    ('omar-haddad', 'achrafieh'),
     ('omar-haddad', 'verdun'),
     ('tony-azzam', 'verdun'),
-    ('tony-azzam', 'kaslik'),
-    ('rana-nasr', 'achrafieh'),
-    ('rana-nasr', 'kaslik'),
-    ('nadim-hanna', 'kaslik'),
+    ('rana-nasr', 'verdun'),
     ('nadim-hanna', 'verdun')
 ) as v(staff_slug, location_slug)
 join public.staff s on s.slug = v.staff_slug

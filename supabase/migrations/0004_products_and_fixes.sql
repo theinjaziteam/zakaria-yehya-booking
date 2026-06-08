@@ -124,7 +124,7 @@ values
   'Styling Clay',
   'Medium-hold, matte-finish clay. Buildable texture with a clean, natural-looking result.',
   2800,
-  'https://images.unsplash.com/photo-1590156562745-5d51c4e69e41?w=800&q=80&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&q=80&auto=format&fit=crop',
   4
 )
 on conflict do nothing;

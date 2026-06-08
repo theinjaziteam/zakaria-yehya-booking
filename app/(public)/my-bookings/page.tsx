@@ -237,7 +237,10 @@ export default function MyBookingsPage() {
           <>
             <div className="mb-lg flex items-center justify-between">
               <p className={labelBase}>
-                {bookings.length} booking{bookings.length !== 1 ? "s" : ""}{orders.length > 0 ? ` · ${orders.length} order${orders.length !== 1 ? "s" : ""}` : ""}
+                {bookings.length > 0 && `${bookings.length} booking${bookings.length !== 1 ? "s" : ""}`}
+                {bookings.length > 0 && orders.length > 0 && " · "}
+                {orders.length > 0 && `${orders.length} order${orders.length !== 1 ? "s" : ""}`}
+                {bookings.length === 0 && orders.length === 0 && "0 bookings"}
               </p>
               <button
                 onClick={() => {
@@ -252,7 +255,7 @@ export default function MyBookingsPage() {
               </button>
             </div>
 
-            {bookings.length === 0 ? (
+            {bookings.length === 0 && orders.length === 0 ? (
               <div className="border border-border bg-card p-xl text-center">
                 <p
                   className="font-display uppercase text-fg"
